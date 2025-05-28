@@ -1,6 +1,6 @@
 # Verified ERC20 Specification
 
-This document outlines the specification for `VerifiedERC20`, which extends ERC20 functionality with a flexible hook system for permission management.
+This document outlines the specification for `VerifiedERC20`, which extends ERC20 functionality with a flexible hook registry. The hooks provide integrations with onchain verification providers and operate as layers of permissions.
 
 ## System Overview
 
