@@ -2,17 +2,17 @@
 pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
-import {PermissionedERC20} from "../src/PermissionedERC20.sol";
+import {VerifiedERC20} from "../src/VerifiedERC20.sol";
 
-contract DeployPermissionedERC20 is Script {
-    struct PermissionedERC20DeploymentParams {
+contract DeployVerifiedERC20 is Script {
+    struct VerifiedERC20DeploymentParams {
         string name;
         string symbol;
         string outputFilename;
     }
 
-    PermissionedERC20 public permissionedERC20;
-    PermissionedERC20DeploymentParams internal _params;
+    VerifiedERC20 public verifiedERC20;
+    VerifiedERC20DeploymentParams internal _params;
 
     /// @dev Used by tests to disable logging of output
     bool public isTest;
@@ -30,21 +30,21 @@ contract DeployPermissionedERC20 is Script {
     }
 
     function deploy() internal virtual {
-        permissionedERC20 = new PermissionedERC20({name_: _params.name, symbol_: _params.symbol});
+        verifiedERC20 = new VerifiedERC20({name_: _params.name, symbol_: _params.symbol});
     }
 
-    function params() external view returns (PermissionedERC20DeploymentParams memory) {
+    function params() external view returns (VerifiedERC20DeploymentParams memory) {
         return _params;
     }
 
     function logParams() internal view virtual {
-        console.log("PermissionedERC20: ", address(permissionedERC20));
+        console.log("VerifiedERC20: ", address(verifiedERC20));
     }
 
     function logOutput() internal virtual {
         if (isTest) return;
         string memory root = vm.projectRoot();
         string memory path = string(abi.encodePacked(root, "/deployment-addresses/", _params.outputFilename));
-        vm.writeJson(vm.toString(address(permissionedERC20)), path, ".permissionedERC20");
+        vm.writeJson(vm.toString(address(verifiedERC20)), path, ".verifiedERC20");
     }
 }

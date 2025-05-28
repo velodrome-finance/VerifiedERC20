@@ -7,15 +7,15 @@ import {VmSafe} from "forge-std/Vm.sol";
 import {TestConstants} from "./utils/TestConstants.sol";
 import {Users} from "./utils/TestUsers.sol";
 
-import {PermissionedERC20} from "../src/PermissionedERC20.sol";
-import {TestPermissionedERC20Deployment} from "test/mocks/TestPermissionedERC20Deployment.sol";
+import {VerifiedERC20} from "../src/VerifiedERC20.sol";
+import {TestVerifiedERC20Deployment} from "test/mocks/TestVerifiedERC20Deployment.sol";
 
 abstract contract BaseFixture is Test, TestConstants {
     Users public users;
 
     // Contracts
-    TestPermissionedERC20Deployment public permissionedERC20Deployment;
-    PermissionedERC20 public permissionedERC20;
+    TestVerifiedERC20Deployment public verifiedERC20Deployment;
+    VerifiedERC20 public verifiedERC20;
 
     function setUp() public virtual {
         createUsers();
@@ -41,14 +41,14 @@ abstract contract BaseFixture is Test, TestConstants {
     }
 
     function deployContracts() internal {
-        permissionedERC20Deployment = new TestPermissionedERC20Deployment("PermissionedERC20", "PermissionedRC20", "");
-        permissionedERC20Deployment.run();
+        verifiedERC20Deployment = new TestVerifiedERC20Deployment("VerifiedERC20", "VerifiedRC20", "");
+        verifiedERC20Deployment.run();
 
-        permissionedERC20 = permissionedERC20Deployment.permissionedERC20();
+        verifiedERC20 = verifiedERC20Deployment.verifiedERC20();
     }
 
     function labelContracts() internal {
-        vm.label({account: address(permissionedERC20Deployment), newLabel: "PermissionedERC20Deployment"});
-        vm.label({account: address(permissionedERC20), newLabel: "PermissionedERC20"});
+        vm.label({account: address(verifiedERC20Deployment), newLabel: "VerifiedERC20Deployment"});
+        vm.label({account: address(verifiedERC20), newLabel: "VerifiedERC20"});
     }
 }

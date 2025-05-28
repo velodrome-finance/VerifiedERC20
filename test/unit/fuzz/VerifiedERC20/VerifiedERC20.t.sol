@@ -3,14 +3,14 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import "../../../BaseFixture.sol";
 
-contract PermissionedERC20Test is BaseFixture {
+contract VerifiedERC20Test is BaseFixture {
     function setUp() public override {
         super.setUp();
         // common set up for all tests
     }
 
     function test_InitialState() public view {
-        assertEq(permissionedERC20.name(), "PermissionedERC20");
-        assertEq(permissionedERC20.symbol(), "PermissionedRC20");
+        assertEq(verifiedERC20.name(), "VerifiedERC20");
+        assertEq(verifiedERC20.symbol(), "VerifiedRC20");
     }
 }
