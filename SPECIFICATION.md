@@ -13,7 +13,7 @@ The `VerifiedERC20` system consists of three main components:
 
 ### `VerifiedERC20Factory`
 
-The factory contract is responsible for deploying new `VerifiedERC20` instances with their associated `HookRegistry`.
+The factory contract is responsible for deploying new `VerifiedERC20` instances.
 
 ### `HookRegistry`
 
