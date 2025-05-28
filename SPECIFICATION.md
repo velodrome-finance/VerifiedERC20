@@ -25,4 +25,4 @@ The main contract that extends OpenZeppelin's `ERC20` implementation with hook f
 
 ## Hook Integration
 
-Hooks must implement the `IHook` interface and are added to the `VerifiedERC20` by the `VerifiedERC20.owner()`. It needs to call `addHook` along with the entrypoint for the hook.
+Hooks must implement the `IHook` interface and need to be added first to the registry before these can be enabled for a `VerifiedERC20` by its `VerifiedERC20.owner()`. 
