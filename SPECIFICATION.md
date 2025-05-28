@@ -17,7 +17,7 @@ The factory contract is responsible for deploying new `VerifiedERC20` instances.
 
 ### `HookRegistry`
 
-The registry contract manages hooks for a `VerifiedERC20` instance. Each hook can be associated with specific entrypoints and can be activated/deactivated.
+The registry contract manages hooks for `VerifiedERC20` deployments. Each hook can be associated with specific `VerifiedERC20` entrypoints and can be activated/deactivated.
 
 ### `VerifiedERC20`
 
