@@ -43,7 +43,7 @@ contract VerifiedERC20Factory is IVerifiedERC20Factory {
             })
         );
 
-        // Add the newly created VerifiedERC20 to the set
+        // slither-disable-next-line unused-return
         _verifiedERC20s.add(verifiedERC20);
 
         emit VerifiedERC20Created({verifiedERC20: verifiedERC20});

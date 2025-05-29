@@ -22,6 +22,8 @@ contract VerifiedERC20 is ERC20, Ownable {
         address owner_,
         address[] memory _hooks
     ) ERC20(name_, symbol_) Ownable(owner_) {
+        /// @dev Hook registry zero address check is made in the factory
+        // slither-disable-next-line missing-zero-check
         hookRegistry = _hookRegistry;
         for (uint256 i = 0; i < _hooks.length; i++) {
             activateHook({_hook: _hooks[i]});
