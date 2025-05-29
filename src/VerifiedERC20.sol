@@ -12,16 +12,16 @@ contract VerifiedERC20 is ERC20, Ownable {
      * @param name_ The name of the token
      * @param symbol_ The symbol of the token
      * @param _hookRegistry The address of the hook registry
-     * @param _owner The owner of the token
+     * @param owner_ The owner of the token
      * @param _hooks The hooks to be activated
      */
     constructor(
         string memory name_,
         string memory symbol_,
         address _hookRegistry,
-        address _owner,
+        address owner_,
         address[] memory _hooks
-    ) ERC20(name_, symbol_) Ownable(_owner) {
+    ) ERC20(name_, symbol_) Ownable(owner_) {
         hookRegistry = _hookRegistry;
         for (uint256 i = 0; i < _hooks.length; i++) {
             activateHook({_hook: _hooks[i]});

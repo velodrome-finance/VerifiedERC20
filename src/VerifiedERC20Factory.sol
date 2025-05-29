@@ -38,7 +38,7 @@ contract VerifiedERC20Factory is IVerifiedERC20Factory {
                 name_: _name,
                 symbol_: _symbol,
                 _hookRegistry: hookRegistry,
-                _owner: _owner,
+                owner_: _owner,
                 _hooks: _hooks
             })
         );
