@@ -4,8 +4,8 @@ pragma solidity >=0.8.19 <0.9.0;
 import "../../script/DeployVerifiedERC20.s.sol";
 
 contract TestVerifiedERC20Deployment is DeployVerifiedERC20 {
-    constructor(string memory _name, string memory _symbol, string memory _outputFilename) {
-        _params = VerifiedERC20DeploymentParams({name: _name, symbol: _symbol, outputFilename: _outputFilename});
+    constructor(address _hookRegistryManager, string memory _outputFilename) {
+        _params = DeploymentParams({hookRegistryManager: _hookRegistryManager, outputFilename: _outputFilename});
         isTest = true;
     }
 }
