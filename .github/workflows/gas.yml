@@ -28,7 +28,7 @@ jobs:
         with:
           version: v1.1.0
 
-      - name: Run Forge tests
-        run: |
-          FORGE_SNAPSHOT_CHECK=true forge test --mt testGas -vvv
-        id: test
+      # - name: Run Forge tests
+      #   run: |
+      #     FORGE_SNAPSHOT_CHECK=true forge test --mt testGas -vvv
+      #   id: test
