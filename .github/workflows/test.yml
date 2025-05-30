@@ -2,7 +2,7 @@ name: contract tests
 
 on:
   push:
-    branches: 
+    branches:
       - main
       - develop
   pull_request:
@@ -44,10 +44,5 @@ jobs:
 
       - name: Run Forge tests
         run: |
-          forge test -vvv
+          FORGE_SNAPSHOT_CHECK=true forge test -vvv
         id: test
-
-      - name: Run Forge gas tests
-        run: |
-          FOUNDRY_NO_MATCH_TEST=DISABLE forge test --isolate --mt testGas -vvv
-        id: gas test
