@@ -46,3 +46,8 @@ jobs:
         run: |
           forge test -vvv
         id: test
+
+      - name: Run Forge gas tests
+        run: |
+          FOUNDRY_NO_MATCH_TEST=DISABLE forge test --isolate --mt testGas -vvv
+        id: gas test
