@@ -13,7 +13,7 @@ import {VerifiedERC20} from "../src/VerifiedERC20.sol";
 import {VerifiedERC20Factory, IVerifiedERC20Factory} from "../src/VerifiedERC20Factory.sol";
 import {TestVerifiedERC20Deployment} from "test/mocks/TestVerifiedERC20Deployment.sol";
 
-abstract contract BaseFixture is Test, TestConstants {
+abstract contract BaseForkFixture is Test, TestConstants {
     Users public users;
 
     // Contracts
@@ -23,6 +23,7 @@ abstract contract BaseFixture is Test, TestConstants {
     VerifiedERC20 public verifiedERC20;
 
     function setUp() public virtual {
+        vm.createSelectFork({urlOrAlias: "optimism", blockNumber: 123316800});
         createUsers();
 
         deployContracts();
