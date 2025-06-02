@@ -1,21 +1,13 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.19 <0.9.0;
 
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 
-contract VerifiedERC20 is ERC20, Ownable {
+contract VerifiedERC20 is ERC20Upgradeable, OwnableUpgradeable {
     error AlreadyInitialized();
 
     address public hookRegistry;
-
-    address public factory;
-
-    /// @dev ERC20 name and symbol
-    string private _name;
-    string private _symbol;
-
-    constructor() ERC20("", "") Ownable(address(this)) {}
 
     /**
      * @notice Called on verifiedERC20 creation by verifiedERC20 factory
@@ -31,26 +23,16 @@ contract VerifiedERC20 is ERC20, Ownable {
         address _owner,
         address _hookRegistry,
         address[] memory _hooks
-    ) external {
-        if (factory != address(0)) revert AlreadyInitialized();
-        factory = msg.sender;
-        _name = name_;
-        _symbol = symbol_;
-        _transferOwnership(_owner);
+    ) external initializer {
+        __ERC20_init({name_: name_, symbol_: symbol_});
+        __Ownable_init({initialOwner: _owner});
+
         /// @dev Hook registry zero address check is made in the factory
         // slither-disable-next-line missing-zero-check
         hookRegistry = _hookRegistry;
         for (uint256 i = 0; i < _hooks.length; i++) {
             activateHook({_hook: _hooks[i]});
         }
-    }
-
-    function name() public view override returns (string memory) {
-        return _name;
-    }
-
-    function symbol() public view override returns (string memory) {
-        return _symbol;
     }
 
     function activateHook(address _hook) public onlyOwner {

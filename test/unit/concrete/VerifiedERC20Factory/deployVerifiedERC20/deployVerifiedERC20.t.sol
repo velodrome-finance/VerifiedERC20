@@ -4,7 +4,18 @@ pragma solidity >=0.8.19 <0.9.0;
 import "../VerifiedERC20Factory.t.sol";
 
 contract DeployVerifiedERC20UnitConcreteTest is VerifiedERC20FactoryTest {
-    function test_GivenAnyParameter() external {
+    function test_WhenOwnerIsZeroAddress() external {
+        // It should revert with {OwnableInvalidOwner}
+        string memory _name = "";
+        string memory _symbol = "";
+        address _owner = address(0);
+        address[] memory _hooks = new address[](0);
+
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableInvalidOwner.selector, address(0)));
+        verifiedERC20Factory.deployVerifiedERC20({_name: _name, _symbol: _symbol, _owner: _owner, _hooks: _hooks});
+    }
+
+    function test_WhenOwnerIsNotZeroAddress() external {
         // It should deploy a new VerifiedERC20
         // It should increase the new VerifiedERC20 count
         // It should add the new VerifiedERC20 at the last index
@@ -19,7 +30,8 @@ contract DeployVerifiedERC20UnitConcreteTest is VerifiedERC20FactoryTest {
             implementation: verifiedERC20Factory.implementation(),
             salt: keccak256(
                 abi.encodePacked(block.chainid, verifiedERC20Factory.getVerifiedERC20Count(), _name, _symbol, _owner)
-            )
+            ),
+            deployer: address(verifiedERC20Factory)
         });
         vm.expectEmit(address(verifiedERC20Factory));
         emit IVerifiedERC20Factory.VerifiedERC20Created({verifiedERC20: expectedVerifiedERC20});

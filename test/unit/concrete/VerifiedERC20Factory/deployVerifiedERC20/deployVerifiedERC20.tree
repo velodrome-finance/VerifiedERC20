@@ -1,5 +1,7 @@
 DeployVerifiedERC20UnitConcreteTest
-└── Given any parameter
+├── When owner is zero address
+│    └── It should revert with {OwnableInvalidOwner}
+└── When owner is not zero address
      ├── It should deploy a new VerifiedERC20
      ├── It should increase the new VerifiedERC20 count
      ├── It should add the new VerifiedERC20 at the last index
