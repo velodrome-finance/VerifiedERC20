@@ -14,6 +14,11 @@ interface IVerifiedERC20Factory {
     error VerifiedERC20Factory_HookRegistry_ZeroAddress();
 
     /**
+     * @notice VerifiedERC20 implementation used by this factory
+     * @return Address of the VerifiedERC20 implementation
+     */
+    function implementation() external view returns (address);
+    /**
      * @notice The address of the hook registry contract
      * @return Address of the hook registry
      */

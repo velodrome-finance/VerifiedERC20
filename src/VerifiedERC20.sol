@@ -5,29 +5,52 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract VerifiedERC20 is ERC20, Ownable {
-    address public immutable hookRegistry;
+    error AlreadyInitialized();
+
+    address public hookRegistry;
+
+    address public factory;
+
+    /// @dev ERC20 name and symbol
+    string private _name;
+    string private _symbol;
+
+    constructor() ERC20("", "") Ownable(address(this)) {}
 
     /**
-     * @notice Constructor for the VerifiedERC20
+     * @notice Called on verifiedERC20 creation by verifiedERC20 factory
      * @param name_ The name of the token
      * @param symbol_ The symbol of the token
      * @param _hookRegistry The address of the hook registry
-     * @param owner_ The owner of the token
+     * @param _owner The owner of the token
      * @param _hooks The hooks to be activated
      */
-    constructor(
+    function initialize(
         string memory name_,
         string memory symbol_,
+        address _owner,
         address _hookRegistry,
-        address owner_,
         address[] memory _hooks
-    ) ERC20(name_, symbol_) Ownable(owner_) {
+    ) external {
+        if (factory != address(0)) revert AlreadyInitialized();
+        factory = msg.sender;
+        _name = name_;
+        _symbol = symbol_;
+        _transferOwnership(_owner);
         /// @dev Hook registry zero address check is made in the factory
         // slither-disable-next-line missing-zero-check
         hookRegistry = _hookRegistry;
         for (uint256 i = 0; i < _hooks.length; i++) {
             activateHook({_hook: _hooks[i]});
         }
+    }
+
+    function name() public view override returns (string memory) {
+        return _name;
+    }
+
+    function symbol() public view override returns (string memory) {
+        return _symbol;
     }
 
     function activateHook(address _hook) public onlyOwner {

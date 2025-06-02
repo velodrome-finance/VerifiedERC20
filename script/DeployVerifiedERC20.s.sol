@@ -7,8 +7,10 @@ import {ICreateX} from "createX/ICreateX.sol";
 import {CreateXLibrary} from "src/libraries/CreateXLibrary.sol";
 
 import {VerifiedERC20Factory} from "../src/VerifiedERC20Factory.sol";
+import {VerifiedERC20} from "../src/VerifiedERC20.sol";
 
 bytes11 constant VERIFIED_ERC20_FACTORY_ENTROPY = 0x0000000000000000000001;
+bytes11 constant VERIFIED_ERC20_ENTROPY = 0x0000000000000000000002;
 
 contract DeployVerifiedERC20 is Script {
     using CreateXLibrary for bytes11;
@@ -24,6 +26,7 @@ contract DeployVerifiedERC20 is Script {
 
     address public deployer = 0xd42C7914cF8dc24a1075E29C283C581bd1b0d3D3;
 
+    VerifiedERC20 public verifiedERC20Implementation;
     VerifiedERC20Factory public verifiedERC20Factory;
     address public hookRegistry; //placeholder
     DeploymentParams internal _params;
@@ -46,12 +49,23 @@ contract DeployVerifiedERC20 is Script {
 
     function deploy() internal virtual {
         hookRegistry = address(1); // Placeholder for hook registry address
+        verifiedERC20Implementation = VerifiedERC20(
+            cx.deployCreate3({
+                salt: VERIFIED_ERC20_ENTROPY.calculateSalt({_deployer: deployer}),
+                initCode: abi.encodePacked(type(VerifiedERC20).creationCode)
+            })
+        );
+        checkAddress({_entropy: VERIFIED_ERC20_ENTROPY, _output: address(verifiedERC20Implementation)});
+
         verifiedERC20Factory = VerifiedERC20Factory(
             cx.deployCreate3({
                 salt: VERIFIED_ERC20_FACTORY_ENTROPY.calculateSalt({_deployer: deployer}),
                 initCode: abi.encodePacked(
                     type(VerifiedERC20Factory).creationCode,
-                    abi.encode(hookRegistry) // hook registry
+                    abi.encode(
+                        verifiedERC20Implementation, // verified ERC20 implementation
+                        hookRegistry // hook registry
+                    )
                 )
             })
         );

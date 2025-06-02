@@ -2,6 +2,7 @@
 pragma solidity >=0.8.19 <0.9.0;
 
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
 
 import {IVerifiedERC20Factory} from "./interfaces/IVerifiedERC20Factory.sol";
 import {VerifiedERC20} from "./VerifiedERC20.sol";
@@ -15,7 +16,8 @@ contract VerifiedERC20Factory is IVerifiedERC20Factory {
 
     /// @dev A set containing all VerifiedERC20s created by this factory
     EnumerableSet.AddressSet private _verifiedERC20s;
-
+    /// @inheritdoc IVerifiedERC20Factory
+    address public immutable implementation;
     /// @inheritdoc IVerifiedERC20Factory
     address public immutable hookRegistry;
 
@@ -23,8 +25,9 @@ contract VerifiedERC20Factory is IVerifiedERC20Factory {
      * @notice Constructor for the VerifiedERC20Factory
      * @param _hookRegistry The address of the hook registry
      */
-    constructor(address _hookRegistry) {
+    constructor(address _implementation, address _hookRegistry) {
         if (_hookRegistry == address(0)) revert VerifiedERC20Factory_HookRegistry_ZeroAddress();
+        implementation = _implementation;
         hookRegistry = _hookRegistry;
     }
 
@@ -33,15 +36,15 @@ contract VerifiedERC20Factory is IVerifiedERC20Factory {
         external
         returns (address)
     {
-        address verifiedERC20 = address(
-            new VerifiedERC20({
-                name_: _name,
-                symbol_: _symbol,
-                _hookRegistry: hookRegistry,
-                owner_: _owner,
-                _hooks: _hooks
-            })
-        );
+        bytes32 salt = keccak256(abi.encodePacked(block.chainid, _verifiedERC20s.length(), _name, _symbol, _owner));
+        address verifiedERC20 = Clones.cloneDeterministic({implementation: implementation, salt: salt});
+        VerifiedERC20(verifiedERC20).initialize({
+            name_: _name,
+            symbol_: _symbol,
+            _owner: _owner,
+            _hookRegistry: hookRegistry,
+            _hooks: _hooks
+        });
 
         // slither-disable-next-line unused-return
         _verifiedERC20s.add({value: verifiedERC20});

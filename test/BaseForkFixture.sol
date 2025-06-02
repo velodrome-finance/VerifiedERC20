@@ -5,6 +5,7 @@ import {Test} from "forge-std/Test.sol";
 import {VmSafe} from "forge-std/Vm.sol";
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
 
 import {TestConstants} from "./utils/TestConstants.sol";
 import {Users} from "./utils/TestUsers.sol";
