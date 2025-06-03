@@ -3,13 +3,10 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {Initializable} from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
-contract VerifiedERC20 is ERC20, Ownable {
-    error AlreadyInitialized();
-
+contract VerifiedERC20 is ERC20, Ownable, Initializable {
     address public hookRegistry;
-
-    address public factory;
 
     /// @dev ERC20 name and symbol
     string private _name;
@@ -31,9 +28,7 @@ contract VerifiedERC20 is ERC20, Ownable {
         address _owner,
         address _hookRegistry,
         address[] memory _hooks
-    ) external {
-        if (factory != address(0)) revert AlreadyInitialized();
-        factory = msg.sender;
+    ) external initializer {
         _name = name_;
         _symbol = symbol_;
         _transferOwnership(_owner);
