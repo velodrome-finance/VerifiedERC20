@@ -3,7 +3,7 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
-import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {ReentrancyGuardTransient} from "@openzeppelin/contracts/utils/ReentrancyGuardTransient.sol";
 
 import {IVerifiedERC20Factory} from "./interfaces/IVerifiedERC20Factory.sol";
 import {VerifiedERC20} from "./VerifiedERC20.sol";
@@ -12,7 +12,7 @@ import {VerifiedERC20} from "./VerifiedERC20.sol";
  * @title VerifiedERC20Factory
  * @notice Factory contract for deploying VerifiedERC20 instances
  */
-contract VerifiedERC20Factory is IVerifiedERC20Factory, ReentrancyGuard {
+contract VerifiedERC20Factory is IVerifiedERC20Factory, ReentrancyGuardTransient {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     /// @dev A set containing all VerifiedERC20s created by this factory

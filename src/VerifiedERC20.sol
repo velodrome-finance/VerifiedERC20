@@ -14,7 +14,9 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable {
     // slither-disable-next-line shadowing-state
     string private _symbol;
 
-    constructor() ERC20("", "") Ownable(address(this)) {}
+    constructor() ERC20("", "") Ownable(address(this)) {
+        _disableInitializers();
+    }
 
     /**
      * @notice Called on verifiedERC20 creation by verifiedERC20 factory
@@ -38,7 +40,7 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable {
         // slither-disable-next-line missing-zero-check
         hookRegistry = _hookRegistry;
         for (uint256 i = 0; i < _hooks.length; i++) {
-            activateHook({_hook: _hooks[i]});
+            _activateHook({_hook: _hooks[i]});
         }
     }
 
@@ -50,7 +52,7 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable {
         return _symbol;
     }
 
-    function activateHook(address _hook) public onlyOwner {
+    function activateHook(address _hook) external onlyOwner {
         _activateHook({_hook: _hook});
     }
 
