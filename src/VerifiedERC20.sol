@@ -9,7 +9,9 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable {
     address public hookRegistry;
 
     /// @dev ERC20 name and symbol
+    // slither-disable-next-line shadowing-state
     string private _name;
+    // slither-disable-next-line shadowing-state
     string private _symbol;
 
     constructor() ERC20("", "") Ownable(address(this)) {}
@@ -18,20 +20,20 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable {
      * @notice Called on verifiedERC20 creation by verifiedERC20 factory
      * @param name_ The name of the token
      * @param symbol_ The symbol of the token
+     * @param owner_ The owner of the token
      * @param _hookRegistry The address of the hook registry
-     * @param _owner The owner of the token
      * @param _hooks The hooks to be activated
      */
     function initialize(
         string memory name_,
         string memory symbol_,
-        address _owner,
+        address owner_,
         address _hookRegistry,
         address[] memory _hooks
     ) external initializer {
         _name = name_;
         _symbol = symbol_;
-        _transferOwnership(_owner);
+        _transferOwnership({newOwner: owner_});
         /// @dev Hook registry zero address check is made in the factory
         // slither-disable-next-line missing-zero-check
         hookRegistry = _hookRegistry;

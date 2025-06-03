@@ -45,7 +45,7 @@ contract VerifiedERC20Factory is IVerifiedERC20Factory, ReentrancyGuard {
         VerifiedERC20(verifiedERC20).initialize({
             name_: _name,
             symbol_: _symbol,
-            _owner: _owner,
+            owner_: _owner,
             _hookRegistry: hookRegistry,
             _hooks: _hooks
         });
