@@ -2,17 +2,17 @@
 pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
-import {VerifiedERC20} from "../src/VerifiedERC20.sol";
+import {VerifiedERC20Factory} from "../src/VerifiedERC20Factory.sol";
 
 contract DeployVerifiedERC20 is Script {
-    struct VerifiedERC20DeploymentParams {
-        string name;
-        string symbol;
+    struct DeploymentParams {
+        address hookRegistryManager;
         string outputFilename;
     }
 
-    VerifiedERC20 public verifiedERC20;
-    VerifiedERC20DeploymentParams internal _params;
+    VerifiedERC20Factory public verifiedERC20Factory;
+    address public hookRegistry; //placeholder
+    DeploymentParams internal _params;
 
     /// @dev Used by tests to disable logging of output
     bool public isTest;
@@ -30,21 +30,23 @@ contract DeployVerifiedERC20 is Script {
     }
 
     function deploy() internal virtual {
-        verifiedERC20 = new VerifiedERC20({name_: _params.name, symbol_: _params.symbol});
+        hookRegistry = address(1); // Placeholder for hook registry address
+        verifiedERC20Factory = new VerifiedERC20Factory({_hookRegistry: hookRegistry});
     }
 
-    function params() external view returns (VerifiedERC20DeploymentParams memory) {
+    function params() external view returns (DeploymentParams memory) {
         return _params;
     }
 
     function logParams() internal view virtual {
-        console.log("VerifiedERC20: ", address(verifiedERC20));
+        console.log("VerifiedERC20Factory: ", address(verifiedERC20Factory));
     }
 
     function logOutput() internal virtual {
         if (isTest) return;
         string memory root = vm.projectRoot();
         string memory path = string(abi.encodePacked(root, "/deployment-addresses/", _params.outputFilename));
-        vm.writeJson(vm.toString(address(verifiedERC20)), path, ".verifiedERC20");
+        vm.writeJson(vm.toString(address(verifiedERC20Factory)), path, ".verifiedERC20Factory");
+        vm.writeJson(vm.toString(hookRegistry), path, ".hookRegistry");
     }
 }

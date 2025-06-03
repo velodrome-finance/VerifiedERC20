@@ -4,10 +4,13 @@ pragma solidity >=0.8.19 <0.9.0;
 import {Test} from "forge-std/Test.sol";
 import {VmSafe} from "forge-std/Vm.sol";
 
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+
 import {TestConstants} from "./utils/TestConstants.sol";
 import {Users} from "./utils/TestUsers.sol";
 
 import {VerifiedERC20} from "../src/VerifiedERC20.sol";
+import {VerifiedERC20Factory, IVerifiedERC20Factory} from "../src/VerifiedERC20Factory.sol";
 import {TestVerifiedERC20Deployment} from "test/mocks/TestVerifiedERC20Deployment.sol";
 
 abstract contract BaseFixture is Test, TestConstants {
@@ -15,6 +18,8 @@ abstract contract BaseFixture is Test, TestConstants {
 
     // Contracts
     TestVerifiedERC20Deployment public verifiedERC20Deployment;
+    address public hookRegistry;
+    VerifiedERC20Factory public verifiedERC20Factory;
     VerifiedERC20 public verifiedERC20;
 
     function setUp() public virtual {
@@ -27,7 +32,7 @@ abstract contract BaseFixture is Test, TestConstants {
     function createUsers() internal {
         users = Users({
             owner: createUser("Owner"),
-            feeManager: createUser("FeeManager"),
+            hookRegistryManager: createUser("HookRegistryManager"),
             alice: createUser("Alice"),
             bob: createUser("Bob"),
             charlie: createUser("Charlie"),
@@ -41,10 +46,20 @@ abstract contract BaseFixture is Test, TestConstants {
     }
 
     function deployContracts() internal {
-        verifiedERC20Deployment = new TestVerifiedERC20Deployment("VerifiedERC20", "VerifiedRC20", "");
+        verifiedERC20Deployment =
+            new TestVerifiedERC20Deployment({_hookRegistryManager: users.owner, _outputFilename: ""});
         verifiedERC20Deployment.run();
 
-        verifiedERC20 = verifiedERC20Deployment.verifiedERC20();
+        verifiedERC20Factory = verifiedERC20Deployment.verifiedERC20Factory();
+        verifiedERC20 = VerifiedERC20(
+            verifiedERC20Factory.deployVerifiedERC20({
+                _name: "VerifiedERC20",
+                _symbol: "VerifiedRC20",
+                _owner: users.owner,
+                _hooks: new address[](0)
+            })
+        );
+        hookRegistry = verifiedERC20Deployment.hookRegistry();
     }
 
     function labelContracts() internal {
