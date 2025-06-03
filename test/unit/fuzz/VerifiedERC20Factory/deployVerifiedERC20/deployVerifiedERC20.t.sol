@@ -4,7 +4,7 @@ pragma solidity >=0.8.19 <0.9.0;
 import "../VerifiedERC20Factory.t.sol";
 
 contract DeployVerifiedERC20UnitConcreteTest is VerifiedERC20FactoryTest {
-    function test_WhenOwnerIsNotZeroAddress(address _owner) external {
+    function test_GivenAnyParameter(address _owner) external {
         // It should deploy a new VerifiedERC20
         // It should increase the new VerifiedERC20 count
         // It should add the new VerifiedERC20 at the last index
@@ -13,7 +13,6 @@ contract DeployVerifiedERC20UnitConcreteTest is VerifiedERC20FactoryTest {
         // It should emit a {VerifiedERC20Created} event
         string memory _name = "TestVerifiedERC20";
         string memory _symbol = "TVerifiedERC20";
-        vm.assume(_owner != address(0));
         address[] memory _hooks = new address[](0);
         address expectedVerifiedERC20 = Clones.predictDeterministicAddress({
             implementation: verifiedERC20Factory.implementation(),
