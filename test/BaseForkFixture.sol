@@ -7,6 +7,9 @@ import {VmSafe} from "forge-std/Vm.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
 
+import {ICreateX} from "createX/ICreateX.sol";
+import {CreateXLibrary} from "src/libraries/CreateXLibrary.sol";
+
 import {TestConstants} from "./utils/TestConstants.sol";
 import {Users} from "./utils/TestUsers.sol";
 
@@ -16,6 +19,8 @@ import {TestVerifiedERC20Deployment} from "test/mocks/TestVerifiedERC20Deploymen
 
 abstract contract BaseForkFixture is Test, TestConstants {
     Users public users;
+
+    ICreateX public cx = ICreateX(0xba5Ed099633D3B313e4D5F7bdc1305d3c28ba5Ed);
 
     // Contracts
     TestVerifiedERC20Deployment public verifiedERC20Deployment;

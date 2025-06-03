@@ -2,8 +2,9 @@
 pragma solidity >=0.8.19 <0.9.0;
 
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
 import {ReentrancyGuardTransient} from "@openzeppelin/contracts/utils/ReentrancyGuardTransient.sol";
+
+import {CreateXLibrary} from "./libraries/CreateXLibrary.sol";
 
 import {IVerifiedERC20Factory} from "./interfaces/IVerifiedERC20Factory.sol";
 import {VerifiedERC20} from "./VerifiedERC20.sol";
@@ -14,6 +15,7 @@ import {VerifiedERC20} from "./VerifiedERC20.sol";
  */
 contract VerifiedERC20Factory is IVerifiedERC20Factory, ReentrancyGuardTransient {
     using EnumerableSet for EnumerableSet.AddressSet;
+    using CreateXLibrary for bytes11;
 
     /// @dev A set containing all VerifiedERC20s created by this factory
     EnumerableSet.AddressSet private _verifiedERC20s;
@@ -41,13 +43,13 @@ contract VerifiedERC20Factory is IVerifiedERC20Factory, ReentrancyGuardTransient
     {
         // slither-disable-next-line encode-packed-collision
         bytes32 salt = keccak256(abi.encodePacked(block.chainid, _verifiedERC20s.length(), _name, _symbol, _owner));
-        address verifiedERC20 = Clones.cloneDeterministic({implementation: implementation, salt: salt});
-        VerifiedERC20(verifiedERC20).initialize({
-            name_: _name,
-            symbol_: _symbol,
-            owner_: _owner,
-            _hookRegistry: hookRegistry,
-            _hooks: _hooks
+        bytes11 entropy = bytes11(salt);
+        salt = entropy.calculateSalt({_deployer: address(this)});
+
+        address verifiedERC20 = CreateXLibrary.CREATEX.deployCreate2Clone({
+            salt: salt,
+            implementation: implementation,
+            data: abi.encodeWithSelector(VerifiedERC20.initialize.selector, _name, _symbol, _owner, hookRegistry, _hooks)
         });
 
         // slither-disable-next-line unused-return
