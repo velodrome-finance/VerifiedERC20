@@ -61,7 +61,7 @@ abstract contract BaseForkFixture is Test, TestConstants {
         verifiedERC20 = VerifiedERC20(
             verifiedERC20Factory.deployVerifiedERC20({
                 _name: "VerifiedERC20",
-                _symbol: "VerifiedRC20",
+                _symbol: "VerifiedERC20",
                 _owner: users.owner,
                 _hooks: new address[](0)
             })

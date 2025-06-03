@@ -11,6 +11,6 @@ contract VerifiedERC20Test is BaseForkFixture {
 
     function test_InitialState() public view {
         assertEq(verifiedERC20.name(), "VerifiedERC20");
-        assertEq(verifiedERC20.symbol(), "VerifiedRC20");
+        assertEq(verifiedERC20.symbol(), "VerifiedERC20");
     }
 }
