@@ -3,34 +3,56 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {Initializable} from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
-contract VerifiedERC20 is ERC20, Ownable {
-    address public immutable hookRegistry;
+contract VerifiedERC20 is ERC20, Ownable, Initializable {
+    address public hookRegistry;
+
+    /// @dev ERC20 name and symbol
+    // slither-disable-next-line shadowing-state
+    string private _name;
+    // slither-disable-next-line shadowing-state
+    string private _symbol;
+
+    constructor() ERC20("", "") Ownable(address(this)) {
+        _disableInitializers();
+    }
 
     /**
-     * @notice Constructor for the VerifiedERC20
+     * @notice Called on verifiedERC20 creation by verifiedERC20 factory
      * @param name_ The name of the token
      * @param symbol_ The symbol of the token
-     * @param _hookRegistry The address of the hook registry
      * @param owner_ The owner of the token
+     * @param _hookRegistry The address of the hook registry
      * @param _hooks The hooks to be activated
      */
-    constructor(
+    function initialize(
         string memory name_,
         string memory symbol_,
-        address _hookRegistry,
         address owner_,
+        address _hookRegistry,
         address[] memory _hooks
-    ) ERC20(name_, symbol_) Ownable(owner_) {
+    ) external initializer {
+        _name = name_;
+        _symbol = symbol_;
+        _transferOwnership({newOwner: owner_});
         /// @dev Hook registry zero address check is made in the factory
         // slither-disable-next-line missing-zero-check
         hookRegistry = _hookRegistry;
         for (uint256 i = 0; i < _hooks.length; i++) {
-            activateHook({_hook: _hooks[i]});
+            _activateHook({_hook: _hooks[i]});
         }
     }
 
-    function activateHook(address _hook) public onlyOwner {
+    function name() public view override returns (string memory) {
+        return _name;
+    }
+
+    function symbol() public view override returns (string memory) {
+        return _symbol;
+    }
+
+    function activateHook(address _hook) external onlyOwner {
         _activateHook({_hook: _hook});
     }
 

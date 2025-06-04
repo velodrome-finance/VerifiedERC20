@@ -46,3 +46,6 @@ jobs:
         run: |
           FORGE_SNAPSHOT_CHECK=true forge test -vvv
         id: test
+        env: 
+          OPTIMISM_RPC_URL: ${{ secrets.OPTIMISM_RPC_URL }}
+
