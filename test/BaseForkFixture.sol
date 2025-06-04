@@ -5,6 +5,10 @@ import {Test} from "forge-std/Test.sol";
 import {VmSafe} from "forge-std/Vm.sol";
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
+
+import {ICreateX} from "createX/ICreateX.sol";
+import {CreateXLibrary} from "src/libraries/CreateXLibrary.sol";
 
 import {TestConstants} from "./utils/TestConstants.sol";
 import {Users} from "./utils/TestUsers.sol";
@@ -13,8 +17,10 @@ import {VerifiedERC20} from "../src/VerifiedERC20.sol";
 import {VerifiedERC20Factory, IVerifiedERC20Factory} from "../src/VerifiedERC20Factory.sol";
 import {TestVerifiedERC20Deployment} from "test/mocks/TestVerifiedERC20Deployment.sol";
 
-abstract contract BaseFixture is Test, TestConstants {
+abstract contract BaseForkFixture is Test, TestConstants {
     Users public users;
+
+    ICreateX public cx = ICreateX(0xba5Ed099633D3B313e4D5F7bdc1305d3c28ba5Ed);
 
     // Contracts
     TestVerifiedERC20Deployment public verifiedERC20Deployment;
@@ -23,6 +29,7 @@ abstract contract BaseFixture is Test, TestConstants {
     VerifiedERC20 public verifiedERC20;
 
     function setUp() public virtual {
+        vm.createSelectFork({urlOrAlias: "optimism", blockNumber: 123316800});
         createUsers();
 
         deployContracts();
@@ -54,7 +61,7 @@ abstract contract BaseFixture is Test, TestConstants {
         verifiedERC20 = VerifiedERC20(
             verifiedERC20Factory.deployVerifiedERC20({
                 _name: "VerifiedERC20",
-                _symbol: "VerifiedRC20",
+                _symbol: "VerifiedERC20",
                 _owner: users.owner,
                 _hooks: new address[](0)
             })
