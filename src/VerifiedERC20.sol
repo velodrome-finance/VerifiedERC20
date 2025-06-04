@@ -64,19 +64,25 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, IVerifiedERC20 {
         // This is a placeholder;
     }
 
-    function transfer(address to, uint256 value) public override(ERC20, IERC20) returns (bool) {
-        return super.transfer({to: to, value: value});
-    }
-
     function approve(address spender, uint256 value) public override(ERC20, IERC20) returns (bool) {
         return super.approve({spender: spender, value: value});
     }
 
-    function transferFrom(address from, address to, uint256 value) public override(ERC20, IERC20) returns (bool) {
-        return super.transferFrom({from: from, to: to, value: value});
+    function mint(address _account, uint256 _value) external {
+        _mint({account: _account, value: _value});
+    }
+
+    function burn(address _account, uint256 _value) external {
+        _burn({account: _account, value: _value});
     }
 
     function _update(address from, address to, uint256 value) internal override {
+        if (from != address(0) && to != address(0)) {
+            //before transfer
+        }
         super._update({from: from, to: to, value: value});
+        if (from != address(0) && to != address(0)) {
+            //after transfer
+        }
     }
 }

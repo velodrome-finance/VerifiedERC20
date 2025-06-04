@@ -10,8 +10,6 @@ interface IHookRegistry {
         AFTER_APPROVE,
         BEFORE_TRANSFER,
         AFTER_TRANSFER,
-        BEFORE_TRANSFER_FROM,
-        AFTER_TRANSFER_FROM,
         BEFORE_MINT,
         AFTER_MINT,
         BEFORE_BURN,
