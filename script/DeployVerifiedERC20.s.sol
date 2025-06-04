@@ -6,11 +6,13 @@ import {Script, console} from "forge-std/Script.sol";
 import {ICreateX} from "createX/ICreateX.sol";
 import {CreateXLibrary} from "src/libraries/CreateXLibrary.sol";
 
+import {HookRegistry} from "../src/hooks/HookRegistry.sol";
 import {VerifiedERC20Factory} from "../src/VerifiedERC20Factory.sol";
 import {VerifiedERC20} from "../src/VerifiedERC20.sol";
 
 bytes11 constant VERIFIED_ERC20_FACTORY_ENTROPY = 0x0000000000000000000001;
 bytes11 constant VERIFIED_ERC20_ENTROPY = 0x0000000000000000000002;
+bytes11 constant HOOK_REGISTRY_ENTROPY = 0x0000000000000000000003;
 
 contract DeployVerifiedERC20 is Script {
     using CreateXLibrary for bytes11;
@@ -28,7 +30,7 @@ contract DeployVerifiedERC20 is Script {
 
     VerifiedERC20 public verifiedERC20Implementation;
     VerifiedERC20Factory public verifiedERC20Factory;
-    address public hookRegistry; //placeholder
+    HookRegistry public hookRegistry;
     DeploymentParams internal _params;
 
     /// @dev Used by tests to disable logging of output
@@ -48,7 +50,17 @@ contract DeployVerifiedERC20 is Script {
     }
 
     function deploy() internal virtual {
-        hookRegistry = address(1); // Placeholder for hook registry address
+        hookRegistry = HookRegistry(
+            cx.deployCreate3({
+                salt: HOOK_REGISTRY_ENTROPY.calculateSalt({_deployer: deployer}),
+                initCode: abi.encodePacked(
+                    type(HookRegistry).creationCode,
+                    abi.encode(_params.hookRegistryManager) // hook registry manager
+                )
+            })
+        );
+        checkAddress({_entropy: HOOK_REGISTRY_ENTROPY, _output: address(hookRegistry)});
+
         verifiedERC20Implementation = VerifiedERC20(
             cx.deployCreate3({
                 salt: VERIFIED_ERC20_ENTROPY.calculateSalt({_deployer: deployer}),
@@ -78,6 +90,7 @@ contract DeployVerifiedERC20 is Script {
     }
 
     function logParams() internal view virtual {
+        console.log("HookRegistry: ", address(hookRegistry));
         console.log("VerifiedERC20Factory: ", address(verifiedERC20Factory));
     }
 
@@ -86,7 +99,7 @@ contract DeployVerifiedERC20 is Script {
         string memory root = vm.projectRoot();
         string memory path = string(abi.encodePacked(root, "/deployment-addresses/", _params.outputFilename));
         vm.writeJson(vm.toString(address(verifiedERC20Factory)), path, ".verifiedERC20Factory");
-        vm.writeJson(vm.toString(hookRegistry), path, ".hookRegistry");
+        vm.writeJson(vm.toString(address(hookRegistry)), path, ".hookRegistry");
     }
 
     /// @dev Check if the computed address matches the address produced by the deployment
