@@ -15,6 +15,7 @@ import {Users} from "./utils/TestUsers.sol";
 
 import {VerifiedERC20} from "../src/VerifiedERC20.sol";
 import {VerifiedERC20Factory, IVerifiedERC20Factory} from "../src/VerifiedERC20Factory.sol";
+import {HookRegistry, IHookRegistry} from "../src/hooks/HookRegistry.sol";
 import {TestVerifiedERC20Deployment} from "test/mocks/TestVerifiedERC20Deployment.sol";
 
 abstract contract BaseForkFixture is Test, TestConstants {
@@ -24,7 +25,7 @@ abstract contract BaseForkFixture is Test, TestConstants {
 
     // Contracts
     TestVerifiedERC20Deployment public verifiedERC20Deployment;
-    address public hookRegistry;
+    HookRegistry public hookRegistry;
     VerifiedERC20Factory public verifiedERC20Factory;
     VerifiedERC20 public verifiedERC20;
 
@@ -72,5 +73,7 @@ abstract contract BaseForkFixture is Test, TestConstants {
     function labelContracts() internal {
         vm.label({account: address(verifiedERC20Deployment), newLabel: "VerifiedERC20Deployment"});
         vm.label({account: address(verifiedERC20), newLabel: "VerifiedERC20"});
+        vm.label({account: address(verifiedERC20Factory), newLabel: "VerifiedERC20Factory"});
+        vm.label({account: address(hookRegistry), newLabel: "HookRegistry"});
     }
 }
