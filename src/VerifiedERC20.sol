@@ -4,8 +4,11 @@ pragma solidity >=0.8.19 <0.9.0;
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {Initializable} from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import {IERC20} from "@openzeppelin/contracts/interfaces/IERC20.sol";
 
-contract VerifiedERC20 is ERC20, Ownable, Initializable {
+import {IVerifiedERC20} from "./interfaces/IVerifiedERC20.sol";
+
+contract VerifiedERC20 is ERC20, Ownable, Initializable, IVerifiedERC20 {
     address public hookRegistry;
 
     /// @dev ERC20 name and symbol
@@ -61,15 +64,15 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable {
         // This is a placeholder;
     }
 
-    function transfer(address to, uint256 value) public override returns (bool) {
+    function transfer(address to, uint256 value) public override(ERC20, IERC20) returns (bool) {
         return super.transfer({to: to, value: value});
     }
 
-    function approve(address spender, uint256 value) public override returns (bool) {
+    function approve(address spender, uint256 value) public override(ERC20, IERC20) returns (bool) {
         return super.approve({spender: spender, value: value});
     }
 
-    function transferFrom(address from, address to, uint256 value) public override returns (bool) {
+    function transferFrom(address from, address to, uint256 value) public override(ERC20, IERC20) returns (bool) {
         return super.transferFrom({from: from, to: to, value: value});
     }
 
