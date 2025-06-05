@@ -45,6 +45,11 @@ interface IHookRegistry {
     error HookRegistry_HookNotRegistered();
 
     /**
+     * @dev Error thrown when an invalid entrypoint is provided
+     */
+    error HookRegistry_HookDoesNotSupportEntrypoint(Entrypoint entrypoint);
+
+    /**
      * @dev Registers a hook with the specified entrypoint
      * @param _hook Address of the hook to register
      * @param _entrypoint The entrypoint to assign to the hook
