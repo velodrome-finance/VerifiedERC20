@@ -13,7 +13,7 @@ import {CreateXLibrary} from "src/libraries/CreateXLibrary.sol";
 import {TestConstants} from "./utils/TestConstants.sol";
 import {Users} from "./utils/TestUsers.sol";
 
-import {VerifiedERC20} from "../src/VerifiedERC20.sol";
+import {VerifiedERC20, IVerifiedERC20} from "../src/VerifiedERC20.sol";
 import {VerifiedERC20Factory, IVerifiedERC20Factory} from "../src/VerifiedERC20Factory.sol";
 import {HookRegistry, IHookRegistry} from "../src/hooks/HookRegistry.sol";
 import {TestVerifiedERC20Deployment} from "test/mocks/TestVerifiedERC20Deployment.sol";

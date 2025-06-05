@@ -1,0 +1,79 @@
+// SPDX-License-Identifier: BUSL-1.1
+pragma solidity >=0.8.19 <0.9.0;
+
+import "../VerifiedERC20.t.sol";
+
+contract ActivateHookConcreteTest is VerifiedERC20Test {
+    function test_WhenTheCallerIsNotTheOwner() external {
+        // It should revert with {OwnableUnauthorizedAccount}
+
+        vm.startPrank({msgSender: users.charlie});
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, users.charlie));
+        verifiedERC20.activateHook({_hook: address(hook)});
+    }
+
+    modifier whenTheCallerIsTheOwner() {
+        vm.startPrank({msgSender: users.owner});
+        _;
+        vm.stopPrank();
+    }
+
+    function test_WhenTheHookIsNotRegisteredInTheHookRegistry() external whenTheCallerIsTheOwner {
+        // It should revert with {VerifiedERC20_InvalidHook}
+
+        vm.expectRevert(abi.encodeWithSelector(IVerifiedERC20.VerifiedERC20_InvalidHook.selector, address(hook)));
+        verifiedERC20.activateHook({_hook: address(hook)});
+    }
+
+    modifier whenTheHookIsRegisteredInTheHookRegistry() {
+        hookRegistry.registerHook({_hook: address(hook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
+        _;
+    }
+
+    function test_WhenTheHookIsAlreadyActivated()
+        external
+        whenTheCallerIsTheOwner
+        whenTheHookIsRegisteredInTheHookRegistry
+    {
+        // It should revert with {VerifiedERC20_HookAlreadyActivated}
+        verifiedERC20.activateHook({_hook: address(hook)});
+
+        vm.expectRevert(
+            abi.encodeWithSelector(IVerifiedERC20.VerifiedERC20_HookAlreadyActivated.selector, address(hook))
+        );
+        verifiedERC20.activateHook({_hook: address(hook)});
+    }
+
+    function test_WhenTheHookIsNotAlreadyActivated()
+        external
+        whenTheCallerIsTheOwner
+        whenTheHookIsRegisteredInTheHookRegistry
+    {
+        // It should retrieve the hook's entrypoint from the HookRegistry
+        // It should add the hook to the internal `_hooksByEntrypoint` array for the correct entrypoint
+        // It should update the mapping states correctly
+        // It should emit a {HookActivated} event with the correct hook address and entrypoint
+
+        vm.expectEmit({emitter: address(verifiedERC20)});
+        emit IVerifiedERC20.HookActivated({hook: address(hook), entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
+        verifiedERC20.activateHook({_hook: address(hook)});
+
+        address[] memory hooksForEntrypoint =
+            verifiedERC20.getHooksForEntrypoint(IHookRegistry.Entrypoint.BEFORE_TRANSFER);
+        assertEq(hooksForEntrypoint.length, 1);
+        assertEq(hooksForEntrypoint[0], address(hook));
+
+        address hookAtIndex = verifiedERC20.getHookAtIndex(IHookRegistry.Entrypoint.BEFORE_TRANSFER, 0);
+        assertEq(hookAtIndex, address(hook));
+        assertEq(verifiedERC20.getHooksCountForEntrypoint(IHookRegistry.Entrypoint.BEFORE_TRANSFER), 1);
+
+        assertEq(verifiedERC20.hookToIndex(address(hook)), 0);
+        assertEq(uint8(verifiedERC20.hookToEntrypoint(address(hook))), uint8(IHookRegistry.Entrypoint.BEFORE_TRANSFER));
+        assertTrue(verifiedERC20.isHookActivated(address(hook)));
+    }
+
+    function testGas_activateHook() external whenTheCallerIsTheOwner whenTheHookIsRegisteredInTheHookRegistry {
+        verifiedERC20.activateHook({_hook: address(hook)});
+        vm.snapshotGasLastCall({name: "VerifiedERC20_activateHook"});
+    }
+}
