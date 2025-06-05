@@ -9,7 +9,7 @@ interface IHook {
     /**
      * @notice Error thrown when the hook reverts
      */
-    error Hook_Revert();
+    error Hook_Revert(bytes _params);
 
     /**
      * @notice Calls the hook to check the function is allowed to be executed
