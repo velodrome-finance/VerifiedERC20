@@ -8,3 +8,6 @@
 [submodule "lib/createX"]
 	path = lib/createX
 	url = https://github.com/pcaversaccio/createX
+[submodule "lib/ExcessivelySafeCall"]
+	path = lib/ExcessivelySafeCall
+	url = https://github.com/nomad-xyz/ExcessivelySafeCall
