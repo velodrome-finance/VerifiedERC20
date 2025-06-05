@@ -32,17 +32,17 @@ interface IHookRegistry {
     /**
      * @dev Error thrown when a zero address is provided
      */
-    error ZeroAddress();
+    error HookRegistry_ZeroAddress();
 
     /**
      * @dev Error thrown when trying to register a hook that is already registered
      */
-    error HookAlreadyRegistered();
+    error HookRegistry_HookAlreadyRegistered();
 
     /**
      * @dev Error thrown when trying to deregister a hook that is not registered
      */
-    error HookNotRegistered();
+    error HookRegistry_HookNotRegistered();
 
     /**
      * @dev Registers a hook with the specified entrypoint

@@ -24,8 +24,8 @@ contract HookRegistry is IHookRegistry, Ownable, ReentrancyGuardTransient {
 
     /// @inheritdoc IHookRegistry
     function registerHook(address _hook, Entrypoint _entrypoint) external onlyOwner nonReentrant {
-        if (_hook == address(0)) revert ZeroAddress();
-        if (!_hooks.add({value: _hook})) revert HookAlreadyRegistered();
+        if (_hook == address(0)) revert HookRegistry_ZeroAddress();
+        if (!_hooks.add({value: _hook})) revert HookRegistry_HookAlreadyRegistered();
 
         hookEntrypoints[_hook] = _entrypoint;
 
@@ -34,7 +34,7 @@ contract HookRegistry is IHookRegistry, Ownable, ReentrancyGuardTransient {
 
     /// @inheritdoc IHookRegistry
     function deregisterHook(address _hook) external onlyOwner nonReentrant {
-        if (!_hooks.remove({value: _hook})) revert HookNotRegistered();
+        if (!_hooks.remove({value: _hook})) revert HookRegistry_HookNotRegistered();
 
         // Clear the hook's entrypoint mapping
         delete hookEntrypoints[_hook];

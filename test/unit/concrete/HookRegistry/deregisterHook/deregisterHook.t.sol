@@ -17,8 +17,8 @@ contract DeregisterHookConcreteTest is HookRegistryTest {
     }
 
     function test_WhenTheHookIsNotRegistered() external whenTheCallerIsTheOwner {
-        // It should revert with {HookNotRegistered}
-        vm.expectRevert(IHookRegistry.HookNotRegistered.selector);
+        // It should revert with {HookRegistry_HookNotRegistered}
+        vm.expectRevert(IHookRegistry.HookRegistry_HookNotRegistered.selector);
         hookRegistry.deregisterHook({_hook: address(hook)});
     }
 

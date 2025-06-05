@@ -3,10 +3,10 @@ RegisterHookConcreteTest
 │   └── It should revert with {OwnableUnauthorizedAccount}
 └── When the caller is the owner
     ├── When the hook is the zero address
-    │   └── It should revert with {ZeroAddress}
+    │   └── It should revert with {HookRegistry_ZeroAddress}
     └── When the hook is not the zero address
         ├── When the hook is already registered
-        │   └── It should revert with {HookAlreadyRegistered}
+        │   └── It should revert with {HookRegistry_HookAlreadyRegistered}
         └── When the hook is not already registered
             ├── It should add the hook to the hook enumerable set
             ├── It should set the hook entrypoint

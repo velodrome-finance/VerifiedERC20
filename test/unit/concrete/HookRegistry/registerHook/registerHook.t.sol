@@ -17,8 +17,8 @@ contract RegisterHookConcreteTest is HookRegistryTest {
     }
 
     function test_WhenTheHookIsTheZeroAddress() external whenTheCallerIsTheOwner {
-        // It should revert with {ZeroAddress}
-        vm.expectRevert(IHookRegistry.ZeroAddress.selector);
+        // It should revert with {HookRegistry_ZeroAddress}
+        vm.expectRevert(IHookRegistry.HookRegistry_ZeroAddress.selector);
         hookRegistry.registerHook({_hook: address(0), _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
     }
 
@@ -27,10 +27,10 @@ contract RegisterHookConcreteTest is HookRegistryTest {
     }
 
     function test_WhenTheHookIsAlreadyRegistered() external whenTheCallerIsTheOwner whenTheHookIsNotTheZeroAddress {
-        // It should revert with {HookAlreadyRegistered}
+        // It should revert with {HookRegistry_HookAlreadyRegistered}
         hookRegistry.registerHook({_hook: address(hook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
 
-        vm.expectRevert(IHookRegistry.HookAlreadyRegistered.selector);
+        vm.expectRevert(IHookRegistry.HookRegistry_HookAlreadyRegistered.selector);
         hookRegistry.registerHook({_hook: address(hook), _entrypoint: IHookRegistry.Entrypoint.AFTER_TRANSFER});
     }
 
