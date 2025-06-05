@@ -5,12 +5,21 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {Initializable} from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import {IERC20} from "@openzeppelin/contracts/interfaces/IERC20.sol";
+import {ExcessivelySafeCall} from "@nomad-xyz/src/ExcessivelySafeCall.sol";
+import {ReentrancyGuardTransient} from "@openzeppelin/contracts/utils/ReentrancyGuardTransient.sol";
 
 import {IVerifiedERC20} from "./interfaces/IVerifiedERC20.sol";
 import {IHookRegistry} from "./interfaces/hooks/IHookRegistry.sol";
 import {IHook} from "./interfaces/hooks/IHook.sol";
 
-contract VerifiedERC20 is ERC20, Ownable, Initializable, IVerifiedERC20 {
+contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransient, IVerifiedERC20 {
+    using ExcessivelySafeCall for address;
+
+    /// @inheritdoc IVerifiedERC20
+    uint256 public constant MAX_HOOKS_PER_ENTRYPOINT = 8;
+    /// @inheritdoc IVerifiedERC20
+    uint256 public constant MAX_GAS_PER_HOOK = 200_000;
+
     /// @inheritdoc IVerifiedERC20
     address public hookRegistry;
 
@@ -83,6 +92,9 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, IVerifiedERC20 {
 
         IHookRegistry.Entrypoint entrypoint = IHookRegistry(hookRegistry).hookEntrypoints({_hook: _hook});
         uint256 index = _hooksByEntrypoint[uint8(entrypoint)].length;
+
+        if (index >= MAX_HOOKS_PER_ENTRYPOINT) revert VerifiedERC20_MaxHooksExceeded();
+
         _hooksByEntrypoint[uint8(entrypoint)].push(_hook);
 
         // Store hook metadata for efficient removal
@@ -159,12 +171,18 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, IVerifiedERC20 {
         uint256 hooksLength = hooks.length;
 
         for (uint256 i = 0; i < hooksLength;) {
-            IHook(hooks[i]).check({_caller: msg.sender, _params: _params});
+            (bool success, bytes memory data) = hooks[i].excessivelySafeCall({
+                _gas: 200_000,
+                _value: 0,
+                _maxCopy: 32,
+                _calldata: abi.encodeWithSelector(IHook.check.selector, msg.sender, _params)
+            });
+            if (!success) revert VerfiedERC20_HookRevert({data: data});
         }
     }
 
     /// @inheritdoc IERC20
-    function approve(address spender, uint256 value) public override(ERC20, IERC20) returns (bool) {
+    function approve(address spender, uint256 value) public override(ERC20, IERC20) nonReentrant returns (bool) {
         _checkHooks({_entrypoint: IHookRegistry.Entrypoint.BEFORE_APPROVE, _params: abi.encode(spender, value)});
         bool result = super.approve({spender: spender, value: value});
         _checkHooks({_entrypoint: IHookRegistry.Entrypoint.AFTER_APPROVE, _params: abi.encode(spender, value)});
@@ -172,17 +190,32 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, IVerifiedERC20 {
     }
 
     /// @inheritdoc IVerifiedERC20
-    function mint(address _account, uint256 _value) external {
+    function mint(address _account, uint256 _value) external nonReentrant {
         _checkHooks({_entrypoint: IHookRegistry.Entrypoint.BEFORE_MINT, _params: abi.encode(_account, _value)});
         _mint({account: _account, value: _value});
         _checkHooks({_entrypoint: IHookRegistry.Entrypoint.AFTER_MINT, _params: abi.encode(_account, _value)});
     }
 
     /// @inheritdoc IVerifiedERC20
-    function burn(address _account, uint256 _value) external {
+    function burn(address _account, uint256 _value) external nonReentrant {
         _checkHooks({_entrypoint: IHookRegistry.Entrypoint.BEFORE_BURN, _params: abi.encode(_account, _value)});
         _burn({account: _account, value: _value});
         _checkHooks({_entrypoint: IHookRegistry.Entrypoint.AFTER_BURN, _params: abi.encode(_account, _value)});
+    }
+
+    /// @inheritdoc IERC20
+    function transfer(address to, uint256 value) public override(ERC20, IERC20) nonReentrant returns (bool) {
+        return super.transfer({to: to, value: value});
+    }
+
+    /// @inheritdoc IERC20
+    function transferFrom(address from, address to, uint256 value)
+        public
+        override(ERC20, IERC20)
+        nonReentrant
+        returns (bool)
+    {
+        return super.transferFrom({from: from, to: to, value: value});
     }
 
     /**

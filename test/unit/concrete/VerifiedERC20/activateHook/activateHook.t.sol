@@ -44,10 +44,34 @@ contract ActivateHookConcreteTest is VerifiedERC20Test {
         verifiedERC20.activateHook({_hook: address(hook)});
     }
 
-    function test_WhenTheHookIsNotAlreadyActivated()
+    modifier whenTheHookIsNotAlreadyActivated() {
+        _;
+    }
+
+    function test_WhenTheNumberOfHooksAtThatEntrypointIsMAX_NUMBER_OF_HOOKS_PER_ENTRYPOINT()
         external
         whenTheCallerIsTheOwner
         whenTheHookIsRegisteredInTheHookRegistry
+        whenTheHookIsNotAlreadyActivated
+    {
+        // It should revert with {VerifiedERC20_MaxHooksExceeded}
+
+        // register in registry and activate to reach max
+        for (uint256 i = 2; i < 10; i++) {
+            address newHook = createUser(string(abi.encode(i)));
+            hookRegistry.registerHook({_hook: address(newHook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
+            verifiedERC20.activateHook({_hook: address(newHook)});
+        }
+
+        vm.expectRevert(abi.encodeWithSelector(IVerifiedERC20.VerifiedERC20_MaxHooksExceeded.selector));
+        verifiedERC20.activateHook({_hook: address(hook)});
+    }
+
+    function test_WhenTheNumberOfHooksAtThatEntrypointIsNotMAX_NUMBER_OF_HOOKS_PER_ENTRYPOINT()
+        external
+        whenTheCallerIsTheOwner
+        whenTheHookIsRegisteredInTheHookRegistry
+        whenTheHookIsNotAlreadyActivated
     {
         // It should retrieve the hook's entrypoint from the HookRegistry
         // It should add the hook to the internal `_hooksByEntrypoint` array for the correct entrypoint

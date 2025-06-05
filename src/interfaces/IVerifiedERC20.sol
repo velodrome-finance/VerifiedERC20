@@ -25,6 +25,17 @@ interface IVerifiedERC20 is IERC20 {
     error VerifiedERC20_HookNotActivated(address hook);
 
     /**
+     * @notice Error thrown when the maximum number of hooks for an entrypoint is exceeded.
+     */
+    error VerifiedERC20_MaxHooksExceeded();
+
+    /**
+     * @notice Error thrown when a hook reverts during execution.
+     * @param data The data returned by the hook.
+     */
+    error VerfiedERC20_HookRevert(bytes data);
+
+    /**
      * @notice Emitted when a hook is activated
      * @param hook Address of the activated hook
      * @param entrypoint The entrypoint of the activated hook
@@ -37,6 +48,18 @@ interface IVerifiedERC20 is IERC20 {
      * @param entrypoint The entrypoint of the deactivated hook
      */
     event HookDeactivated(address indexed hook, IHookRegistry.Entrypoint indexed entrypoint);
+
+    /**
+     * @notice Returns the maximum number of hooks allowed per entrypoint
+     * @return The maximum number of hooks per entrypoint
+     */
+    function MAX_HOOKS_PER_ENTRYPOINT() external view returns (uint256);
+
+    /**
+     * @notice Returns the maximum gas allowed per hook call
+     * @return The maximum gas limit for each hook
+     */
+    function MAX_GAS_PER_HOOK() external view returns (uint256);
 
     /**
      * @notice The address of the hook registry contract

@@ -8,7 +8,10 @@ ActivateHookConcreteTest
         ├── When the hook is already activated
         │   └── It should revert with {VerifiedERC20_HookAlreadyActivated}
         └── When the hook is not already activated
-            ├── It should retrieve the hook's entrypoint from the HookRegistry
-            ├── It should add the hook to the internal `_hooksByEntrypoint` array for the correct entrypoint
-            ├── It should update the mapping states correctly
-            └── It should emit a {HookActivated} event with the correct hook address and entrypoint
+            ├── When the number of hooks at that entrypoint is MAX_NUMBER_OF_HOOKS_PER_ENTRYPOINT
+            │   └── It should revert with {VerifiedERC20_MaxHooksExceeded}
+            └── When the number of hooks at that entrypoint is not MAX_NUMBER_OF_HOOKS_PER_ENTRYPOINT
+                ├── It should retrieve the hook's entrypoint from the HookRegistry
+                ├── It should add the hook to the internal `_hooksByEntrypoint` array for the correct entrypoint
+                ├── It should update the mapping states correctly
+                └── It should emit a {HookActivated} event with the correct hook address and entrypoint
