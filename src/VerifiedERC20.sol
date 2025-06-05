@@ -57,7 +57,7 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, IVerifiedERC20 {
         /// @dev Hook registry zero address check is made in the factory
         // slither-disable-next-line missing-zero-check
         hookRegistry = _hookRegistry;
-        _hooksByEntrypoint = new address[][](4);
+        _hooksByEntrypoint = new address[][](8);
         for (uint256 i = 0; i < _hooks.length; i++) {
             _activateHook({_hook: _hooks[i]});
         }
