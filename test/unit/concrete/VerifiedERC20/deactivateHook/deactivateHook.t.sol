@@ -8,7 +8,7 @@ contract DeactivateHookConcreteTest is VerifiedERC20Test {
         // It should revert with {OwnableUnauthorizedAccount}
         vm.startPrank({msgSender: users.charlie});
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, users.charlie));
-        verifiedERC20.deactivateHook({_hook: address(hook)});
+        verifiedERC20.deactivateHook({_hook: address(mockSuccessHook)});
     }
 
     modifier whenTheCallerIsTheOwner() {
@@ -19,8 +19,10 @@ contract DeactivateHookConcreteTest is VerifiedERC20Test {
 
     function test_WhenTheHookIsNotActivated() external whenTheCallerIsTheOwner {
         // It should revert with {VerifiedERC20_HookNotActivated}
-        vm.expectRevert(abi.encodeWithSelector(IVerifiedERC20.VerifiedERC20_HookNotActivated.selector, address(hook)));
-        verifiedERC20.deactivateHook({_hook: address(hook)});
+        vm.expectRevert(
+            abi.encodeWithSelector(IVerifiedERC20.VerifiedERC20_HookNotActivated.selector, address(mockSuccessHook))
+        );
+        verifiedERC20.deactivateHook({_hook: address(mockSuccessHook)});
     }
 
     modifier whenTheHookIsActivated() {
@@ -33,17 +35,23 @@ contract DeactivateHookConcreteTest is VerifiedERC20Test {
         // It should delete the hook from hookToEntrypoint mapping
         // It should set isHookActivated to false
         // It should emit a {HookDeactivated} event
-        hookRegistry.registerHook({_hook: address(hook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
-        verifiedERC20.activateHook({_hook: address(hook)});
+        hookRegistry.registerHook({
+            _hook: address(mockSuccessHook),
+            _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER
+        });
+        verifiedERC20.activateHook({_hook: address(mockSuccessHook)});
 
         vm.expectEmit({emitter: address(verifiedERC20)});
-        emit IVerifiedERC20.HookDeactivated({hook: address(hook), entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
-        verifiedERC20.deactivateHook({_hook: address(hook)});
+        emit IVerifiedERC20.HookDeactivated({
+            hook: address(mockSuccessHook),
+            entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER
+        });
+        verifiedERC20.deactivateHook({_hook: address(mockSuccessHook)});
 
         assertEq(verifiedERC20.getHooksCountForEntrypoint({_entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER}), 0);
-        assertFalse(verifiedERC20.isHookActivated({_hook: address(hook)}));
-        assertEq(verifiedERC20.hookToIndex({_hook: address(hook)}), 0);
-        assertEq(uint8(verifiedERC20.hookToEntrypoint({_hook: address(hook)})), 0);
+        assertFalse(verifiedERC20.isHookActivated({_hook: address(mockSuccessHook)}));
+        assertEq(verifiedERC20.hookToIndex({_hook: address(mockSuccessHook)}), 0);
+        assertEq(uint8(verifiedERC20.hookToEntrypoint({_hook: address(mockSuccessHook)})), 0);
     }
 
     function test_WhenTheHookIsTheLastElementInTheArrayButNotTheOnlyElement()
@@ -57,8 +65,8 @@ contract DeactivateHookConcreteTest is VerifiedERC20Test {
         // It should set isHookActivated to false
         // It should emit a {HookDeactivated} event
 
-        address firstHook = makeAddr("firstHook");
-        address secondHook = address(hook);
+        address firstHook = address(new MockSuccessHook());
+        address secondHook = address(mockSuccessHook);
 
         hookRegistry.registerHook({_hook: firstHook, _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
         hookRegistry.registerHook({_hook: secondHook, _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
@@ -94,9 +102,9 @@ contract DeactivateHookConcreteTest is VerifiedERC20Test {
         // It should set isHookActivated to false
         // It should emit a {HookDeactivated} event
 
-        address firstHook = makeAddr("firstHook");
-        address secondHook = address(hook);
-        address thirdHook = makeAddr("thirdHook");
+        address firstHook = address(new MockSuccessHook());
+        address secondHook = address(mockSuccessHook);
+        address thirdHook = address(new MockSuccessHook());
 
         hookRegistry.registerHook({_hook: firstHook, _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
         hookRegistry.registerHook({_hook: secondHook, _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
@@ -134,10 +142,13 @@ contract DeactivateHookConcreteTest is VerifiedERC20Test {
     }
 
     function testGas_deactivateHook() external whenTheCallerIsTheOwner whenTheHookIsActivated {
-        hookRegistry.registerHook({_hook: address(hook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
-        verifiedERC20.activateHook({_hook: address(hook)});
+        hookRegistry.registerHook({
+            _hook: address(mockSuccessHook),
+            _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER
+        });
+        verifiedERC20.activateHook({_hook: address(mockSuccessHook)});
 
-        verifiedERC20.deactivateHook({_hook: address(hook)});
+        verifiedERC20.deactivateHook({_hook: address(mockSuccessHook)});
         vm.snapshotGasLastCall({name: "VerifiedERC20_deactivateHook"});
     }
 }

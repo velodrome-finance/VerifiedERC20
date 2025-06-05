@@ -6,6 +6,7 @@ import {VmSafe} from "forge-std/Vm.sol";
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
+import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
 import {ICreateX} from "createX/ICreateX.sol";
 import {CreateXLibrary} from "src/libraries/CreateXLibrary.sol";
@@ -17,6 +18,8 @@ import {VerifiedERC20, IVerifiedERC20} from "../src/VerifiedERC20.sol";
 import {VerifiedERC20Factory, IVerifiedERC20Factory} from "../src/VerifiedERC20Factory.sol";
 import {HookRegistry, IHookRegistry} from "../src/hooks/HookRegistry.sol";
 import {TestVerifiedERC20Deployment} from "test/mocks/TestVerifiedERC20Deployment.sol";
+import {MockSuccessHook} from "test/mocks/MockSuccessHook.sol";
+import {ITransferHook} from "src/interfaces/hooks/ITransferHook.sol";
 
 abstract contract BaseForkFixture is Test, TestConstants {
     Users public users;
@@ -25,6 +28,7 @@ abstract contract BaseForkFixture is Test, TestConstants {
 
     // Contracts
     TestVerifiedERC20Deployment public verifiedERC20Deployment;
+    MockSuccessHook public mockSuccessHook;
     HookRegistry public hookRegistry;
     VerifiedERC20Factory public verifiedERC20Factory;
     VerifiedERC20 public verifiedERC20;
@@ -68,6 +72,7 @@ abstract contract BaseForkFixture is Test, TestConstants {
             })
         );
         hookRegistry = verifiedERC20Deployment.hookRegistry();
+        mockSuccessHook = new MockSuccessHook();
     }
 
     function labelContracts() internal {
