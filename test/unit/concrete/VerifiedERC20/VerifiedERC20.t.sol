@@ -4,9 +4,17 @@ pragma solidity >=0.8.19 <0.9.0;
 import "../../../BaseForkFixture.sol";
 
 contract VerifiedERC20Test is BaseForkFixture {
-    function setUp() public override {
+    MockBooleanHook public beforeHook;
+    MockBooleanHook public afterHook;
+
+    function setUp() public virtual override {
         super.setUp();
-        // common set up for all VerifiedERC20 tests
+
+        beforeHook = new MockBooleanHook();
+        afterHook = new MockBooleanHook();
+
+        vm.label(address(beforeHook), "beforeHook");
+        vm.label(address(afterHook), "afterHook");
     }
 
     function test_InitialState() public view {
