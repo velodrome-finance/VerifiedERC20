@@ -7,6 +7,7 @@ import {VmSafe} from "forge-std/Vm.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
 import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
+import {IERC20, IERC20Errors} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import {ICreateX} from "createX/ICreateX.sol";
 import {CreateXLibrary} from "src/libraries/CreateXLibrary.sol";
@@ -19,6 +20,7 @@ import {VerifiedERC20Factory, IVerifiedERC20Factory} from "../src/VerifiedERC20F
 import {HookRegistry, IHookRegistry} from "../src/hooks/HookRegistry.sol";
 import {TestVerifiedERC20Deployment} from "test/mocks/TestVerifiedERC20Deployment.sol";
 import {MockSuccessHook} from "test/mocks/MockSuccessHook.sol";
+import {MockBooleanHook} from "test/mocks/MockBooleanHook.sol";
 import {ITransferHook} from "src/interfaces/hooks/ITransferHook.sol";
 
 abstract contract BaseForkFixture is Test, TestConstants {
