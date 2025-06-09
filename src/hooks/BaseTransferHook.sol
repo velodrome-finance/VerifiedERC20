@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.19 <0.9.0;
 
-import {ERC165, IERC165} from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
-
-import {IHook} from "../interfaces/hooks/IHook.sol";
-import {ITransferHook} from "../interfaces/hooks/ITransferHook.sol";
+import {IHook, IHookRegistry} from "../interfaces/hooks/IHook.sol";
 
 /**
  * @title BaseTransferHook
  * @dev Abstract base contract for hooks that can be registered in a hook registry with transfer as entrypoint
+ *      Hook implementations need to override `supportsEntrypoint` to specify the type of entrypoint (BEFORE_TRANSFER or AFTER_TRANSFER)
  */
-abstract contract BaseTransferHook is IHook, ERC165 {
+abstract contract BaseTransferHook is IHook {
     /// @inheritdoc IHook
     string public name;
 
@@ -18,10 +16,8 @@ abstract contract BaseTransferHook is IHook, ERC165 {
         name = _name;
     }
 
-    /// @inheritdoc IERC165
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return interfaceId == type(ITransferHook).interfaceId || super.supportsInterface(interfaceId);
-    }
+    /// @inheritdoc IHook
+    function supportsEntrypoint(IHookRegistry.Entrypoint _entrypoint) external view virtual returns (bool);
 
     /// @inheritdoc IHook
     function check(address _caller, bytes memory _params) external {

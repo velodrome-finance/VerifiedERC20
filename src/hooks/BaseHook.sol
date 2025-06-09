@@ -1,25 +1,23 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.19 <0.9.0;
 
-import {ERC165, IERC165} from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
-
-import {IHook} from "../interfaces/hooks/IHook.sol";
-import {IMintHook} from "../interfaces/hooks/IMintHook.sol";
-import {IBurnHook} from "../interfaces/hooks/IBurnHook.sol";
-import {IApproveHook} from "../interfaces/hooks/IApproveHook.sol";
+import {IHook, IHookRegistry} from "../interfaces/hooks/IHook.sol";
 
 /**
  * @title BaseHook
  * @dev Abstract base contract for hooks that can be registered in a hook registry with mint, burn or approve as entrypoint
- *      Hook implementations need to override `supportsInterface(bytes4 interfaceId)` to specify the type of hook (IMintHook, IBurnHook or IApproveHook)
+ *      Hook implementations need to override `supportsEntrypoint` to specify the type of entrypoint (IHookRegistry.Entrypoint)
  */
-abstract contract BaseHook is IHook, ERC165 {
+abstract contract BaseHook is IHook {
     /// @inheritdoc IHook
     string public name;
 
     constructor(string memory _name) {
         name = _name;
     }
+
+    /// @inheritdoc IHook
+    function supportsEntrypoint(IHookRegistry.Entrypoint _entrypoint) external view virtual returns (bool);
 
     /// @inheritdoc IHook
     function check(address _caller, bytes memory _params) external {
