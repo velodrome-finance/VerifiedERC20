@@ -32,7 +32,7 @@ contract SinglePermissionHook is BaseHook {
      * @param _address The entity the tokens will be minted to or burned from
      * @param _amount The amount being transferred
      */
-    function _check(address _caller, address _address, uint256 _amount) view internal override {
+    function _check(address _caller, address _address, uint256 _amount) internal view override {
         if (_caller != authorized) {
             revert Hook_Revert({_params: abi.encode(_caller, _address, _amount)});
         }
