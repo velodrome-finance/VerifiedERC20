@@ -9,4 +9,6 @@ abstract contract TestConstants {
     // maximum number of tokens, used in fuzzing
     uint256 public constant MAX_TOKENS = 1e40;
     uint256 public constant MAX_BPS = 10_000;
+
+    address public constant CELO = 0x471EcE3750Da237f93B8E339c536989b8978a438;
 }
