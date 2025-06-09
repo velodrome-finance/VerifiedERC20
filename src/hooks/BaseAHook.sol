@@ -15,6 +15,13 @@ import {IApproveHook} from "../interfaces/hooks/IApproveHook.sol";
  */
 abstract contract BaseAHook is IHook, ERC165 {
     /// @inheritdoc IHook
+    string public name;
+
+    constructor(string memory _name) {
+        name = _name;
+    }
+
+    /// @inheritdoc IHook
     function check(address _caller, bytes memory _params) external {
         (address _address, uint256 _amount) = _decodeParams({_params: _params});
         _check({_caller: _caller, _address: _address, _amount: _amount});

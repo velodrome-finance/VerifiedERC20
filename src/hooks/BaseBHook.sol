@@ -11,6 +11,13 @@ import {ITransferHook} from "../interfaces/hooks/ITransferHook.sol";
  * @dev Abstract base contract for hooks that can be registered in a hook registry with transfer as entrypoint
  */
 abstract contract BaseBHook is IHook, ERC165 {
+    /// @inheritdoc IHook
+    string public name;
+
+    constructor(string memory _name) {
+        name = _name;
+    }
+
     /// @inheritdoc IERC165
     function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
         return interfaceId == type(ITransferHook).interfaceId || super.supportsInterface(interfaceId);

@@ -4,6 +4,8 @@ pragma solidity >=0.8.19 <0.9.0;
 import {BaseAHook} from "src/hooks/BaseAHook.sol";
 
 contract MockSuccessHook is BaseAHook {
+    constructor() BaseAHook("MockSuccessHook") {}
+
     function supportsInterface(bytes4) public pure override returns (bool) {
         return true;
     }

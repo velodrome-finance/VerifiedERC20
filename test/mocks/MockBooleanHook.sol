@@ -6,6 +6,8 @@ import {BaseAHook} from "src/hooks/BaseAHook.sol";
 contract MockBooleanHook is BaseAHook {
     bool public hookChecked;
 
+    constructor() BaseAHook("MockBooleanHook") {}
+
     function supportsInterface(bytes4) public pure override returns (bool) {
         return true;
     }
