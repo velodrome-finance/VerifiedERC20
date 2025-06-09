@@ -9,11 +9,11 @@ import {IBurnHook} from "../interfaces/hooks/IBurnHook.sol";
 import {IApproveHook} from "../interfaces/hooks/IApproveHook.sol";
 
 /**
- * @title BaseAHook
+ * @title BaseHook
  * @dev Abstract base contract for hooks that can be registered in a hook registry with mint, burn or approve as entrypoint
  *      Hook implementations need to override `supportsInterface(bytes4 interfaceId)` to specify the type of hook (IMintHook, IBurnHook or IApproveHook)
  */
-abstract contract BaseAHook is IHook, ERC165 {
+abstract contract BaseHook is IHook, ERC165 {
     /// @inheritdoc IHook
     string public name;
 
