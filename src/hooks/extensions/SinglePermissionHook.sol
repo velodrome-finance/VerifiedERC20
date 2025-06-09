@@ -14,7 +14,8 @@ contract SinglePermissionHook is BaseAHook {
     /// @notice Emitted when the _authorized address passed in constructor is zero
     error SinglePermissionHook_ZeroAddress();
 
-    address public authorized;
+    /// @notice Address of the authorized caller
+    address public immutable authorized;
 
     constructor(address _authorized) {
         if (_authorized == address(0)) revert SinglePermissionHook_ZeroAddress();

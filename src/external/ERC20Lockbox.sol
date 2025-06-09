@@ -23,6 +23,7 @@ contract ERC20Lockbox is IERC20Lockbox {
     /// @param _verifiedERC20 The address of the VerifiedERC20 contract
     /// @param _erc20 The address of the ERC20 contract
     constructor(address _verifiedERC20, address _erc20) {
+        if (_verifiedERC20 == address(0) || _erc20 == address(0)) revert ERC20Lockbox_ZeroAddress();
         verifiedERC20 = IVerifiedERC20(_verifiedERC20);
         ERC20 = IERC20(_erc20);
     }

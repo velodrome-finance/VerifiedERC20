@@ -6,6 +6,11 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {IVerifiedERC20} from "../IVerifiedERC20.sol";
 
 interface IERC20Lockbox {
+    /**
+     * @notice Error thrown when a zero address is provided
+     */
+    error ERC20Lockbox_ZeroAddress();
+
     /// @notice Emitted when tokens are deposited into the lockbox
     /// @param _sender The address of the user who deposited
     /// @param _amount The amount of tokens deposited
