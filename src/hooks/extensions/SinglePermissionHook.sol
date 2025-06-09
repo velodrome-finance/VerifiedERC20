@@ -10,10 +10,14 @@ import {BaseAHook} from "../BaseAHook.sol";
  * @title SinglePermissionHook
  * @dev Hook to restrict mint and burn to an authorized address
  */
-contract LockboxHook is BaseAHook {
+contract SinglePermissionHook is BaseAHook {
+    /// @notice Emitted when the _authorized address passed in constructor is zero
+    error SinglePermissionHook_ZeroAddress();
+
     address public authorized;
 
     constructor(address _authorized) {
+        if (_authorized == address(0)) revert SinglePermissionHook_ZeroAddress();
         authorized = _authorized;
     }
 
