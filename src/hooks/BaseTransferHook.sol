@@ -7,10 +7,10 @@ import {IHook} from "../interfaces/hooks/IHook.sol";
 import {ITransferHook} from "../interfaces/hooks/ITransferHook.sol";
 
 /**
- * @title BaseBHook
+ * @title BaseTransferHook
  * @dev Abstract base contract for hooks that can be registered in a hook registry with transfer as entrypoint
  */
-abstract contract BaseBHook is IHook, ERC165 {
+abstract contract BaseTransferHook is IHook, ERC165 {
     /// @inheritdoc IHook
     string public name;
 
