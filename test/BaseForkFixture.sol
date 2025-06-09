@@ -18,10 +18,10 @@ import {Users} from "./utils/TestUsers.sol";
 import {VerifiedERC20, IVerifiedERC20} from "../src/VerifiedERC20.sol";
 import {VerifiedERC20Factory, IVerifiedERC20Factory} from "../src/VerifiedERC20Factory.sol";
 import {HookRegistry, IHookRegistry} from "../src/hooks/HookRegistry.sol";
+import {IHook} from "../src/interfaces/hooks/IHook.sol";
 import {TestVerifiedERC20Deployment} from "test/mocks/TestVerifiedERC20Deployment.sol";
 import {MockSuccessHook} from "test/mocks/MockSuccessHook.sol";
-import {MockBooleanHook} from "test/mocks/MockBooleanHook.sol";
-import {ITransferHook} from "src/interfaces/hooks/ITransferHook.sol";
+import {MockSuccessTransferHook} from "test/mocks/MockSuccessTransferHook.sol";
 
 abstract contract BaseForkFixture is Test, TestConstants {
     Users public users;
@@ -30,7 +30,7 @@ abstract contract BaseForkFixture is Test, TestConstants {
 
     // Contracts
     TestVerifiedERC20Deployment public verifiedERC20Deployment;
-    MockSuccessHook public mockSuccessHook;
+    IHook public hook;
     HookRegistry public hookRegistry;
     VerifiedERC20Factory public verifiedERC20Factory;
     VerifiedERC20 public verifiedERC20;
@@ -74,7 +74,7 @@ abstract contract BaseForkFixture is Test, TestConstants {
             })
         );
         hookRegistry = verifiedERC20Deployment.hookRegistry();
-        mockSuccessHook = new MockSuccessHook();
+        hook = new MockSuccessHook();
     }
 
     function labelContracts() internal {

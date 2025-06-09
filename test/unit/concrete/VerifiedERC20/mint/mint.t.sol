@@ -30,15 +30,21 @@ contract MintConcreteTest is VerifiedERC20Test {
         uint256 _amount = 100;
         address _account = users.alice;
 
-        assertFalse(beforeHook.hookChecked());
-        assertFalse(afterHook.hookChecked());
-
+        /// @dev check hooks are called only once per entrypoint
+        vm.expectCall({
+            callee: address(beforeHook),
+            data: abi.encodeCall(IHook.check, (address(this), abi.encode(_account, _amount))),
+            count: 1
+        });
+        vm.expectCall({
+            callee: address(afterHook),
+            data: abi.encodeCall(IHook.check, (address(this), abi.encode(_account, _amount))),
+            count: 1
+        });
         vm.expectEmit(address(verifiedERC20));
         emit IERC20.Transfer({from: address(0), to: _account, value: _amount});
         verifiedERC20.mint({_account: _account, _value: _amount});
 
-        assertTrue(beforeHook.hookChecked());
-        assertTrue(afterHook.hookChecked());
         assertEq(verifiedERC20.balanceOf({account: _account}), _amount);
     }
 }

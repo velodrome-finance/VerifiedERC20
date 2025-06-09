@@ -33,15 +33,21 @@ contract ApproveConcreteTest is VerifiedERC20Test {
         uint256 _amount = 100;
         address _spender = users.alice;
 
-        assertFalse(beforeHook.hookChecked());
-        assertFalse(afterHook.hookChecked());
-
+        /// @dev check hooks are called only once per entrypoint
+        vm.expectCall({
+            callee: address(beforeHook),
+            data: abi.encodeCall(IHook.check, (address(this), abi.encode(_spender, _amount))),
+            count: 1
+        });
+        vm.expectCall({
+            callee: address(afterHook),
+            data: abi.encodeCall(IHook.check, (address(this), abi.encode(_spender, _amount))),
+            count: 1
+        });
         vm.expectEmit(address(verifiedERC20));
         emit IERC20.Approval({owner: address(this), spender: _spender, value: _amount});
         verifiedERC20.approve({spender: _spender, value: _amount});
 
-        assertTrue(beforeHook.hookChecked());
-        assertTrue(afterHook.hookChecked());
         assertEq(verifiedERC20.allowance({owner: address(this), spender: _spender}), _amount);
     }
 }

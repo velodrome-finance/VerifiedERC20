@@ -19,6 +19,14 @@ contract TransferConcreteTest is VerifiedERC20Test {
         vm.startPrank(users.alice);
     }
 
+    function _deployHooks() internal override {
+        beforeHook = new MockSuccessTransferHook();
+        afterHook = new MockSuccessTransferHook();
+
+        vm.label(address(beforeHook), "beforeHook");
+        vm.label(address(afterHook), "afterHook");
+    }
+
     function test_WhenTheToAddressPassedIsTheZeroAddress() external {
         // It should revert with {ERC20InvalidReceiver}
         uint256 _amount = 100;
@@ -47,14 +55,22 @@ contract TransferConcreteTest is VerifiedERC20Test {
         // It should transfer the amount
         uint256 _amount = 1000 - 1;
         address _to = users.bob;
-        assertFalse(beforeHook.hookChecked());
-        assertFalse(afterHook.hookChecked());
+        address _from = users.alice;
+        /// @dev check hooks are called only once per entrypoint
+        vm.expectCall({
+            callee: address(beforeHook),
+            data: abi.encodeCall(IHook.check, (_from, abi.encode(_from, _to, _amount))),
+            count: 1
+        });
+        vm.expectCall({
+            callee: address(afterHook),
+            data: abi.encodeCall(IHook.check, (_from, abi.encode(_from, _to, _amount))),
+            count: 1
+        });
         vm.expectEmit(address(verifiedERC20));
-        emit IERC20.Transfer({from: users.alice, to: _to, value: _amount});
+        emit IERC20.Transfer({from: _from, to: _to, value: _amount});
         verifiedERC20.transfer({to: _to, value: _amount});
-        assertTrue(beforeHook.hookChecked());
-        assertTrue(afterHook.hookChecked());
-        assertEq(verifiedERC20.balanceOf(users.alice), 1000 - _amount);
+        assertEq(verifiedERC20.balanceOf(_from), 1000 - _amount);
         assertEq(verifiedERC20.balanceOf(_to), _amount);
     }
 }
