@@ -226,6 +226,11 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
      *
      */
     function _update(address from, address to, uint256 value) internal override {
+        /// @dev If burn is called from different address, we need to check allowance
+        if (to == address(0) && msg.sender != from) {
+            _spendAllowance({owner: from, spender: msg.sender, value: value});
+        }
+
         if (from != address(0) && to != address(0)) {
             _checkHooks({_entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER, _params: abi.encode(from, to, value)});
         }
