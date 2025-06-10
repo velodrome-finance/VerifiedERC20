@@ -2,24 +2,29 @@
 pragma solidity >=0.8.19 <0.9.0;
 
 import {ITransferHook} from "../../interfaces/hooks/ITransferHook.sol";
-import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 import {BaseBHook} from "../BaseBHook.sol";
+
+// Interface for Self SBT contract
+interface ISelfPassportSBT {
+    function getTokenIdByAddress(address user) external view returns (uint256 tokenId);
+    function isTokenValid(uint256 tokenId) external view returns (bool valid);
+}
 
 /**
  * @title SelfTransferHook
  * @dev Hook to restrict incentive claims to users verified on Self
  */
 contract SelfTransferHook is BaseBHook {
-    /// @notice The Self ID NFT contract address
-    address public immutable selfIDNFT;
+    /// @notice The Self Passport SBT contract address
+    address public immutable selfPassportSBT;
 
     /**
-     * @notice Initializes the SelfTransferHook with the Self ID NFT contract
-     * @param _selfIDNFT The address of the Self ID NFT contract
+     * @notice Initializes the SelfTransferHook with the Self Passport SBT contract
+     * @param _selfPassportSBT The address of the Self Passport SBT contract
      */
-    constructor(address _selfIDNFT) {
-        selfIDNFT = _selfIDNFT;
+    constructor(address _selfPassportSBT) {
+        selfPassportSBT = _selfPassportSBT;
     }
 
     /**
@@ -52,8 +57,15 @@ contract SelfTransferHook is BaseBHook {
      * @return True if the user is verified, false otherwise
      */
     function _isVerified(address _user) internal view returns (bool) {
-        // Check if user owns at least one Self ID NFT
-        // The NFT represents verification and has 6-month expiry as per requirements
-        return IERC721(selfIDNFT).balanceOf(_user) > 0;
+        // Get the token ID associated with the user
+        uint256 tokenId = ISelfPassportSBT(selfPassportSBT).getTokenIdByAddress(_user);
+        
+        // If no token ID (returns 0), user is not verified
+        if (tokenId == 0) {
+            return false;
+        }
+        
+        // Check if the token is still valid (not expired)
+        return ISelfPassportSBT(selfPassportSBT).isTokenValid(tokenId);
     }
 }
