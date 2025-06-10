@@ -31,6 +31,7 @@ contract TransferConcreteTest is VerifiedERC20Test {
     }
 
     modifier whenTheUserIsVerified() {
+        selfPassportSBT.mint({to: users.alice, tokenId: 1});
         _;
     }
 
@@ -41,8 +42,9 @@ contract TransferConcreteTest is VerifiedERC20Test {
     {
         // It should revert with {ERC20InvalidReceiver}
         uint256 _amount = 100;
+        address _to = address(0);
         vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InvalidReceiver.selector, address(0)));
-        verifiedERC20.transfer({to: address(0), value: _amount});
+        verifiedERC20.transfer({to: _to, value: _amount});
     }
 
     modifier whenTheToAddressPassedIsNotTheZeroAddress() {
@@ -76,7 +78,7 @@ contract TransferConcreteTest is VerifiedERC20Test {
         // It should emit a {Transfer} event
         // It should transfer the amount
         uint256 _amount = 1000 - 1;
-        address _to = users.bob;
+        address _to = users.alice;
         address _from = address(incentiveReward);
         vm.expectCall({
             callee: address(selfTransferHook),

@@ -7,6 +7,7 @@ import {SinglePermissionHook} from "src/hooks/extensions/SinglePermissionHook.so
 import {TestSelfVerifiedERC20Deployment} from "test/mocks/TestSelfVerifiedERC20Deployment.sol";
 import {DeploySelfVerifiedERC20} from "script/DeploySelfVerifiedERC20.s.sol";
 import {MockIncentiveReward} from "test/mocks/MockIncentiveReward.sol";
+import {MockSelfPassportSBT} from "test/mocks/MockSelfPassportSBT.sol";
 
 import "test/BaseForkFixture.sol";
 
@@ -22,6 +23,7 @@ abstract contract BaseSelfForkFixture is BaseForkFixture {
     DeploySelfVerifiedERC20.SelfDeploymentParams internal _selfParams;
 
     MockIncentiveReward public incentiveReward;
+    MockSelfPassportSBT public selfPassportSBT;
 
     function setUp() public virtual override {
         vm.createSelectFork({urlOrAlias: "celo", blockNumber: 37593670});
@@ -36,6 +38,8 @@ abstract contract BaseSelfForkFixture is BaseForkFixture {
     function deployContracts() internal override {
         super.deployContracts();
 
+        selfPassportSBT = new MockSelfPassportSBT();
+
         _selfParams = DeploySelfVerifiedERC20.SelfDeploymentParams({
             verifiedERC20Name: "Self Verified ERC20 Celo",
             verifiedERC20Symbol: "VerifiedCelo",
@@ -45,7 +49,7 @@ abstract contract BaseSelfForkFixture is BaseForkFixture {
             singlePermissionBurnHookName: "Single Permission Hook to restrict burns to the lockbox",
             selfTransferHookName: "Self Transfer Hook to restrict incentive claims to users verified on self",
             voter: VOTER,
-            selfPassportSBT: SELF_PASSPORT_SBT,
+            selfPassportSBT: address(selfPassportSBT),
             verifiedERC20Factory: address(verifiedERC20Factory),
             outputFilename: ""
         });
