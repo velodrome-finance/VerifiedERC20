@@ -15,6 +15,7 @@ contract SelfTransferHook is BaseTransferHook {
     function supportsEntrypoint(IHookRegistry.Entrypoint _entrypoint) external pure override returns (bool) {
         return _entrypoint == IHookRegistry.Entrypoint.BEFORE_TRANSFER;
     }
+
     /**
      * @dev Restrict transfers to only allow verified users to claim incentives
      * @param _caller The address of the caller
@@ -22,7 +23,6 @@ contract SelfTransferHook is BaseTransferHook {
      * @param _to The address of the recipient
      * @param _amount The amount being transferred
      */
-
     function _check(address _caller, address _from, address _to, uint256 _amount) internal override {
         if (_isClaimIncentive() && !_isVerified({_user: _to})) {
             revert Hook_Revert({_params: abi.encode(_caller, _from, _to, _amount)});
