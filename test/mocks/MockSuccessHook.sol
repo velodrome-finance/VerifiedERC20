@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.19 <0.9.0;
 
-import "src/hooks/BaseHook.sol";
+import {IHookRegistry} from "src/interfaces/hooks/IHookRegistry.sol";
+
+import {BaseHook} from "src/hooks/BaseHook.sol";
 
 /// @dev Mock hook that always succeeds for testing purposes.
 contract MockSuccessHook is BaseHook {
