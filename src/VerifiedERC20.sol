@@ -177,7 +177,7 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
                 _maxCopy: 32,
                 _calldata: abi.encodeWithSelector(IHook.check.selector, msg.sender, _params)
             });
-            if (!success) revert VerfiedERC20_HookRevert({data: data});
+            if (!success) revert VerifiedERC20_HookRevert({data: data});
         }
     }
 

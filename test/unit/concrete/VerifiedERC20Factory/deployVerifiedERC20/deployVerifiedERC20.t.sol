@@ -10,7 +10,7 @@ contract DeployVerifiedERC20UnitConcreteTest is VerifiedERC20FactoryTest {
         // It should deploy a new VerifiedERC20
         // It should increase the new VerifiedERC20 count
         // It should add the new VerifiedERC20 at the last index
-        // It should return true on isVerfiedERC20
+        // It should return true on isVerifiedERC20
         // It should add the new VerifiedERC20 to the verifiedERC20s
         // It should emit a {VerifiedERC20Created} event
         string memory _name = "TestVerifiedERC20";
@@ -54,7 +54,7 @@ contract DeployVerifiedERC20UnitConcreteTest is VerifiedERC20FactoryTest {
         // It should deploy a new VerifiedERC20
         // It should increase the new VerifiedERC20 count
         // It should add the new VerifiedERC20 at the last index
-        // It should return true on isVerfiedERC20
+        // It should return true on isVerifiedERC20
         // It should add the new VerifiedERC20 to the verifiedERC20s
         // It should emit a {VerifiedERC20Created} event
         string memory _name = "TestVerifiedERC20";
