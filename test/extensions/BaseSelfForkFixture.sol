@@ -6,6 +6,7 @@ import {SelfTransferHook} from "src/hooks/extensions/SelfTransferHook.sol";
 import {SinglePermissionHook} from "src/hooks/extensions/SinglePermissionHook.sol";
 import {TestSelfVerifiedERC20Deployment} from "test/mocks/TestSelfVerifiedERC20Deployment.sol";
 import {DeploySelfVerifiedERC20} from "script/DeploySelfVerifiedERC20.s.sol";
+import {MockIncentiveReward} from "test/mocks/MockIncentiveReward.sol";
 
 import "test/BaseForkFixture.sol";
 
@@ -20,7 +21,9 @@ abstract contract BaseSelfForkFixture is BaseForkFixture {
     SelfTransferHook public selfTransferHook;
     DeploySelfVerifiedERC20.SelfDeploymentParams internal _selfParams;
 
-    function setUp() public override {
+    MockIncentiveReward public incentiveReward;
+
+    function setUp() public virtual override {
         vm.createSelectFork({urlOrAlias: "celo", blockNumber: 37593670});
         createUsers();
 
@@ -53,6 +56,8 @@ abstract contract BaseSelfForkFixture is BaseForkFixture {
         singlePermissionBurnHook = selfVerifiedERC20Deployment.singlePermissionBurnHook();
         selfTransferHook = selfVerifiedERC20Deployment.selfTransferHook();
         verifiedERC20 = selfVerifiedERC20Deployment.verifiedERC20();
+
+        incentiveReward = new MockIncentiveReward();
     }
 
     function postDeployment() internal {
@@ -77,6 +82,7 @@ abstract contract BaseSelfForkFixture is BaseForkFixture {
         verifiedERC20.activateHook({_hook: address(singlePermissionMintHook)});
         verifiedERC20.activateHook({_hook: address(singlePermissionBurnHook)});
         verifiedERC20.activateHook({_hook: address(selfTransferHook)});
+        vm.stopPrank();
     }
 
     function labelContracts() internal override {
