@@ -7,10 +7,7 @@ import {ReentrancyGuardTransient} from "@openzeppelin/contracts/utils/Reentrancy
 import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
 import {IHookRegistry} from "../interfaces/hooks/IHookRegistry.sol";
-import {ITransferHook} from "../interfaces/hooks/ITransferHook.sol";
-import {IApproveHook} from "../interfaces/hooks/IApproveHook.sol";
-import {IMintHook} from "../interfaces/hooks/IMintHook.sol";
-import {IBurnHook} from "../interfaces/hooks/IBurnHook.sol";
+import {IHook} from "../interfaces/hooks/IHook.sol";
 
 /**
  * @title HookRegistry
@@ -32,7 +29,7 @@ contract HookRegistry is IHookRegistry, Ownable, ReentrancyGuardTransient {
         if (_hook == address(0)) revert HookRegistry_ZeroAddress();
         if (!_hooks.add({value: _hook})) revert HookRegistry_HookAlreadyRegistered();
 
-        if (!_hookSupportsEntrypoint({_hook: _hook, _entrypoint: _entrypoint})) {
+        if (!IHook(_hook).supportsEntrypoint({_entrypoint: _entrypoint})) {
             revert HookRegistry_HookDoesNotSupportEntrypoint({entrypoint: _entrypoint});
         }
 
