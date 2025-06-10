@@ -41,6 +41,7 @@ abstract contract BaseSelfForkFixture is BaseForkFixture {
             singlePermissionMintHookName: "Single Permission Hook to restrict mints to the lockbox",
             singlePermissionBurnHookName: "Single Permission Hook to restrict burns to the lockbox",
             selfTransferHookName: "Self Transfer Hook to restrict incentive claims to users verified on self",
+            voter: VOTER,
             verifiedERC20Factory: address(verifiedERC20Factory),
             outputFilename: ""
         });

@@ -22,6 +22,7 @@ contract DeploySelfVerifiedERC20 is Script {
         string singlePermissionMintHookName;
         string singlePermissionBurnHookName;
         string selfTransferHookName;
+        address voter;
         address verifiedERC20Factory;
         string outputFilename;
     }
@@ -59,11 +60,11 @@ contract DeploySelfVerifiedERC20 is Script {
 
         lockbox = new ERC20Lockbox({_verifiedERC20: address(verifiedERC20), _erc20: _params.celo});
         singlePermissionMintHook =
-            new SinglePermissionHook({name: _params.singlePermissionMintHookName, _authorized: address(lockbox)});
+            new SinglePermissionHook({_name: _params.singlePermissionMintHookName, _authorized: address(lockbox)});
         singlePermissionBurnHook =
-            new SinglePermissionHook({name: _params.singlePermissionBurnHookName, _authorized: address(lockbox)});
+            new SinglePermissionHook({_name: _params.singlePermissionBurnHookName, _authorized: address(lockbox)});
 
-        selfTransferHook = new SelfTransferHook({name: _params.selfTransferHookName});
+        selfTransferHook = new SelfTransferHook({_name: _params.selfTransferHookName, _voter: _params.voter});
     }
 
     function params() external view returns (SelfDeploymentParams memory) {

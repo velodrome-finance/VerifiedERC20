@@ -11,4 +11,5 @@ abstract contract TestConstants {
     uint256 public constant MAX_BPS = 10_000;
 
     address public constant CELO = 0x471EcE3750Da237f93B8E339c536989b8978a438;
+    address public constant VOTER = 0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123;
 }
