@@ -1,30 +1,40 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.19 <0.9.0;
 
-import {ITransferHook} from "../../interfaces/hooks/ITransferHook.sol";
+import {ExcessivelySafeCall} from "@nomad-xyz/src/ExcessivelySafeCall.sol";
 
-import {BaseBHook} from "../BaseBHook.sol";
+import {IReward} from "../../interfaces/external/IReward.sol";
+import {ISelfPassportSBT} from "../../interfaces/external/ISelfPassportSBT.sol";
+import {IHookRegistry} from "../../interfaces/hooks/IHookRegistry.sol";
 
-// Interface for Self SBT contract
-interface ISelfPassportSBT {
-    function getTokenIdByAddress(address user) external view returns (uint256 tokenId);
-    function isTokenValid(uint256 tokenId) external view returns (bool valid);
-}
+import {BaseTransferHook} from "../BaseTransferHook.sol";
 
 /**
  * @title SelfTransferHook
  * @dev Hook to restrict incentive claims to users verified on Self
  */
-contract SelfTransferHook is BaseBHook {
+contract SelfTransferHook is BaseTransferHook {
+    using ExcessivelySafeCall for address;
+
+    /// @notice Address of the voter contract to check if a transfer is a claim incentive
+    address public immutable voter;
+
     /// @notice The Self Passport SBT contract address
     address public immutable selfPassportSBT;
 
     /**
-     * @notice Initializes the SelfTransferHook with the Self Passport SBT contract
+     * @notice Initializes the SelfTransferHook
+     * @param _name Name for the hook
+     * @param _voter address of the voter contract
      * @param _selfPassportSBT The address of the Self Passport SBT contract
      */
-    constructor(address _selfPassportSBT) {
+    constructor(string memory _name, address _voter, address _selfPassportSBT) BaseTransferHook(_name) {
+        voter = _voter;
         selfPassportSBT = _selfPassportSBT;
+    }
+
+    function supportsEntrypoint(IHookRegistry.Entrypoint _entrypoint) external pure override returns (bool) {
+        return _entrypoint == IHookRegistry.Entrypoint.BEFORE_TRANSFER;
     }
 
     /**
@@ -35,7 +45,7 @@ contract SelfTransferHook is BaseBHook {
      * @param _amount The amount being transferred
      */
     function _check(address _caller, address _from, address _to, uint256 _amount) internal view override {
-        if (_isClaimIncentive(_from, _to) && !_isVerified(_to)) {
+        if (_isClaimIncentive({_from: _from}) && !_isVerified({_user: _to})) {
             revert Hook_Revert({_params: abi.encode(_caller, _from, _to, _amount)});
         }
     }
@@ -43,12 +53,25 @@ contract SelfTransferHook is BaseBHook {
     /**
      * @dev Check if the transfer is an incentive claim
      * @param _from The sender address
-     * @param _to The recipient address
      * @return True if the transfer is a claim incentive, false otherwise
      */
-    function _isClaimIncentive(address _from, address _to) internal view returns (bool) {
-        // TODO: Implement logic to check if transfer is from incentive contract
-        // This will be implemented by the team based on their incentive contract identification strategy
+    function _isClaimIncentive(address _from) internal view returns (bool) {
+        (bool success, bytes memory data) = _from.excessivelySafeStaticCall({
+            _gas: 5_000,
+            _maxCopy: 32,
+            _calldata: abi.encodeWithSelector(IReward.DURATION.selector)
+        });
+
+        if (!success || data.length < 32 || (abi.decode(data, (uint256)) != 7 days)) return false;
+
+        (success, data) = _from.excessivelySafeStaticCall({
+            _gas: 5_000,
+            _maxCopy: 32,
+            _calldata: abi.encodeWithSelector(IReward.voter.selector)
+        });
+        if (!success || data.length < 32 || voter != abi.decode(data, (address))) return false;
+
+        return true;
     }
 
     /**
@@ -59,12 +82,12 @@ contract SelfTransferHook is BaseBHook {
     function _isVerified(address _user) internal view returns (bool) {
         // Get the token ID associated with the user
         uint256 tokenId = ISelfPassportSBT(selfPassportSBT).getTokenIdByAddress(_user);
-        
+
         // If no token ID (returns 0), user is not verified
         if (tokenId == 0) {
             return false;
         }
-        
+
         // Check if the token is still valid (not expired)
         return ISelfPassportSBT(selfPassportSBT).isTokenValid(tokenId);
     }

@@ -16,7 +16,7 @@ contract SinglePermissionHook is BaseHook {
     /// @notice Address of the authorized caller
     address public immutable authorized;
 
-    constructor(string memory name, address _authorized) BaseHook(name) {
+    constructor(string memory _name, address _authorized) BaseHook(_name) {
         if (_authorized == address(0)) revert SinglePermissionHook_ZeroAddress();
         authorized = _authorized;
     }
