@@ -4,6 +4,7 @@ pragma solidity >=0.8.19 <0.9.0;
 import {ExcessivelySafeCall} from "@nomad-xyz/src/ExcessivelySafeCall.sol";
 
 import {IReward} from "../../interfaces/external/IReward.sol";
+import {ISelfPassportSBT} from "../../interfaces/external/ISelfPassportSBT.sol";
 import {IHookRegistry} from "../../interfaces/hooks/IHookRegistry.sol";
 
 import {BaseTransferHook} from "../BaseTransferHook.sol";
@@ -18,8 +19,18 @@ contract SelfTransferHook is BaseTransferHook {
     /// @notice Address of the voter contract to check if a transfer is a claim incentive
     address public immutable voter;
 
-    constructor(string memory _name, address _voter) BaseTransferHook(_name) {
+    /// @notice The Self Passport SBT contract address
+    address public immutable selfPassportSBT;
+
+    /**
+     * @notice Initializes the SelfTransferHook
+     * @param _name Name for the hook
+     * @param _voter address of the voter contract
+     * @param _selfPassportSBT The address of the Self Passport SBT contract
+     */
+    constructor(string memory _name, address _voter, address _selfPassportSBT) BaseTransferHook(_name) {
         voter = _voter;
+        selfPassportSBT = _selfPassportSBT;
     }
 
     function supportsEntrypoint(IHookRegistry.Entrypoint _entrypoint) external pure override returns (bool) {
@@ -33,7 +44,7 @@ contract SelfTransferHook is BaseTransferHook {
      * @param _to The address of the recipient
      * @param _amount The amount being transferred
      */
-    function _check(address _caller, address _from, address _to, uint256 _amount) internal override {
+    function _check(address _caller, address _from, address _to, uint256 _amount) internal view override {
         if (_isClaimIncentive({_from: _from}) && !_isVerified({_user: _to})) {
             revert Hook_Revert({_params: abi.encode(_caller, _from, _to, _amount)});
         }
@@ -41,6 +52,7 @@ contract SelfTransferHook is BaseTransferHook {
 
     /**
      * @dev Check if the transfer is an incentive claim
+     * @param _from The sender address
      * @return True if the transfer is a claim incentive, false otherwise
      */
     function _isClaimIncentive(address _from) internal view returns (bool) {
@@ -67,8 +79,16 @@ contract SelfTransferHook is BaseTransferHook {
      * @param _user The address of the user to check
      * @return True if the user is verified, false otherwise
      */
-    function _isVerified(address _user) internal returns (bool) {
-        /// @dev will be implemented soon. Need return true for tests
-        return true;
+    function _isVerified(address _user) internal view returns (bool) {
+        // Get the token ID associated with the user
+        uint256 tokenId = ISelfPassportSBT(selfPassportSBT).getTokenIdByAddress(_user);
+
+        // If no token ID (returns 0), user is not verified
+        if (tokenId == 0) {
+            return false;
+        }
+
+        // Check if the token is still valid (not expired)
+        return ISelfPassportSBT(selfPassportSBT).isTokenValid(tokenId);
     }
 }
