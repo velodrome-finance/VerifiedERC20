@@ -33,7 +33,7 @@ interface IVerifiedERC20 is IERC20 {
      * @notice Error thrown when a hook reverts during execution.
      * @param data The data returned by the hook.
      */
-    error VerfiedERC20_HookRevert(bytes data);
+    error VerifiedERC20_HookRevert(bytes data);
 
     /**
      * @notice Emitted when a hook is activated
