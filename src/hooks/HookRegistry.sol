@@ -4,8 +4,10 @@ pragma solidity >=0.8.19 <0.9.0;
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import {ReentrancyGuardTransient} from "@openzeppelin/contracts/utils/ReentrancyGuardTransient.sol";
+import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
 import {IHookRegistry} from "../interfaces/hooks/IHookRegistry.sol";
+import {IHook} from "../interfaces/hooks/IHook.sol";
 
 /**
  * @title HookRegistry
@@ -26,6 +28,10 @@ contract HookRegistry is IHookRegistry, Ownable, ReentrancyGuardTransient {
     function registerHook(address _hook, Entrypoint _entrypoint) external onlyOwner nonReentrant {
         if (_hook == address(0)) revert HookRegistry_ZeroAddress();
         if (!_hooks.add({value: _hook})) revert HookRegistry_HookAlreadyRegistered();
+
+        if (!IHook(_hook).supportsEntrypoint({_entrypoint: _entrypoint})) {
+            revert HookRegistry_HookDoesNotSupportEntrypoint({entrypoint: _entrypoint});
+        }
 
         hookEntrypoints[_hook] = _entrypoint;
 

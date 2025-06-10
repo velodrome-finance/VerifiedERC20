@@ -26,7 +26,7 @@ contract ActivateHookConcreteTest is VerifiedERC20Test {
     }
 
     modifier whenTheHookIsRegisteredInTheHookRegistry() {
-        hookRegistry.registerHook({_hook: address(hook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
+        hookRegistry.registerHook({_hook: address(hook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_MINT});
         _;
     }
 
@@ -58,8 +58,8 @@ contract ActivateHookConcreteTest is VerifiedERC20Test {
 
         // register in registry and activate to reach max
         for (uint256 i = 2; i < 10; i++) {
-            address newHook = createUser(string(abi.encode(i)));
-            hookRegistry.registerHook({_hook: address(newHook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
+            address newHook = address(new MockSuccessHook());
+            hookRegistry.registerHook({_hook: address(newHook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_MINT});
             verifiedERC20.activateHook({_hook: address(newHook)});
         }
 
@@ -79,20 +79,19 @@ contract ActivateHookConcreteTest is VerifiedERC20Test {
         // It should emit a {HookActivated} event with the correct hook address and entrypoint
 
         vm.expectEmit({emitter: address(verifiedERC20)});
-        emit IVerifiedERC20.HookActivated({hook: address(hook), entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
+        emit IVerifiedERC20.HookActivated({hook: address(hook), entrypoint: IHookRegistry.Entrypoint.BEFORE_MINT});
         verifiedERC20.activateHook({_hook: address(hook)});
 
-        address[] memory hooksForEntrypoint =
-            verifiedERC20.getHooksForEntrypoint(IHookRegistry.Entrypoint.BEFORE_TRANSFER);
+        address[] memory hooksForEntrypoint = verifiedERC20.getHooksForEntrypoint(IHookRegistry.Entrypoint.BEFORE_MINT);
         assertEq(hooksForEntrypoint.length, 1);
         assertEq(hooksForEntrypoint[0], address(hook));
 
-        address hookAtIndex = verifiedERC20.getHookAtIndex(IHookRegistry.Entrypoint.BEFORE_TRANSFER, 0);
+        address hookAtIndex = verifiedERC20.getHookAtIndex(IHookRegistry.Entrypoint.BEFORE_MINT, 0);
         assertEq(hookAtIndex, address(hook));
-        assertEq(verifiedERC20.getHooksCountForEntrypoint(IHookRegistry.Entrypoint.BEFORE_TRANSFER), 1);
+        assertEq(verifiedERC20.getHooksCountForEntrypoint(IHookRegistry.Entrypoint.BEFORE_MINT), 1);
 
         assertEq(verifiedERC20.hookToIndex(address(hook)), 0);
-        assertEq(uint8(verifiedERC20.hookToEntrypoint(address(hook))), uint8(IHookRegistry.Entrypoint.BEFORE_TRANSFER));
+        assertEq(uint8(verifiedERC20.hookToEntrypoint(address(hook))), uint8(IHookRegistry.Entrypoint.BEFORE_MINT));
         assertTrue(verifiedERC20.isHookActivated(address(hook)));
     }
 
