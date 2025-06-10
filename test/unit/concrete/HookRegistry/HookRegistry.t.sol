@@ -4,8 +4,6 @@ pragma solidity >=0.8.19 <0.9.0;
 import "../../../BaseForkFixture.sol";
 
 contract HookRegistryTest is BaseForkFixture {
-    address hook = address(1);
-
     function test_InitialState() public view {
         assertEq(hookRegistry.getHookCount(), 0);
 

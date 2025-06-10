@@ -8,6 +8,9 @@ RegisterHookConcreteTest
         ├── When the hook is already registered
         │   └── It should revert with {HookRegistry_HookAlreadyRegistered}
         └── When the hook is not already registered
-            ├── It should add the hook to the hook enumerable set
-            ├── It should set the hook entrypoint
-            └── It should emit a {HookRegistered} event
+            ├── When the hook does not support the entrypoint
+            │   └── It should revert with {HookRegistry_HookDoesNotSupportEntrypoint}
+            └── When the hook supports the entrypoint
+                ├── It should add the hook to the hook enumerable set
+                ├── It should set the hook entrypoint
+                └── It should emit a {HookRegistered} event

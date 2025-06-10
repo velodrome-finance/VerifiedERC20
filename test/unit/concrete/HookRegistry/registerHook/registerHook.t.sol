@@ -8,7 +8,7 @@ contract RegisterHookConcreteTest is HookRegistryTest {
         // It should revert with {OwnableUnauthorizedAccount}
         vm.prank(users.charlie);
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, users.charlie));
-        hookRegistry.registerHook({_hook: address(hook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
+        hookRegistry.registerHook({_hook: address(hook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_MINT});
     }
 
     modifier whenTheCallerIsTheOwner() {
@@ -19,7 +19,7 @@ contract RegisterHookConcreteTest is HookRegistryTest {
     function test_WhenTheHookIsTheZeroAddress() external whenTheCallerIsTheOwner {
         // It should revert with {HookRegistry_ZeroAddress}
         vm.expectRevert(IHookRegistry.HookRegistry_ZeroAddress.selector);
-        hookRegistry.registerHook({_hook: address(0), _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
+        hookRegistry.registerHook({_hook: address(0), _entrypoint: IHookRegistry.Entrypoint.BEFORE_MINT});
     }
 
     modifier whenTheHookIsNotTheZeroAddress() {
@@ -28,18 +28,42 @@ contract RegisterHookConcreteTest is HookRegistryTest {
 
     function test_WhenTheHookIsAlreadyRegistered() external whenTheCallerIsTheOwner whenTheHookIsNotTheZeroAddress {
         // It should revert with {HookRegistry_HookAlreadyRegistered}
-        hookRegistry.registerHook({_hook: address(hook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
+        hookRegistry.registerHook({_hook: address(hook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_MINT});
 
         vm.expectRevert(IHookRegistry.HookRegistry_HookAlreadyRegistered.selector);
+        hookRegistry.registerHook({_hook: address(hook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_MINT});
+    }
+
+    modifier whenTheHookIsNotAlreadyRegistered() {
+        _;
+    }
+
+    function test_WhenTheHookDoesNotSupportTheEntrypoint()
+        external
+        whenTheCallerIsTheOwner
+        whenTheHookIsNotTheZeroAddress
+        whenTheHookIsNotAlreadyRegistered
+    {
+        // It should revert with {HookRegistry_HookDoesNotSupportEntrypoint}
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IHookRegistry.HookRegistry_HookDoesNotSupportEntrypoint.selector,
+                IHookRegistry.Entrypoint.AFTER_TRANSFER
+            )
+        );
         hookRegistry.registerHook({_hook: address(hook), _entrypoint: IHookRegistry.Entrypoint.AFTER_TRANSFER});
     }
 
-    function test_WhenTheHookIsNotAlreadyRegistered() external whenTheCallerIsTheOwner whenTheHookIsNotTheZeroAddress {
+    function test_WhenTheHookSupportsTheEntrypoint()
+        external
+        whenTheCallerIsTheOwner
+        whenTheHookIsNotTheZeroAddress
+        whenTheHookIsNotAlreadyRegistered
+    {
         // It should add the hook to the hook enumerable set
         // It should set the hook entrypoint
         // It should emit a {HookRegistered} event
-
-        IHookRegistry.Entrypoint entrypoint = IHookRegistry.Entrypoint.BEFORE_TRANSFER;
+        IHookRegistry.Entrypoint entrypoint = IHookRegistry.Entrypoint.BEFORE_MINT;
 
         vm.expectEmit(address(hookRegistry));
         emit IHookRegistry.HookRegistered({hook: address(hook), entrypoint: entrypoint});
@@ -53,7 +77,7 @@ contract RegisterHookConcreteTest is HookRegistryTest {
     }
 
     function testGas_registerHook() external whenTheCallerIsTheOwner whenTheHookIsNotTheZeroAddress {
-        hookRegistry.registerHook({_hook: address(hook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
+        hookRegistry.registerHook({_hook: address(hook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_MINT});
         vm.snapshotGasLastCall({name: "HookRegistry_registerHook"});
     }
 }

@@ -23,7 +23,7 @@ contract DeregisterHookConcreteTest is HookRegistryTest {
     }
 
     modifier whenTheHookIsRegistered() {
-        hookRegistry.registerHook({_hook: address(hook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER});
+        hookRegistry.registerHook({_hook: address(hook), _entrypoint: IHookRegistry.Entrypoint.BEFORE_MINT});
         _;
     }
 
