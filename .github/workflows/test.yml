@@ -48,4 +48,5 @@ jobs:
         id: test
         env: 
           OPTIMISM_RPC_URL: ${{ secrets.OPTIMISM_RPC_URL }}
+          CELO_RPC_URL: ${{ secrets.CELO_RPC_URL }}
 
