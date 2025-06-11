@@ -208,17 +208,12 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
     }
 
     /// @inheritdoc IERC20
-    function transfer(address to, uint256 value) public override(ERC20, IERC20) nonReentrant returns (bool) {
+    function transfer(address to, uint256 value) public override(ERC20, IERC20) returns (bool) {
         return super.transfer({to: to, value: value});
     }
 
     /// @inheritdoc IERC20
-    function transferFrom(address from, address to, uint256 value)
-        public
-        override(ERC20, IERC20)
-        nonReentrant
-        returns (bool)
-    {
+    function transferFrom(address from, address to, uint256 value) public override(ERC20, IERC20) returns (bool) {
         return super.transferFrom({from: from, to: to, value: value});
     }
 

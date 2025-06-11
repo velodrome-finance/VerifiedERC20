@@ -1,0 +1,12 @@
+SetLockboxConcreteTest
+├── When the lockbox passed is the zero address
+│   └── It should revert with {AutoUnwrapHook_ZeroAddress}
+└── When the lockbox passed is not the zero address
+    ├── When the verifiedERC20 passed is the zero address
+    │   └── It should revert with {AutoUnwrapHook_ZeroAddress}
+    └── When the verifiedERC20 passed is not the zero address 
+        ├── When the caller is not the verifiedERC20 owner 
+        │   └── It should revert with {AutoUnwrapHook_NotAuthorized}
+        └── When the caller is the verifiedERC20 owner 
+            ├──It should set the authorized mapping
+            └──It should emit a {LockboxSet} event
