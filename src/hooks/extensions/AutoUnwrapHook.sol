@@ -16,7 +16,7 @@ import {BaseTransferHook} from "../BaseTransferHook.sol";
 
 /**
  * @title AutoUnwrapHook
- * @dev Hook to automatically unwrap the verifiedERC20 into the base token
+ * @dev Hook to automatically unwrap the verifiedERC20 into the base token on claim incentive
  */
 contract AutoUnwrapHook is BaseTransferHook {
     using SafeERC20 for IERC20;
