@@ -19,7 +19,7 @@ contract TransferConcreteTest is VerifiedERC20Test {
 
         vm.expectRevert(
             abi.encodeWithSelector(
-                IVerifiedERC20.VerfiedERC20_HookRevert.selector,
+                IVerifiedERC20.VerifiedERC20_HookRevert.selector,
                 abi.encode(
                     bytes32(
                         abi.encodeWithSelector(IHook.Hook_Revert.selector, abi.encode(_caller, _caller, _to, _amount))

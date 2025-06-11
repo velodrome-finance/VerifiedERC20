@@ -5,10 +5,13 @@ BurnConcreteTest
     ├── When the account passed is the zero address
     │   └── It should revert with {ERC20InvalidSender}
     └── When the account passed is not the zero address
-        ├── When the amount is greater than the user's balance
-        │   └── It should revert with {ERC20InsufficientBalance}
-        └── When the amount is smaller or equal to the user's balance
-            ├──It should call the before hook
-            ├──It should call the after hook
-            ├──It should emit a {Transfer} event
-            └──It should burn the amount from the user
+        ├── When the amount is greater than the allowance
+        │   └── It should revert with {ERC20InsufficientAllowance}
+        └── When the amount is smaller or equal to the allowance
+            ├── When the amount is greater than the user's balance
+            │   └── It should revert with {ERC20InsufficientBalance}
+            └── When the amount is smaller or equal to the user's balance
+                ├── It should call the single permission burn hook
+                ├── It should deduct the allowance
+                ├── It should emit a {Transfer} event
+                └── It should burn the amount from the user
