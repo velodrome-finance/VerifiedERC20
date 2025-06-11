@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.19 <0.9.0;
 
-import {Test} from "forge-std/Test.sol";
+import {Test, stdStorage, StdStorage} from "forge-std/Test.sol";
 import {VmSafe} from "forge-std/Vm.sol";
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
@@ -24,6 +24,8 @@ import {MockSuccessHook} from "test/mocks/MockSuccessHook.sol";
 import {MockSuccessTransferHook} from "test/mocks/MockSuccessTransferHook.sol";
 
 abstract contract BaseForkFixture is Test, TestConstants {
+    using stdStorage for StdStorage;
+
     Users public users;
 
     ICreateX public cx = ICreateX(0xba5Ed099633D3B313e4D5F7bdc1305d3c28ba5Ed);
@@ -59,9 +61,10 @@ abstract contract BaseForkFixture is Test, TestConstants {
         vm.deal({account: user, newBalance: TOKEN_1 * 1_000});
     }
 
-    function deployContracts() internal {
+    function deployContracts() internal virtual {
         verifiedERC20Deployment =
             new TestVerifiedERC20Deployment({_hookRegistryManager: users.owner, _outputFilename: ""});
+        stdstore.target(address(verifiedERC20Deployment)).sig("deployer()").checked_write(users.deployer);
         verifiedERC20Deployment.run();
 
         verifiedERC20Factory = verifiedERC20Deployment.verifiedERC20Factory();
@@ -77,7 +80,7 @@ abstract contract BaseForkFixture is Test, TestConstants {
         hook = new MockSuccessHook();
     }
 
-    function labelContracts() internal {
+    function labelContracts() internal virtual {
         vm.label({account: address(verifiedERC20Deployment), newLabel: "VerifiedERC20Deployment"});
         vm.label({account: address(verifiedERC20), newLabel: "VerifiedERC20"});
         vm.label({account: address(verifiedERC20Factory), newLabel: "VerifiedERC20Factory"});

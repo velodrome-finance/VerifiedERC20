@@ -1,0 +1,10 @@
+MintConcreteTest
+├── When the caller is not lockbox
+│   └── It should revert with {VerifiedERC20_HookRevert}
+└── When the caller is lockbox
+    ├── When the account passed is the zero address
+    │   └── It should revert with {ERC20InvalidReceiver}
+    └── When the account passed is not the zero address
+        ├──It should call the single permission mint hook
+        ├──It should emit a {Transfer} event
+        └──It should mint the amount to the user
