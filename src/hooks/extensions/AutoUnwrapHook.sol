@@ -103,11 +103,15 @@ contract AutoUnwrapHook is BaseTransferHook {
      * @param _to The address of the recipient
      * @param _amount The amount being transferred
      */
+    //slither-disable-start unchecked-transfer
+    //slither-disable-start reentrancy-no-eth
     function _check(address _caller, address _from, address _to, uint256 _amount) internal override {
         if (block.timestamp > lastExecuted && _isClaimIncentive({_from: _from}) && _isVerified({_user: _to})) {
             IVerifiedERC20 verifiedERC20 = IVerifiedERC20(msg.sender);
             IERC20Lockbox _lockbox = IERC20Lockbox(lockbox[msg.sender]);
 
+            /// @dev transferFrom is checked in VerifiedERC20
+            // slither-disable-next-line arbitrary-send-erc20
             verifiedERC20.transferFrom({from: _to, to: address(this), value: _amount});
             verifiedERC20.safeIncreaseAllowance({spender: address(_lockbox), value: _amount});
             _lockbox.withdraw(_amount);
@@ -115,6 +119,8 @@ contract AutoUnwrapHook is BaseTransferHook {
             lastExecuted = block.timestamp;
         }
     }
+    //slither-disable-end unchecked-transfer
+    //slither-disable-end reentrancy-no-eth
 
     /**
      * @dev Check if the transfer is an incentive claim
