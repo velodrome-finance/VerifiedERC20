@@ -60,10 +60,22 @@ contract DeploySelfVerifiedERC20 is Script {
         );
 
         lockbox = new ERC20Lockbox({_verifiedERC20: address(verifiedERC20), _erc20: _params.celo});
-        singlePermissionMintHook =
-            new SinglePermissionHook({_name: _params.singlePermissionMintHookName, _authorized: address(lockbox)});
-        singlePermissionBurnHook =
-            new SinglePermissionHook({_name: _params.singlePermissionBurnHookName, _authorized: address(lockbox)});
+
+        address[] memory verifiedERC20s = new address[](1);
+        verifiedERC20s[0] = address(verifiedERC20);
+        address[] memory authorized = new address[](1);
+        authorized[0] = address(lockbox);
+
+        singlePermissionMintHook = new SinglePermissionHook({
+            _name: _params.singlePermissionMintHookName,
+            _verifiedERC20s: verifiedERC20s,
+            _authorized: authorized
+        });
+        singlePermissionBurnHook = new SinglePermissionHook({
+            _name: _params.singlePermissionBurnHookName,
+            _verifiedERC20s: verifiedERC20s,
+            _authorized: authorized
+        });
 
         selfTransferHook = new SelfTransferHook({
             _name: _params.selfTransferHookName,
