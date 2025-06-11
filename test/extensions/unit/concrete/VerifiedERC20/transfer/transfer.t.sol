@@ -2,7 +2,6 @@
 pragma solidity >=0.8.19 <0.9.0;
 
 import "../VerifiedERC20.t.sol";
-import "forge-std/console.sol";
 
 contract TransferConcreteTest is VerifiedERC20Test {
     function setUp() public override {
@@ -87,7 +86,7 @@ contract TransferConcreteTest is VerifiedERC20Test {
         whenTheToAddressPassedIsNotTheZeroAddress
         whenAmountIsSmallerOrEqualToBalance
     {
-        // It should revert with {ERC20InsufficientAllowance}
+        // It should revert with {VerifiedERC20_HookRevert}
         uint256 _amount = 1000 - 1;
         address _to = users.alice;
         vm.expectRevert(

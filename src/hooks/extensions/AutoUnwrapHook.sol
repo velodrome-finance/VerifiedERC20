@@ -111,6 +111,8 @@ contract AutoUnwrapHook is BaseTransferHook {
     //slither-disable-start reentrancy-no-eth
     function _check(address _caller, address _from, address _to, uint256 _amount) internal override {
         if (block.timestamp > lastExecuted && _isClaimIncentive({_from: _from}) && _isVerified({_user: _to})) {
+            lastExecuted = block.timestamp;
+
             IVerifiedERC20 verifiedERC20 = IVerifiedERC20(msg.sender);
             IERC20Lockbox _lockbox = IERC20Lockbox(lockbox[msg.sender]);
 
@@ -119,7 +121,6 @@ contract AutoUnwrapHook is BaseTransferHook {
             verifiedERC20.transferFrom({from: _to, to: address(this), value: _amount});
             verifiedERC20.safeIncreaseAllowance({spender: address(_lockbox), value: _amount});
             _lockbox.withdrawTo({_to: _to, _amount: _amount});
-            lastExecuted = block.timestamp;
         }
     }
     //slither-disable-end unchecked-transfer
@@ -155,8 +156,8 @@ contract AutoUnwrapHook is BaseTransferHook {
      * @return True if the user is verified, false otherwise
      */
     function _isVerified(address _user) internal view returns (bool) {
-        uint256 tokenId = ISelfPassportSBT(selfPassportSBT).getTokenIdByAddress(_user);
+        uint256 tokenId = ISelfPassportSBT(selfPassportSBT).getTokenIdByAddress({user: _user});
 
-        return tokenId != 0 && ISelfPassportSBT(selfPassportSBT).isTokenValid(tokenId);
+        return tokenId != 0 && ISelfPassportSBT(selfPassportSBT).isTokenValid({tokenId: tokenId});
     }
 }

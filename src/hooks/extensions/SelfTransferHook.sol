@@ -80,8 +80,8 @@ contract SelfTransferHook is BaseTransferHook {
      * @return True if the user is verified, false otherwise
      */
     function _isVerified(address _user) internal view returns (bool) {
-        uint256 tokenId = ISelfPassportSBT(selfPassportSBT).getTokenIdByAddress(_user);
+        uint256 tokenId = ISelfPassportSBT(selfPassportSBT).getTokenIdByAddress({user: _user});
 
-        return tokenId != 0 && ISelfPassportSBT(selfPassportSBT).isTokenValid(tokenId);
+        return tokenId != 0 && ISelfPassportSBT(selfPassportSBT).isTokenValid({tokenId: tokenId});
     }
 }
