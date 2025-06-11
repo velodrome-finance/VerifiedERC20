@@ -104,5 +104,4 @@ contract BurnConcreteTest is VerifiedERC20Test {
         assertEq(verifiedERC20.balanceOf({account: _account}), 1000 - _amount);
         assertEq(verifiedERC20.allowance({spender: address(lockbox), owner: _account}), 1000 + 1 - _amount);
     }
-
 }
