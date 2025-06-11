@@ -139,7 +139,7 @@ contract TransferConcreteTest is VerifiedERC20Test {
         vm.expectEmit(address(verifiedERC20));
         emit IERC20.Transfer({from: _from, to: _to, value: _amount});
         vm.expectEmit(address(lockbox));
-        emit IERC20Lockbox.Withdraw({_sender: address(autoUnwrapHook), _amount: _amount});
+        emit IERC20Lockbox.Withdraw({_sender: address(autoUnwrapHook), _receiver: _to, _amount: _amount});
         verifiedERC20.transfer({to: _to, value: _amount});
         assertEq(verifiedERC20.balanceOf(_from), 1000 - _amount);
         assertEq(verifiedERC20.balanceOf(_to), 0);

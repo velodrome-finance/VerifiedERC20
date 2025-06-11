@@ -11,6 +11,7 @@ import {ISelfPassportSBT} from "../../interfaces/external/ISelfPassportSBT.sol";
 import {IHookRegistry} from "../../interfaces/hooks/IHookRegistry.sol";
 import {IERC20Lockbox} from "../../interfaces/external/IERC20Lockbox.sol";
 import {IVerifiedERC20} from "../../interfaces/IVerifiedERC20.sol";
+import {IHook} from "../../interfaces/hooks/IHook.sol";
 
 import {BaseTransferHook} from "../BaseTransferHook.sol";
 
@@ -38,7 +39,7 @@ contract AutoUnwrapHook is BaseTransferHook {
     /// @notice The Self Passport SBT contract address
     address public immutable selfPassportSBT;
 
-    /// @notice Timestamp of the last executed auto unwrap action to prevent infite loop
+    /// @notice Timestamp of the last executed auto unwrap action to prevent infinite loop
     uint256 public lastExecuted;
 
     /// @notice Mapping of verified ERC20 addresses to their corresponding lockbox addresses
@@ -49,6 +50,8 @@ contract AutoUnwrapHook is BaseTransferHook {
      * @param _name Name for the hook
      * @param _voter address of the voter contract
      * @param _selfPassportSBT The address of the Self Passport SBT contract
+     * @param _verifiedERC20s Array of verified ERC20 addresses
+     * @param _lockboxes Array of corresponding lockbox addresses for the verified ERC20s
      */
     constructor(
         string memory _name,
@@ -71,6 +74,7 @@ contract AutoUnwrapHook is BaseTransferHook {
         }
     }
 
+    /// @inheritdoc IHook
     function supportsEntrypoint(IHookRegistry.Entrypoint _entrypoint) external pure override returns (bool) {
         return _entrypoint == IHookRegistry.Entrypoint.AFTER_TRANSFER;
     }
@@ -114,8 +118,7 @@ contract AutoUnwrapHook is BaseTransferHook {
             // slither-disable-next-line arbitrary-send-erc20
             verifiedERC20.transferFrom({from: _to, to: address(this), value: _amount});
             verifiedERC20.safeIncreaseAllowance({spender: address(_lockbox), value: _amount});
-            _lockbox.withdraw(_amount);
-            _lockbox.ERC20().safeTransfer({to: _to, value: _amount});
+            _lockbox.withdrawTo({_to: _to, _amount: _amount});
             lastExecuted = block.timestamp;
         }
     }
@@ -152,15 +155,8 @@ contract AutoUnwrapHook is BaseTransferHook {
      * @return True if the user is verified, false otherwise
      */
     function _isVerified(address _user) internal view returns (bool) {
-        // Get the token ID associated with the user
         uint256 tokenId = ISelfPassportSBT(selfPassportSBT).getTokenIdByAddress(_user);
 
-        // If no token ID (returns 0), user is not verified
-        if (tokenId == 0) {
-            return false;
-        }
-
-        // Check if the token is still valid (not expired)
-        return ISelfPassportSBT(selfPassportSBT).isTokenValid(tokenId);
+        return tokenId != 0 && ISelfPassportSBT(selfPassportSBT).isTokenValid(tokenId);
     }
 }

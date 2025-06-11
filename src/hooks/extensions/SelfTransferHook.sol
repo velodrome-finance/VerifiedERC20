@@ -80,15 +80,8 @@ contract SelfTransferHook is BaseTransferHook {
      * @return True if the user is verified, false otherwise
      */
     function _isVerified(address _user) internal view returns (bool) {
-        // Get the token ID associated with the user
         uint256 tokenId = ISelfPassportSBT(selfPassportSBT).getTokenIdByAddress(_user);
 
-        // If no token ID (returns 0), user is not verified
-        if (tokenId == 0) {
-            return false;
-        }
-
-        // Check if the token is still valid (not expired)
-        return ISelfPassportSBT(selfPassportSBT).isTokenValid(tokenId);
+        return tokenId != 0 && ISelfPassportSBT(selfPassportSBT).isTokenValid(tokenId);
     }
 }
