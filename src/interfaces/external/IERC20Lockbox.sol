@@ -18,8 +18,9 @@ interface IERC20Lockbox {
 
     /// @notice Emitted when tokens are withdrawn from the lockbox
     /// @param _sender The address of the user who withdrew
+    /// @param _receiver The address of the user who receives the withdrawn tokens
     /// @param _amount The amount of tokens withdrawn
-    event Withdraw(address _sender, uint256 _amount);
+    event Withdraw(address _sender, address _receiver, uint256 _amount);
 
     /// @notice The VerifiedERC20 token of this contract
     function verifiedERC20() external view returns (IVerifiedERC20);
@@ -34,4 +35,9 @@ interface IERC20Lockbox {
     /// @notice Withdraw ERC20 tokens from the lockbox
     /// @param _amount The amount of tokens to withdraw
     function withdraw(uint256 _amount) external;
+
+    /// @notice Withdraw ERC20 tokens to a specific address
+    /// @param _to The address to withdraw tokens to
+    /// @param _amount The amount of tokens to withdraw
+    function withdrawTo(address _to, uint256 _amount) external;
 }

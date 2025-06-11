@@ -39,6 +39,13 @@ contract ERC20Lockbox is IERC20Lockbox {
     function withdraw(uint256 _amount) external {
         verifiedERC20.burn({_account: msg.sender, _value: _amount});
         ERC20.safeTransfer({to: msg.sender, value: _amount});
-        emit Withdraw({_sender: msg.sender, _amount: _amount});
+        emit Withdraw({_sender: msg.sender, _receiver: msg.sender, _amount: _amount});
+    }
+
+    /// @inheritdoc IERC20Lockbox
+    function withdrawTo(address _to, uint256 _amount) external {
+        verifiedERC20.burn({_account: msg.sender, _value: _amount});
+        ERC20.safeTransfer({to: _to, value: _amount});
+        emit Withdraw({_sender: msg.sender, _receiver: _to, _amount: _amount});
     }
 }

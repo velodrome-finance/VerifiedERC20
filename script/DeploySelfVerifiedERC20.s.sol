@@ -10,6 +10,7 @@ import {VerifiedERC20} from "../src/VerifiedERC20.sol";
 import {ERC20Lockbox} from "../src/external/ERC20Lockbox.sol";
 import {SelfTransferHook} from "../src/hooks/extensions/SelfTransferHook.sol";
 import {SinglePermissionHook} from "../src/hooks/extensions/SinglePermissionHook.sol";
+import {AutoUnwrapHook} from "../src/hooks/extensions/AutoUnwrapHook.sol";
 
 contract DeploySelfVerifiedERC20 is Script {
     using CreateXLibrary for bytes11;
@@ -24,6 +25,7 @@ contract DeploySelfVerifiedERC20 is Script {
         string selfTransferHookName;
         address voter;
         address selfPassportSBT;
+        string autoUnwrapHookName;
         address verifiedERC20Factory;
         string outputFilename;
     }
@@ -32,6 +34,7 @@ contract DeploySelfVerifiedERC20 is Script {
     SinglePermissionHook public singlePermissionMintHook;
     SinglePermissionHook public singlePermissionBurnHook;
     SelfTransferHook public selfTransferHook;
+    AutoUnwrapHook public autoUnwrapHook;
     VerifiedERC20 public verifiedERC20;
     SelfDeploymentParams internal _params;
 
@@ -81,6 +84,17 @@ contract DeploySelfVerifiedERC20 is Script {
             _name: _params.selfTransferHookName,
             _voter: _params.voter,
             _selfPassportSBT: _params.selfPassportSBT
+        });
+
+        address[] memory lockboxes = new address[](1);
+        lockboxes[0] = address(lockbox);
+
+        autoUnwrapHook = new AutoUnwrapHook({
+            _name: _params.autoUnwrapHookName,
+            _voter: _params.voter,
+            _selfPassportSBT: _params.selfPassportSBT,
+            _verifiedERC20s: verifiedERC20s,
+            _lockboxes: lockboxes
         });
     }
 

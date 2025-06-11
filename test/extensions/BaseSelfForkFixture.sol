@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.19 <0.9.0;
 
-import {ERC20Lockbox} from "src/external/ERC20Lockbox.sol";
+import {ERC20Lockbox, IERC20Lockbox} from "src/external/ERC20Lockbox.sol";
 import {SelfTransferHook} from "src/hooks/extensions/SelfTransferHook.sol";
 import {SinglePermissionHook} from "src/hooks/extensions/SinglePermissionHook.sol";
+import {AutoUnwrapHook} from "src/hooks/extensions/AutoUnwrapHook.sol";
 import {TestSelfVerifiedERC20Deployment} from "test/mocks/TestSelfVerifiedERC20Deployment.sol";
 import {DeploySelfVerifiedERC20} from "script/DeploySelfVerifiedERC20.s.sol";
 import {MockIncentiveReward} from "test/mocks/MockIncentiveReward.sol";
@@ -20,6 +21,8 @@ abstract contract BaseSelfForkFixture is BaseForkFixture {
     SinglePermissionHook public singlePermissionMintHook;
     SinglePermissionHook public singlePermissionBurnHook;
     SelfTransferHook public selfTransferHook;
+    AutoUnwrapHook public autoUnwrapHook;
+
     DeploySelfVerifiedERC20.SelfDeploymentParams internal _selfParams;
 
     MockIncentiveReward public incentiveReward;
@@ -50,6 +53,7 @@ abstract contract BaseSelfForkFixture is BaseForkFixture {
             selfTransferHookName: "Self Transfer Hook to restrict incentive claims to users verified on self",
             voter: VOTER,
             selfPassportSBT: address(selfPassportSBT),
+            autoUnwrapHookName: "Auto Unwrap Hook to automatically unwrap verified erc20 to the base token on claim incentive",
             verifiedERC20Factory: address(verifiedERC20Factory),
             outputFilename: ""
         });
@@ -60,6 +64,7 @@ abstract contract BaseSelfForkFixture is BaseForkFixture {
         singlePermissionMintHook = selfVerifiedERC20Deployment.singlePermissionMintHook();
         singlePermissionBurnHook = selfVerifiedERC20Deployment.singlePermissionBurnHook();
         selfTransferHook = selfVerifiedERC20Deployment.selfTransferHook();
+        autoUnwrapHook = selfVerifiedERC20Deployment.autoUnwrapHook();
         verifiedERC20 = selfVerifiedERC20Deployment.verifiedERC20();
 
         incentiveReward = new MockIncentiveReward();
@@ -80,6 +85,7 @@ abstract contract BaseSelfForkFixture is BaseForkFixture {
             _hook: address(selfTransferHook),
             _entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER
         });
+        hookRegistry.registerHook({_hook: address(autoUnwrapHook), _entrypoint: IHookRegistry.Entrypoint.AFTER_TRANSFER});
         vm.stopPrank();
 
         // Activate hooks in verified ERC20
@@ -87,6 +93,7 @@ abstract contract BaseSelfForkFixture is BaseForkFixture {
         verifiedERC20.activateHook({_hook: address(singlePermissionMintHook)});
         verifiedERC20.activateHook({_hook: address(singlePermissionBurnHook)});
         verifiedERC20.activateHook({_hook: address(selfTransferHook)});
+        verifiedERC20.activateHook({_hook: address(autoUnwrapHook)});
         vm.stopPrank();
     }
 
@@ -97,5 +104,6 @@ abstract contract BaseSelfForkFixture is BaseForkFixture {
         vm.label({account: address(singlePermissionMintHook), newLabel: "SinglePermissionMintHook"});
         vm.label({account: address(singlePermissionBurnHook), newLabel: "SinglePermissionBurnHook"});
         vm.label({account: address(selfTransferHook), newLabel: "SelfTransferHook"});
+        vm.label({account: address(autoUnwrapHook), newLabel: "AutoUnwrapHook"});
     }
 }
