@@ -10,7 +10,7 @@ contract MintConcreteTest is VerifiedERC20Test {
         address _account = users.alice;
         vm.expectRevert(
             abi.encodeWithSelector(
-                IVerifiedERC20.VerfiedERC20_HookRevert.selector,
+                IVerifiedERC20.VerifiedERC20_HookRevert.selector,
                 abi.encode(
                     bytes32(
                         abi.encodeWithSelector(IHook.Hook_Revert.selector, abi.encode(address(this), _account, _amount))
