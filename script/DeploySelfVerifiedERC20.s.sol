@@ -92,7 +92,6 @@ contract DeploySelfVerifiedERC20 is Script {
         autoUnwrapHook = new AutoUnwrapHook({
             _name: _params.autoUnwrapHookName,
             _voter: _params.voter,
-            _selfPassportSBT: _params.selfPassportSBT,
             _verifiedERC20s: verifiedERC20s,
             _lockboxes: lockboxes
         });
