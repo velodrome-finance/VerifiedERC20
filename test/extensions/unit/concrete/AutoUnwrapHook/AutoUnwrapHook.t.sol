@@ -9,7 +9,6 @@ contract AutoUnwrapHookTest is BaseSelfForkFixture {
 
         assertEq(autoUnwrapHook.voter(), _selfParams.voter);
 
-        assertEq(autoUnwrapHook.lastExecuted(), 0);
         assertEq(autoUnwrapHook.lockbox(address(verifiedERC20)), address(lockbox));
     }
 }

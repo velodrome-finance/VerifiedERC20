@@ -36,9 +36,6 @@ contract AutoUnwrapHook is BaseTransferHook {
     /// @notice Address of the voter contract to check if a transfer is a claim incentive
     address public immutable voter;
 
-    /// @notice Timestamp of the last executed auto unwrap action to prevent infinite loop
-    uint256 public lastExecuted;
-
     /// @notice Mapping of verified ERC20 addresses to their corresponding lockbox addresses
     mapping(address _verifiedERC20 => address _lockbox) public lockbox;
 
@@ -101,9 +98,7 @@ contract AutoUnwrapHook is BaseTransferHook {
     //slither-disable-start unchecked-transfer
     //slither-disable-start reentrancy-no-eth
     function _check(address _caller, address _from, address _to, uint256 _amount) internal override {
-        if (block.timestamp > lastExecuted && _isClaimIncentive({_from: _from})) {
-            lastExecuted = block.timestamp;
-
+        if (_isClaimIncentive({_from: _from})) {
             IVerifiedERC20 verifiedERC20 = IVerifiedERC20(msg.sender);
             IERC20Lockbox _lockbox = IERC20Lockbox(lockbox[msg.sender]);
 
