@@ -11,6 +11,3 @@
 [submodule "lib/ExcessivelySafeCall"]
 	path = lib/ExcessivelySafeCall
 	url = https://github.com/nomad-xyz/ExcessivelySafeCall
-[submodule "lib/superchain-contracts"]
-	path = lib/superchain-contracts
-	url = https://github.com/velodrome-finance/superchain-contracts
