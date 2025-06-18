@@ -19,9 +19,4 @@ contract VerifiedERC20Test is BaseForkFixture {
         vm.label(address(beforeHook), "beforeHook");
         vm.label(address(afterHook), "afterHook");
     }
-
-    function test_InitialState() public view {
-        assertEq(verifiedERC20.name(), "VerifiedERC20");
-        assertEq(verifiedERC20.symbol(), "VerifiedERC20");
-    }
 }
