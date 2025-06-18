@@ -111,6 +111,7 @@ contract TransferFromFuzzTest is VerifiedERC20Test {
         _balance = bound(_balance, _amount, MAX_TOKENS);
         address _from = users.alice;
         address _caller = users.bob;
+        uint256 balanceBefore = verifiedERC20.balanceOf({account: _to});
 
         vm.prank(address(lockbox));
         verifiedERC20.mint({_account: _from, _value: _balance});
@@ -122,6 +123,6 @@ contract TransferFromFuzzTest is VerifiedERC20Test {
         verifiedERC20.transferFrom({from: _from, to: _to, value: _amount});
         assertEq(verifiedERC20.allowance({owner: _from, spender: users.bob}), MAX_TOKENS - _amount);
         assertEq(verifiedERC20.balanceOf({account: _from}), _balance - _amount);
-        assertEq(verifiedERC20.balanceOf({account: _to}), _amount);
+        assertEq(verifiedERC20.balanceOf({account: _to}), balanceBefore + _amount);
     }
 }
