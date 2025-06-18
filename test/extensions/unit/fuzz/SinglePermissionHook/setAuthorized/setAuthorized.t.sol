@@ -15,13 +15,13 @@ contract SetAuthorizedFuzzTest is SinglePermissionHookTest {
         singlePermissionBurnHook.setAuthorized({_verifiedERC20: _verifiedERC20, _authorized: _authorized});
     }
 
-    modifier whenTheAuthorizedPassedInNotTheZeroAddress() {
+    modifier whenTheAuthorizedPassedIsNotTheZeroAddress() {
         _;
     }
 
     function testFuzz_WhenTheVerifiedERC20PassedIsTheZeroAddress(address _authorized)
         external
-        whenTheAuthorizedPassedInNotTheZeroAddress
+        whenTheAuthorizedPassedIsNotTheZeroAddress
     {
         // It should revert with {SinglePermissionHook_ZeroAddress}
         vm.assume(_authorized != address(0));
@@ -39,7 +39,7 @@ contract SetAuthorizedFuzzTest is SinglePermissionHookTest {
 
     function test_WhenTheCallerIsNotTheVerifiedERC20Owner(address _caller)
         external
-        whenTheAuthorizedPassedInNotTheZeroAddress
+        whenTheAuthorizedPassedIsNotTheZeroAddress
         whenTheVerifiedERC20PassedIsNotTheZeroAddress
     {
         // It should revert with {SinglePermissionHook_NotAuthorized}
@@ -64,7 +64,7 @@ contract SetAuthorizedFuzzTest is SinglePermissionHookTest {
 
     function testFuzz_WhenTheCallerIsTheVerifiedERC20Owner()
         external
-        whenTheAuthorizedPassedInNotTheZeroAddress
+        whenTheAuthorizedPassedIsNotTheZeroAddress
         whenTheVerifiedERC20PassedIsNotTheZeroAddress
     {
         // It should call set the authorized mapping

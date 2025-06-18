@@ -14,11 +14,11 @@ contract SetAuthorizedConcreteTest is SinglePermissionHookTest {
         singlePermissionBurnHook.setAuthorized({_verifiedERC20: address(verifiedERC20), _authorized: _authorized});
     }
 
-    modifier whenTheAuthorizedPassedInNotTheZeroAddress() {
+    modifier whenTheAuthorizedPassedIsNotTheZeroAddress() {
         _;
     }
 
-    function test_WhenTheVerifiedERC20PassedIsTheZeroAddress() external whenTheAuthorizedPassedInNotTheZeroAddress {
+    function test_WhenTheVerifiedERC20PassedIsTheZeroAddress() external whenTheAuthorizedPassedIsNotTheZeroAddress {
         // It should revert with {SinglePermissionHook_ZeroAddress}
         address _authorized = users.alice;
         address _verifiedERC20 = address(0);
@@ -35,7 +35,7 @@ contract SetAuthorizedConcreteTest is SinglePermissionHookTest {
 
     function test_WhenTheCallerIsNotTheVerifiedERC20Owner()
         external
-        whenTheAuthorizedPassedInNotTheZeroAddress
+        whenTheAuthorizedPassedIsNotTheZeroAddress
         whenTheVerifiedERC20PassedIsNotTheZeroAddress
     {
         // It should revert with {SinglePermissionHook_NotAuthorized}
@@ -65,7 +65,7 @@ contract SetAuthorizedConcreteTest is SinglePermissionHookTest {
 
     function test_WhenTheCallerIsTheVerifiedERC20Owner()
         external
-        whenTheAuthorizedPassedInNotTheZeroAddress
+        whenTheAuthorizedPassedIsNotTheZeroAddress
         whenTheVerifiedERC20PassedIsNotTheZeroAddress
     {
         // It should call set the authorized mapping
@@ -88,7 +88,7 @@ contract SetAuthorizedConcreteTest is SinglePermissionHookTest {
 
     function testGas_setAuthorized()
         external
-        whenTheAuthorizedPassedInNotTheZeroAddress
+        whenTheAuthorizedPassedIsNotTheZeroAddress
         whenTheVerifiedERC20PassedIsNotTheZeroAddress
     {
         // It should call set the authorized mapping
