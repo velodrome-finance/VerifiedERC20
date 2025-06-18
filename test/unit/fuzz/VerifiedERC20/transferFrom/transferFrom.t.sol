@@ -57,11 +57,11 @@ contract TransferFromFuzzTest is VerifiedERC20Test {
         // It should revert with {ERC20InvalidSender}
         _amount = bound(_amount, 1, MAX_TOKENS);
         address _to = users.bob;
+        address _caller = users.charlie;
 
         /// @dev it's not possible to approve the zero address, so the revert is InsufficientAllowance instead of InvalidSender
-        vm.expectRevert(
-            abi.encodeWithSelector(IERC20Errors.ERC20InsufficientAllowance.selector, address(this), 0, _amount)
-        );
+        vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientAllowance.selector, _caller, 0, _amount));
+        vm.prank(_caller);
         verifiedERC20.transferFrom({from: address(0), to: _to, value: _amount});
     }
 

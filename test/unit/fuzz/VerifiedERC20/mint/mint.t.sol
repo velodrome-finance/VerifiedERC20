@@ -27,20 +27,22 @@ contract MintFuzzTest is VerifiedERC20Test {
         // It should call the after hook
         // It should mint the amount to the user
         vm.assume(_account != address(0));
+        address _caller = users.alice;
 
         /// @dev check hooks are called only once per entrypoint
         vm.expectCall({
             callee: address(beforeHook),
-            data: abi.encodeCall(IHook.check, (address(this), abi.encode(_account, _amount))),
+            data: abi.encodeCall(IHook.check, (_caller, abi.encode(_account, _amount))),
             count: 1
         });
         vm.expectCall({
             callee: address(afterHook),
-            data: abi.encodeCall(IHook.check, (address(this), abi.encode(_account, _amount))),
+            data: abi.encodeCall(IHook.check, (_caller, abi.encode(_account, _amount))),
             count: 1
         });
         vm.expectEmit(address(verifiedERC20));
         emit IERC20.Transfer({from: address(0), to: _account, value: _amount});
+        vm.prank(_caller);
         verifiedERC20.mint({_account: _account, _value: _amount});
 
         assertEq(verifiedERC20.balanceOf({account: _account}), _amount);

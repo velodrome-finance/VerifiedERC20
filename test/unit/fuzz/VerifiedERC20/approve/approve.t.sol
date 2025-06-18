@@ -30,21 +30,23 @@ contract ApproveFuzzTest is VerifiedERC20Test {
         // It should set the allowance correctly
 
         vm.assume(_spender != address(0));
+        address _caller = users.alice;
         /// @dev check hooks are called only once per entrypoint
         vm.expectCall({
             callee: address(beforeHook),
-            data: abi.encodeCall(IHook.check, (address(this), abi.encode(_spender, _amount))),
+            data: abi.encodeCall(IHook.check, (_caller, abi.encode(_spender, _amount))),
             count: 1
         });
         vm.expectCall({
             callee: address(afterHook),
-            data: abi.encodeCall(IHook.check, (address(this), abi.encode(_spender, _amount))),
+            data: abi.encodeCall(IHook.check, (_caller, abi.encode(_spender, _amount))),
             count: 1
         });
         vm.expectEmit(address(verifiedERC20));
-        emit IERC20.Approval({owner: address(this), spender: _spender, value: _amount});
+        emit IERC20.Approval({owner: _caller, spender: _spender, value: _amount});
+        vm.prank(_caller);
         verifiedERC20.approve({spender: _spender, value: _amount});
 
-        assertEq(verifiedERC20.allowance({owner: address(this), spender: _spender}), _amount);
+        assertEq(verifiedERC20.allowance({owner: _caller, spender: _spender}), _amount);
     }
 }
