@@ -56,11 +56,8 @@ feedback by opening an issue here or by reaching out on our Discord servers.
 
 ## Development
 
-TODO: add dev/test instructions.
-
-
 Basic Foundry project, uses:
 - bulloak for branching test tree structure
 - foundry for compilation and testing
 - forge fmt for formatting
-- forge test --isolate for gas tests
+- forge test for tests (including gas tests)
