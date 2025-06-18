@@ -38,7 +38,7 @@ contract SinglePermissionHook is BaseHook {
             if (_authorized[i] == address(0) || _verifiedERC20s[i] == address(0)) {
                 revert SinglePermissionHook_ZeroAddress();
             }
-            authorized[_verifiedERC20s[i]] = _authorized[i];
+            _setAuthorized({_verifiedERC20: _verifiedERC20s[i], _authorized: _authorized[i]});
             unchecked {
                 i++;
             }
