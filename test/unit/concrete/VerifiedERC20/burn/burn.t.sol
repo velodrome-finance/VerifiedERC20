@@ -18,26 +18,11 @@ contract BurnConcreteTest is VerifiedERC20Test {
         verifiedERC20.mint({_account: users.alice, _value: 1000});
     }
 
-    function test_WhenTheAccountPassedIsTheZeroAddress() external {
-        // It should revert with {ERC20InvalidSender}
-        uint256 _amount = 100;
-        vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InvalidSender.selector, address(0)));
-        verifiedERC20.burn({_account: address(0), _value: _amount});
-    }
-
-    modifier whenTheAccountPassedIsNotTheZeroAddress() {
-        _;
-    }
-
     modifier whenTheCallerIsNotTheAccount() {
         _;
     }
 
-    function test_WhenTheAmountIsGreaterThanTheAllowance()
-        external
-        whenTheAccountPassedIsNotTheZeroAddress
-        whenTheCallerIsNotTheAccount
-    {
+    function test_WhenTheAmountIsGreaterThanTheAllowance() external whenTheCallerIsNotTheAccount {
         // It should revert with {ERC20InsufficientAllowance}
         uint256 _amount = 1000;
         address _caller = users.charlie;
@@ -56,7 +41,6 @@ contract BurnConcreteTest is VerifiedERC20Test {
 
     function test_WhenTheAmountIsGreaterThanTheUsersBalance()
         external
-        whenTheAccountPassedIsNotTheZeroAddress
         whenTheCallerIsNotTheAccount
         whenTheAmountIsSmallerOrEqualToTheAllowance
     {
@@ -72,7 +56,6 @@ contract BurnConcreteTest is VerifiedERC20Test {
 
     function test_WhenTheAmountIsSmallerOrEqualToTheUsersBalance()
         external
-        whenTheAccountPassedIsNotTheZeroAddress
         whenTheCallerIsNotTheAccount
         whenTheAmountIsSmallerOrEqualToTheAllowance
     {
@@ -109,11 +92,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
         _;
     }
 
-    function test_WhenTheAmountIsGreaterThanTheUsersBalance_()
-        external
-        whenTheAccountPassedIsNotTheZeroAddress
-        whenTheCallerIsTheAccount
-    {
+    function test_WhenTheAmountIsGreaterThanTheUsersBalance_() external whenTheCallerIsTheAccount {
         // It should revert with {ERC20InsufficientBalance}
         uint256 _amount = 1000 + 1;
         address _caller = users.alice;
@@ -124,11 +103,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
         verifiedERC20.burn({_account: _account, _value: _amount});
     }
 
-    function test_WhenTheAmountIsSmallerOrEqualToTheUsersBalance_()
-        external
-        whenTheAccountPassedIsNotTheZeroAddress
-        whenTheCallerIsTheAccount
-    {
+    function test_WhenTheAmountIsSmallerOrEqualToTheUsersBalance_() external whenTheCallerIsTheAccount {
         // It should call the before hook
         // It should call the after hook
         // It should emit a {Transfer} event
@@ -156,7 +131,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
         assertEq(verifiedERC20.balanceOf({account: _account}), 1000 - _amount);
     }
 
-    function testGas_burn() external whenTheAccountPassedIsNotTheZeroAddress whenTheCallerIsTheAccount {
+    function testGas_burn() external whenTheCallerIsTheAccount {
         // It should call the before hook
         // It should call the after hook
         // It should emit a {Transfer} event

@@ -220,6 +220,10 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
     /// @inheritdoc IVerifiedERC20
     function burn(address _account, uint256 _value) external nonReentrant {
         _checkHooks({_entrypoint: IHookRegistry.Entrypoint.BEFORE_BURN, _params: abi.encode(_account, _value)});
+        /// @dev If burn is called from a different address, we need to check allowance
+        if (msg.sender != _account) {
+            _spendAllowance({owner: _account, spender: msg.sender, value: _value});
+        }
         _burn({account: _account, value: _value});
         _checkHooks({_entrypoint: IHookRegistry.Entrypoint.AFTER_BURN, _params: abi.encode(_account, _value)});
     }
@@ -242,11 +246,6 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
      *
      */
     function _update(address from, address to, uint256 value) internal override {
-        /// @dev If burn is called from different address, we need to check allowance
-        if (to == address(0) && msg.sender != from) {
-            _spendAllowance({owner: from, spender: msg.sender, value: value});
-        }
-
         if (from != address(0) && to != address(0)) {
             _checkHooks({_entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER, _params: abi.encode(from, to, value)});
         }

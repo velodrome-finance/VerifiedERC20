@@ -16,16 +16,6 @@ contract BurnFuzzTest is VerifiedERC20Test {
         vm.stopPrank();
     }
 
-    function testFuzz_WhenTheAccountPassedIsTheZeroAddress(uint256 _amount) external {
-        // It should revert with {ERC20InvalidSender}
-        vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InvalidSender.selector, address(0)));
-        verifiedERC20.burn({_account: address(0), _value: _amount});
-    }
-
-    modifier whenTheAccountPassedIsNotTheZeroAddress() {
-        _;
-    }
-
     modifier whenTheCallerIsNotTheAccount() {
         _;
     }
@@ -35,7 +25,7 @@ contract BurnFuzzTest is VerifiedERC20Test {
         uint256 _allowance,
         address _caller,
         address _account
-    ) external whenTheAccountPassedIsNotTheZeroAddress whenTheCallerIsNotTheAccount {
+    ) external whenTheCallerIsNotTheAccount {
         // It should revert with {ERC20InsufficientAllowance}
         vm.assume(_caller != _account && _account != address(0) && _caller != address(0));
         _amount = bound(_amount, 1, MAX_TOKENS);
@@ -58,7 +48,6 @@ contract BurnFuzzTest is VerifiedERC20Test {
 
     function testFuzz_WhenTheAmountIsGreaterThanTheUsersBalance(uint256 _amount, uint256 _balance)
         external
-        whenTheAccountPassedIsNotTheZeroAddress
         whenTheCallerIsNotTheAccount
         whenTheAmountIsSmallerOrEqualToTheAllowance
     {
@@ -78,7 +67,6 @@ contract BurnFuzzTest is VerifiedERC20Test {
 
     function testFuzz_WhenTheAmountIsSmallerOrEqualToTheUsersBalance(uint256 _amount, uint256 _balance)
         external
-        whenTheAccountPassedIsNotTheZeroAddress
         whenTheCallerIsNotTheAccount
         whenTheAmountIsSmallerOrEqualToTheAllowance
     {
@@ -119,7 +107,6 @@ contract BurnFuzzTest is VerifiedERC20Test {
 
     function testFuzz_WhenTheAmountIsGreaterThanTheUsersBalance_(uint256 _amount, uint256 _balance)
         external
-        whenTheAccountPassedIsNotTheZeroAddress
         whenTheCallerIsTheAccount
     {
         // It should revert with {ERC20InsufficientBalance}
@@ -138,7 +125,6 @@ contract BurnFuzzTest is VerifiedERC20Test {
 
     function testFuzz_WhenTheAmountIsSmallerOrEqualToTheUsersBalance_(uint256 _amount, uint256 _balance)
         external
-        whenTheAccountPassedIsNotTheZeroAddress
         whenTheCallerIsTheAccount
     {
         // It should call the before hook

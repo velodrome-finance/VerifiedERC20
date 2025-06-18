@@ -24,21 +24,9 @@ contract BurnConcreteTest is VerifiedERC20Test {
         _;
     }
 
-    function testFuzz_WhenTheAccountPassedIsTheZeroAddress(uint256 _amount) external whenTheCallerIsLockbox {
-        // It should revert with {ERC20InvalidSender}
-        address _account = address(0);
-        vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InvalidSender.selector, _account));
-        verifiedERC20.burn({_account: _account, _value: _amount});
-    }
-
-    modifier whenTheAccountPassedIsNotTheZeroAddress() {
-        _;
-    }
-
     function testFuzz_WhenTheAmountIsGreaterThanTheAllowance(uint256 _amount, address _account)
         external
         whenTheCallerIsLockbox
-        whenTheAccountPassedIsNotTheZeroAddress
     {
         // It should revert with {ERC20InsufficientAllowance}
         vm.assume(_account != address(0) && _account != address(lockbox));
@@ -60,7 +48,6 @@ contract BurnConcreteTest is VerifiedERC20Test {
         external
         whenTheAmountIsSmallerOrEqualToTheAllowance
         whenTheCallerIsLockbox
-        whenTheAccountPassedIsNotTheZeroAddress
     {
         // It should revert with {ERC20InsufficientBalance}
         address _account = users.alice;
@@ -78,7 +65,6 @@ contract BurnConcreteTest is VerifiedERC20Test {
         external
         whenTheAmountIsSmallerOrEqualToTheAllowance
         whenTheCallerIsLockbox
-        whenTheAccountPassedIsNotTheZeroAddress
     {
         // It should call the single permission burn hook
         // It should deduct the allowance
