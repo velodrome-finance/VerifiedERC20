@@ -12,6 +12,11 @@ import {IVerifiedERC20} from "./interfaces/IVerifiedERC20.sol";
 import {IHookRegistry} from "./interfaces/hooks/IHookRegistry.sol";
 import {IHook} from "./interfaces/hooks/IHook.sol";
 
+/**
+ * @title VerifiedERC20
+ * @notice An ERC20 token with support for hooks that can be activated and deactivated by the owner.
+ * Hooks are registered in a hook registry and can be called at various entrypoints.
+ */
 contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransient, IVerifiedERC20 {
     using ExcessivelySafeCall for address;
 
@@ -41,6 +46,10 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
     /// @inheritdoc IVerifiedERC20
     mapping(address _hook => bool) public isHookActivated;
 
+    /**
+     * @notice Constructor for VerifiedERC20
+     * @dev Only used to disable initializers in the constructor since the factory deploys via Clones
+     */
     constructor() ERC20("", "") Ownable(address(this)) {
         _disableInitializers();
     }
@@ -72,18 +81,26 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
         }
     }
 
+    /// @inheritdoc ERC20
     function name() public view override returns (string memory) {
         return _name;
     }
 
+    /// @inheritdoc ERC20
     function symbol() public view override returns (string memory) {
         return _symbol;
     }
 
+    /// @inheritdoc IVerifiedERC20
     function activateHook(address _hook) external onlyOwner {
         _activateHook({_hook: _hook});
     }
 
+    /**
+     * @dev Internal function to activate a hook
+     * @param _hook The address of the hook to activate
+     * @notice Reverts if the hook is not registered or already activated
+     */
     function _activateHook(address _hook) internal {
         if (!IHookRegistry(hookRegistry).isHookRegistered({_hook: _hook})) {
             revert VerifiedERC20_InvalidHook({hook: _hook});

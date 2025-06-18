@@ -5,6 +5,7 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 import {IHookRegistry} from "../../interfaces/hooks/IHookRegistry.sol";
 import {IVerifiedERC20} from "../../interfaces/IVerifiedERC20.sol";
+import {IHook} from "../../interfaces/hooks/IHook.sol";
 
 import {BaseHook} from "../BaseHook.sol";
 
@@ -45,6 +46,7 @@ contract SinglePermissionHook is BaseHook {
         }
     }
 
+    /// @inheritdoc IHook
     function supportsEntrypoint(IHookRegistry.Entrypoint _entrypoint) external pure override returns (bool) {
         return
             _entrypoint == IHookRegistry.Entrypoint.BEFORE_MINT || _entrypoint == IHookRegistry.Entrypoint.BEFORE_BURN;
@@ -82,6 +84,11 @@ contract SinglePermissionHook is BaseHook {
         _setAuthorized({_verifiedERC20: _verifiedERC20, _authorized: _authorized});
     }
 
+    /**
+     * @dev Internal function to set the authorized address for a verified ERC20
+     * @param _verifiedERC20 The address of the verified ERC20
+     * @param _authorized The address of the authorized caller
+     */
     function _setAuthorized(address _verifiedERC20, address _authorized) internal {
         authorized[_verifiedERC20] = _authorized;
 
