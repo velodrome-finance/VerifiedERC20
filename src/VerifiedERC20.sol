@@ -246,11 +246,12 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
      *
      */
     function _update(address from, address to, uint256 value) internal override {
-        if (from != address(0) && to != address(0)) {
+        bool isTransfer = from != address(0) && to != address(0);
+        if (isTransfer) {
             _checkHooks({_entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER, _params: abi.encode(from, to, value)});
         }
         super._update({from: from, to: to, value: value});
-        if (from != address(0) && to != address(0)) {
+        if (isTransfer) {
             _checkHooks({_entrypoint: IHookRegistry.Entrypoint.AFTER_TRANSFER, _params: abi.encode(from, to, value)});
         }
     }
