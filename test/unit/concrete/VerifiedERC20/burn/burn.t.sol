@@ -155,4 +155,18 @@ contract BurnConcreteTest is VerifiedERC20Test {
 
         assertEq(verifiedERC20.balanceOf({account: _account}), 1000 - _amount);
     }
+
+    function testGas_burn() external whenTheAccountPassedIsNotTheZeroAddress whenTheCallerIsTheAccount {
+        // It should call the before hook
+        // It should call the after hook
+        // It should emit a {Transfer} event
+        // It should burn the amount from the user
+        uint256 _amount = 1000 - 1;
+        address _account = users.alice;
+        address _caller = users.alice;
+
+        vm.startPrank(_caller);
+        verifiedERC20.burn({_account: _account, _value: _amount});
+        vm.snapshotGasLastCall({name: "VerifiedERC20_burn"});
+    }
 }

@@ -49,4 +49,17 @@ contract MintConcreteTest is VerifiedERC20Test {
 
         assertEq(verifiedERC20.balanceOf({account: _account}), _amount);
     }
+
+    function testGas_mint() external {
+        // It should call the before hook
+        // It should call the after hook
+        // It should mint the amount to the user
+        uint256 _amount = 100;
+        address _account = users.alice;
+        address _caller = users.bob;
+
+        vm.prank(_caller);
+        verifiedERC20.mint({_account: _account, _value: _amount});
+        vm.snapshotGasLastCall({name: "VerifiedERC20_mint"});
+    }
 }

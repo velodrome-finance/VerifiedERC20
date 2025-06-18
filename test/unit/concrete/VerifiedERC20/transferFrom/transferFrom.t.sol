@@ -129,4 +129,25 @@ contract TransferFromConcreteTest is VerifiedERC20Test {
         assertEq(verifiedERC20.balanceOf({account: _from}), 1000 - _amount);
         assertEq(verifiedERC20.balanceOf({account: _to}), _amount);
     }
+
+    function testGas_transferFrom()
+        external
+        whenTheAmountIsSmallerOrEqualToTheAllowance(1000 - 1)
+        whenTheFromAddressIsNotTheZeroAddress
+        whenTheToAddressIsNotTheZeroAddress
+    {
+        // It should call the before hook
+        // It should deduct the allowance
+        // It should transfer the amount
+        // It should call the after hook
+        // It should emit a {Transfer} event
+        uint256 _amount = 1000 - 1;
+        address _from = users.alice;
+        address _to = users.bob;
+        address _caller = users.bob;
+
+        vm.prank(_caller);
+        verifiedERC20.transferFrom({from: _from, to: _to, value: _amount});
+        vm.snapshotGasLastCall({name: "VerifiedERC20_transferFrom"});
+    }
 }

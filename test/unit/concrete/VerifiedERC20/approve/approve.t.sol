@@ -52,4 +52,19 @@ contract ApproveConcreteTest is VerifiedERC20Test {
 
         assertEq(verifiedERC20.allowance({owner: _caller, spender: _spender}), _amount);
     }
+
+    function testGas_approve() external {
+        // It should call the before hook
+        // It should call the after hook
+        // It should emit an {Approval} event
+        // It should set the allowance correctly
+
+        uint256 _amount = 100;
+        address _spender = users.alice;
+        address _caller = users.bob;
+
+        vm.prank(_caller);
+        verifiedERC20.approve({spender: _spender, value: _amount});
+        vm.snapshotGasLastCall({name: "VerifiedERC20_approve"});
+    }
 }

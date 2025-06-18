@@ -52,4 +52,15 @@ contract MintConcreteTest is VerifiedERC20Test {
 
         assertEq(verifiedERC20.balanceOf({account: _account}), _amount);
     }
+
+    function testGas_mint() external whenTheCallerIsLockbox {
+        // It should call the single permission mint hook
+        // It should emit a {Transfer} event
+        // It should mint the amount to the user
+        uint256 _amount = 100;
+        address _account = users.alice;
+
+        verifiedERC20.mint({_account: _account, _value: _amount});
+        vm.snapshotGasLastCall({name: "SelfVerifiedERC20_mint"});
+    }
 }

@@ -85,4 +85,19 @@ contract SetAuthorizedConcreteTest is SinglePermissionHookTest {
         assertEq(singlePermissionMintHook.authorized({_verifiedERC20: _verifiedERC20}), users.alice);
         assertEq(singlePermissionBurnHook.authorized({_verifiedERC20: _verifiedERC20}), users.alice);
     }
+
+    function testGas_setAuthorized()
+        external
+        whenTheAuthorizedPassedInNotTheZeroAddress
+        whenTheVerifiedERC20PassedIsNotTheZeroAddress
+    {
+        // It should call set the authorized mapping
+        // It should emit a {AuthorizedSet} event
+        address _authorized = users.alice;
+        address _verifiedERC20 = address(verifiedERC20);
+
+        vm.startPrank(users.owner);
+        singlePermissionMintHook.setAuthorized({_verifiedERC20: _verifiedERC20, _authorized: _authorized});
+        vm.snapshotGasLastCall({name: "SinglePermissionHook_setAuthorized"});
+    }
 }
