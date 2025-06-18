@@ -212,7 +212,7 @@ contract TransferFuzzTest is VerifiedERC20Test {
         // It should call the self transfer hook
         // It should emit a {Transfer} event
         // It should transfer the amount
-        vm.assume(_to != address(0));
+        vm.assume(_to != address(0) && _to != users.alice);
         uint256 balanceBefore = verifiedERC20.balanceOf(_to);
         address _from = users.alice;
         vm.prank(address(lockbox));
