@@ -67,7 +67,7 @@ contract SetAuthorizedFuzzTest is SinglePermissionHookTest {
         whenTheAuthorizedPassedIsNotTheZeroAddress
         whenTheVerifiedERC20PassedIsNotTheZeroAddress
     {
-        // It should call set the authorized mapping
+        // It should set the authorized mapping
         // It should emit a {AuthorizedSet} event
     }
 }

@@ -68,7 +68,7 @@ contract SetAuthorizedConcreteTest is SinglePermissionHookTest {
         whenTheAuthorizedPassedIsNotTheZeroAddress
         whenTheVerifiedERC20PassedIsNotTheZeroAddress
     {
-        // It should call set the authorized mapping
+        // It should set the authorized mapping
         // It should emit a {AuthorizedSet} event
         address _authorized = users.alice;
         address _verifiedERC20 = address(verifiedERC20);
@@ -91,7 +91,7 @@ contract SetAuthorizedConcreteTest is SinglePermissionHookTest {
         whenTheAuthorizedPassedIsNotTheZeroAddress
         whenTheVerifiedERC20PassedIsNotTheZeroAddress
     {
-        // It should call set the authorized mapping
+        // It should set the authorized mapping
         // It should emit a {AuthorizedSet} event
         address _authorized = users.alice;
         address _verifiedERC20 = address(verifiedERC20);

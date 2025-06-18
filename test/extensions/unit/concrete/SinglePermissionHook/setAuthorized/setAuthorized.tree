@@ -8,5 +8,5 @@ SetAuthorizedConcreteTest
         ├── When the caller is not the verifiedERC20 owner 
         │   └── It should revert with {SinglePermissionHook_NotAuthorized}
         └── When the caller is the verifiedERC20 owner 
-            ├──It should call set the authorized mapping
+            ├──It should set the authorized mapping
             └──It should emit a {AuthorizedSet} event
