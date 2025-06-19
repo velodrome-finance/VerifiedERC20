@@ -85,7 +85,7 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
     }
 
     function _activateHook(address _hook) internal {
-        address _hookRegistry;
+        address _hookRegistry = hookRegistry;
         if (!IHookRegistry(_hookRegistry).isHookRegistered({_hook: _hook})) {
             revert VerifiedERC20_InvalidHook({hook: _hook});
         }
