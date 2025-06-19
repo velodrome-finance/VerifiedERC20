@@ -9,36 +9,24 @@ import {IPoolFactory} from "../../../src/interfaces/external/IPoolFactory.sol";
 import {VelodromeTimeLibrary} from "../../../src/libraries/VelodromeTimeLibrary.sol";
 
 contract IncentiveFlowTest is BaseSelfForkFixture {
-    address poolFactory;
-    address votingRewardsFactory;
-    address gaugeFactory;
-    address token0;
+    address poolFactory = 0x31832f2a97Fd20664D76Cc421207669b55CE4BC0;
+    address votingRewardsFactory = 0x7dc9fd82f91B36F416A89f5478375e4a79f4Fb2F;
+    address gaugeFactory = 0x42e403b73898320f23109708b0ba1Ae85838C445;
+    address token0 = CELO;
     address token1;
-    uint24 _poolParam;
-    address leafHLMessageModule;
-    address leafVoter;
-    uint256 incentiveAmount;
-    uint256 aliceVotingPower;
-    uint256 bobVotingPower;
-    uint256 aliceTokenId;
-    uint256 bobTokenId;
+    uint24 _poolParam = 0;
+    address leafHLMessageModule = 0x2BbA7515F7cF114B45186274981888D8C2fBA15E;
+    address leafVoter = 0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123;
+    uint256 incentiveAmount = 1000 * TOKEN_1;
+    uint256 aliceVotingPower = 1000 * TOKEN_1;
+    uint256 bobVotingPower = 2000 * TOKEN_1;
+    uint256 aliceTokenId = 1;
+    uint256 bobTokenId = 2;
 
     function setUp() public override {
         super.setUp();
 
-        poolFactory = 0x31832f2a97Fd20664D76Cc421207669b55CE4BC0;
-        votingRewardsFactory = 0x7dc9fd82f91B36F416A89f5478375e4a79f4Fb2F;
-        gaugeFactory = 0x42e403b73898320f23109708b0ba1Ae85838C445;
-        token0 = CELO;
         token1 = address(verifiedERC20);
-        _poolParam = 0;
-        leafHLMessageModule = 0x2BbA7515F7cF114B45186274981888D8C2fBA15E;
-        leafVoter = 0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123;
-        incentiveAmount = 1000 * TOKEN_1;
-        aliceVotingPower = 1000 * TOKEN_1;
-        bobVotingPower = 2000 * TOKEN_1;
-        aliceTokenId = 1;
-        bobTokenId = 2;
 
         // create pool and gauge to WL verifiedERC20
         address pool = IPoolFactory(poolFactory).createPool({tokenA: token0, tokenB: token1, fee: _poolParam});
