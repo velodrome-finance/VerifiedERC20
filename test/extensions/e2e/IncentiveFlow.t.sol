@@ -47,8 +47,8 @@ contract IncentiveFlowTest is BaseSelfForkFixture {
         vm.stopPrank();
 
         // mock alice and bob verification
-        selfPassportSBT.mint({to: users.alice, tokenId: 1});
-        selfPassportSBT.mint({to: users.bob, tokenId: 2});
+        selfPassportSBT.mint({to: users.alice, tokenId: aliceTokenId});
+        selfPassportSBT.mint({to: users.bob, tokenId: bobTokenId});
 
         // alice and bob need to approve auto unwrap hook beforehand
         vm.prank(users.alice);
