@@ -12,9 +12,6 @@ contract IncentiveFlowTest is BaseSelfForkFixture {
     address poolFactory = 0x31832f2a97Fd20664D76Cc421207669b55CE4BC0;
     address votingRewardsFactory = 0x7dc9fd82f91B36F416A89f5478375e4a79f4Fb2F;
     address gaugeFactory = 0x42e403b73898320f23109708b0ba1Ae85838C445;
-    address token0 = CELO;
-    address token1;
-    uint24 _poolParam = 0;
     address leafHLMessageModule = 0x2BbA7515F7cF114B45186274981888D8C2fBA15E;
     address leafVoter = 0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123;
     uint256 incentiveAmount = 1000 * TOKEN_1;
@@ -26,10 +23,8 @@ contract IncentiveFlowTest is BaseSelfForkFixture {
     function setUp() public override {
         super.setUp();
 
-        token1 = address(verifiedERC20);
-
         // create pool and gauge to WL verifiedERC20
-        address pool = IPoolFactory(poolFactory).createPool({tokenA: token0, tokenB: token1, fee: _poolParam});
+        address pool = IPoolFactory(poolFactory).createPool({tokenA: CELO, tokenB: address(verifiedERC20), fee: 0});
 
         vm.prank(leafHLMessageModule);
         ILeafVoter(leafVoter).createGauge({
