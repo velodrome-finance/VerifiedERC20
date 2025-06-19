@@ -85,12 +85,13 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
     }
 
     function _activateHook(address _hook) internal {
-        if (!IHookRegistry(hookRegistry).isHookRegistered({_hook: _hook})) {
+        address _hookRegistry;
+        if (!IHookRegistry(_hookRegistry).isHookRegistered({_hook: _hook})) {
             revert VerifiedERC20_InvalidHook({hook: _hook});
         }
         if (isHookActivated[_hook]) revert VerifiedERC20_HookAlreadyActivated({hook: _hook});
 
-        IHookRegistry.Entrypoint entrypoint = IHookRegistry(hookRegistry).hookEntrypoints({_hook: _hook});
+        IHookRegistry.Entrypoint entrypoint = IHookRegistry(_hookRegistry).hookEntrypoints({_hook: _hook});
         uint256 index = _hooksByEntrypoint[uint8(entrypoint)].length;
 
         if (index >= MAX_HOOKS_PER_ENTRYPOINT) revert VerifiedERC20_MaxHooksExceeded();
