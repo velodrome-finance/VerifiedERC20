@@ -9,9 +9,6 @@ import {IPoolFactory} from "../../../src/interfaces/external/IPoolFactory.sol";
 import {VelodromeTimeLibrary} from "../../../src/libraries/VelodromeTimeLibrary.sol";
 
 contract IncentiveFlowTest is BaseSelfForkFixture {
-    address poolFactory = 0x31832f2a97Fd20664D76Cc421207669b55CE4BC0;
-    address votingRewardsFactory = 0x7dc9fd82f91B36F416A89f5478375e4a79f4Fb2F;
-    address gaugeFactory = 0x42e403b73898320f23109708b0ba1Ae85838C445;
     address leafHLMessageModule = 0x2BbA7515F7cF114B45186274981888D8C2fBA15E;
     address leafVoter = 0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123;
     uint256 incentiveAmount = 1000 * TOKEN_1;
@@ -22,6 +19,10 @@ contract IncentiveFlowTest is BaseSelfForkFixture {
 
     function setUp() public override {
         super.setUp();
+
+        address poolFactory = 0x31832f2a97Fd20664D76Cc421207669b55CE4BC0;
+        address votingRewardsFactory = 0x7dc9fd82f91B36F416A89f5478375e4a79f4Fb2F;
+        address gaugeFactory = 0x42e403b73898320f23109708b0ba1Ae85838C445;
 
         // create pool and gauge to WL verifiedERC20
         address pool = IPoolFactory(poolFactory).createPool({tokenA: CELO, tokenB: address(verifiedERC20), fee: 0});
