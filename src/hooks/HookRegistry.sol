@@ -16,6 +16,9 @@ import {IHook} from "../interfaces/hooks/IHook.sol";
 contract HookRegistry is IHookRegistry, Ownable, ReentrancyGuardTransient {
     using EnumerableSet for EnumerableSet.AddressSet;
 
+    /// @inheritdoc IHookRegistry
+    uint256 public constant MAX_ENTRYPOINTS = 8;
+
     // Set of registered hooks
     EnumerableSet.AddressSet private _hooks;
 

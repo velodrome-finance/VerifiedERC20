@@ -50,6 +50,12 @@ interface IHookRegistry {
     error HookRegistry_HookDoesNotSupportEntrypoint(Entrypoint entrypoint);
 
     /**
+     * @dev Returns the maximum number of entrypoints supported by hooks
+     * @return The maximum number of entrypoints
+     */
+    function MAX_ENTRYPOINTS() external pure returns (uint256);
+
+    /**
      * @dev Registers a hook with the specified entrypoint
      * @param _hook Address of the hook to register
      * @param _entrypoint The entrypoint to assign to the hook
