@@ -208,16 +208,6 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
         _checkHooks({_entrypoint: IHookRegistry.Entrypoint.AFTER_BURN, _params: abi.encode(_account, _value)});
     }
 
-    /// @inheritdoc IERC20
-    function transfer(address to, uint256 value) public override(ERC20, IERC20) returns (bool) {
-        return super.transfer({to: to, value: value});
-    }
-
-    /// @inheritdoc IERC20
-    function transferFrom(address from, address to, uint256 value) public override(ERC20, IERC20) returns (bool) {
-        return super.transferFrom({from: from, to: to, value: value});
-    }
-
     /**
      * @dev Called on ERC20 to transfer a `value` amount of tokens from `from` to `to`. Overriden for transfers. Mints and burns are checked in mint/burn functions.
      * @param from Address to transfer the tokens from
