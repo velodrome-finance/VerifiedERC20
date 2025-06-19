@@ -13,6 +13,9 @@ import {BaseHook} from "../BaseHook.sol";
  * @dev Hook to restrict mint and burn to an authorized address
  */
 contract SinglePermissionHook is BaseHook {
+    /// @notice Emitted when the length of verifiedERC20s and authorized arrays do not match
+    error SinglePermissionHook_LengthMismatch();
+
     /// @notice Emitted when the _authorized address passed in constructor is zero
     error SinglePermissionHook_ZeroAddress();
 
@@ -34,6 +37,9 @@ contract SinglePermissionHook is BaseHook {
      *        HookRegistry to become available and this is done by a trusted entity who will verify the mapping is not incorrectly set.
      */
     constructor(string memory _name, address[] memory _verifiedERC20s, address[] memory _authorized) BaseHook(_name) {
+        if (_verifiedERC20s.length != _authorized.length) {
+            revert SinglePermissionHook_LengthMismatch();
+        }
         for (uint256 i = 0; i < _verifiedERC20s.length;) {
             if (_authorized[i] == address(0) || _verifiedERC20s[i] == address(0)) {
                 revert SinglePermissionHook_ZeroAddress();

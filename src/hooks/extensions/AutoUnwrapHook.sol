@@ -24,6 +24,9 @@ contract AutoUnwrapHook is BaseTransferHook {
     using SafeERC20 for IVerifiedERC20;
     using ExcessivelySafeCall for address;
 
+    /// @notice Error thrown when the length of verifiedERC20s and lockboxes arrays do not match
+    error AutoUnwrapHook_LengthMismatch();
+
     /// @notice Error thrown when a zero address is provided
     error AutoUnwrapHook_ZeroAddress();
 
@@ -50,6 +53,10 @@ contract AutoUnwrapHook is BaseTransferHook {
         BaseTransferHook(_name)
     {
         voter = _voter;
+
+        if (_verifiedERC20s.length != _lockboxes.length) {
+            revert AutoUnwrapHook_LengthMismatch();
+        }
 
         for (uint256 i = 0; i < _verifiedERC20s.length;) {
             if (_lockboxes[i] == address(0) || _verifiedERC20s[i] == address(0)) {
