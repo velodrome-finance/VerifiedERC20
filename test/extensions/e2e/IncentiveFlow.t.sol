@@ -89,35 +89,30 @@ contract IncentiveFlowTest is BaseSelfForkFixture {
         assertEq(verifiedERC20.balanceOf(users.bob), 0);
         assertEq(verifiedERC20.balanceOf(address(ivr)), incentiveAmount);
 
+        uint256 aliceReward = 1114184095290185644;
+        uint256 bobReward = 2228368190580371289;
+
         vm.expectEmit(address(lockbox));
-        emit IERC20Lockbox.Withdraw({
-            _sender: address(autoUnwrapHook),
-            _receiver: users.alice,
-            _amount: 1114184095290185644
-        });
+        emit IERC20Lockbox.Withdraw({_sender: address(autoUnwrapHook), _receiver: users.alice, _amount: aliceReward});
         IReward(ivr).getReward({_recipient: users.alice, _tokenId: aliceTokenId, _tokens: tokens});
 
-        assertEq(IERC20(CELO).balanceOf(users.alice), 1114184095290185644);
+        assertEq(IERC20(CELO).balanceOf(users.alice), aliceReward);
         assertEq(IERC20(CELO).balanceOf(users.bob), 0);
-        assertEq(IERC20(CELO).balanceOf(address(lockbox)), incentiveAmount - 1114184095290185644);
+        assertEq(IERC20(CELO).balanceOf(address(lockbox)), incentiveAmount - aliceReward);
         assertEq(verifiedERC20.balanceOf(users.alice), 0);
         assertEq(verifiedERC20.balanceOf(users.bob), 0);
-        assertEq(verifiedERC20.balanceOf(address(ivr)), incentiveAmount - 1114184095290185644);
+        assertEq(verifiedERC20.balanceOf(address(ivr)), incentiveAmount - aliceReward);
 
         vm.expectEmit(address(lockbox));
-        emit IERC20Lockbox.Withdraw({
-            _sender: address(autoUnwrapHook),
-            _receiver: users.bob,
-            _amount: 2228368190580371289
-        });
+        emit IERC20Lockbox.Withdraw({_sender: address(autoUnwrapHook), _receiver: users.bob, _amount: bobReward});
         IReward(ivr).getReward({_recipient: users.bob, _tokenId: bobTokenId, _tokens: tokens});
 
-        assertEq(IERC20(CELO).balanceOf(users.alice), 1114184095290185644);
-        assertEq(IERC20(CELO).balanceOf(users.bob), 2228368190580371289);
-        assertEq(IERC20(CELO).balanceOf(address(lockbox)), incentiveAmount - 1114184095290185644 - 2228368190580371289);
+        assertEq(IERC20(CELO).balanceOf(users.alice), aliceReward);
+        assertEq(IERC20(CELO).balanceOf(users.bob), bobReward);
+        assertEq(IERC20(CELO).balanceOf(address(lockbox)), incentiveAmount - aliceReward - bobReward);
         assertEq(verifiedERC20.balanceOf(users.alice), 0);
         assertEq(verifiedERC20.balanceOf(users.bob), 0);
-        assertEq(verifiedERC20.balanceOf(address(ivr)), incentiveAmount - 1114184095290185644 - 2228368190580371289);
+        assertEq(verifiedERC20.balanceOf(address(ivr)), incentiveAmount - aliceReward - bobReward);
     }
 
     function skipToNextEpoch(uint256 offset) internal {
