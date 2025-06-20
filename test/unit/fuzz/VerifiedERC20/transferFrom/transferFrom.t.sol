@@ -45,8 +45,6 @@ contract TransferFromFuzzTest is VerifiedERC20Test {
     }
 
     modifier whenTheAmountIsSmallerOrEqualToTheAllowance() {
-        vm.prank(users.alice);
-        verifiedERC20.approve({spender: users.bob, value: MAX_TOKENS});
         _;
     }
 
@@ -69,7 +67,7 @@ contract TransferFromFuzzTest is VerifiedERC20Test {
         _;
     }
 
-    function testFuzz_WhenTheToAddressIsTheZeroAddress(uint256 _amount)
+    function testFuzz_WhenTheToAddressIsTheZeroAddress(uint256 _amount, uint256 _allowance)
         external
         whenTheAmountIsSmallerOrEqualToTheAllowance
         whenTheFromAddressIsNotTheZeroAddress
@@ -77,6 +75,11 @@ contract TransferFromFuzzTest is VerifiedERC20Test {
         // It should revert with {ERC20InvalidReceiver}
         _amount = bound(_amount, 1, MAX_TOKENS);
         address _from = users.alice;
+
+        _allowance = bound(_allowance, _amount, MAX_TOKENS);
+        vm.prank(users.alice);
+        verifiedERC20.approve({spender: users.bob, value: _allowance});
+
         vm.startPrank(users.bob);
         vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InvalidReceiver.selector, address(0)));
         verifiedERC20.transferFrom({from: _from, to: address(0), value: _amount});
@@ -97,16 +100,26 @@ contract TransferFromFuzzTest is VerifiedERC20Test {
         _balance = bound(_balance, 0, _amount - 1);
         address _from = users.alice;
         address _to = users.bob;
+        address _caller = users.bob;
         verifiedERC20.mint({_account: _from, _value: _balance});
 
-        vm.startPrank(users.bob);
+        vm.prank(_from);
+        verifiedERC20.approve({spender: _caller, value: _amount});
+
+        vm.startPrank(_caller);
         vm.expectRevert(
             abi.encodeWithSelector(IERC20Errors.ERC20InsufficientBalance.selector, _from, _balance, _amount)
         );
         verifiedERC20.transferFrom({from: _from, to: _to, value: _amount});
     }
 
-    function testFuzz_WhenAmountIsSmallerOrEqualToFromBalance(uint256 _amount, uint256 _balance)
+    function testFuzz_WhenAmountIsSmallerOrEqualToFromBalance(
+        uint256 _amount,
+        uint256 _balance,
+        address _to,
+        address _caller,
+        uint256 _allowance
+    )
         external
         whenTheAmountIsSmallerOrEqualToTheAllowance
         whenTheFromAddressIsNotTheZeroAddress
@@ -117,28 +130,32 @@ contract TransferFromFuzzTest is VerifiedERC20Test {
         // It should transfer the amount
         // It should call the after hook
         // It should emit a {Transfer} event
+        vm.assume(_to != address(0) && _caller != address(0));
         _amount = bound(_amount, 1, MAX_TOKENS);
         address _from = users.alice;
-        address _to = users.bob;
         _balance = bound(_balance, _amount, MAX_TOKENS);
         verifiedERC20.mint({_account: _from, _value: _balance});
 
-        vm.startPrank(users.bob);
+        _allowance = bound(_allowance, _amount, MAX_TOKENS);
+        vm.prank(_from);
+        verifiedERC20.approve({spender: _caller, value: _allowance});
+
+        vm.startPrank(_caller);
         /// @dev check hooks are called only once per entrypoint
         vm.expectCall({
             callee: address(beforeHook),
-            data: abi.encodeCall(IHook.check, (users.bob, abi.encode(_from, _to, _amount))),
+            data: abi.encodeCall(IHook.check, (_caller, abi.encode(_from, _to, _amount))),
             count: 1
         });
         vm.expectCall({
             callee: address(afterHook),
-            data: abi.encodeCall(IHook.check, (users.bob, abi.encode(_from, _to, _amount))),
+            data: abi.encodeCall(IHook.check, (_caller, abi.encode(_from, _to, _amount))),
             count: 1
         });
         vm.expectEmit(address(verifiedERC20));
         emit IERC20.Transfer(_from, _to, _amount);
         verifiedERC20.transferFrom({from: _from, to: _to, value: _amount});
-        assertEq(verifiedERC20.allowance({owner: _from, spender: users.bob}), MAX_TOKENS - _amount);
+        assertEq(verifiedERC20.allowance({owner: _from, spender: _caller}), _allowance - _amount);
         assertEq(verifiedERC20.balanceOf({account: _from}), _balance - _amount);
         assertEq(verifiedERC20.balanceOf({account: _to}), _amount);
     }
