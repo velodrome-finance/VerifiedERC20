@@ -83,6 +83,7 @@ interface IVerifiedERC20 is IERC20 {
      * @notice Maps hook addresses to their respective index in the entrypoint array
      * @param _hook The hook address to get the index for
      * @return The index of the hook in its entrypoint array
+     * @dev Return index of 0 can mean either the first hook or that the hook is not registered. `isHookActivated` should be checked
      */
     function hookToIndex(address _hook) external view returns (uint256);
 
@@ -90,6 +91,7 @@ interface IVerifiedERC20 is IERC20 {
      * @notice Maps hook addresses to their respective entrypoint
      * @param _hook The hook address to get the entrypoint for
      * @return The entrypoint the hook is activated for
+     * @dev Return entrypoint of 0 can mean either 'BEFORE_APPROVE` or that the hook is not registered. `isHookActivated` should be checked
      */
     function hookToEntrypoint(address _hook) external view returns (IHookRegistry.Entrypoint);
 
