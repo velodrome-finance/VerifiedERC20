@@ -12,6 +12,11 @@ import {IVerifiedERC20} from "./interfaces/IVerifiedERC20.sol";
 import {IHookRegistry} from "./interfaces/hooks/IHookRegistry.sol";
 import {IHook} from "./interfaces/hooks/IHook.sol";
 
+/**
+ * @title VerifiedERC20
+ * @notice An ERC20 token with support for hooks that can be activated and deactivated by the owner.
+ * Hooks are registered in a hook registry and can be called at various entrypoints.
+ */
 contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransient, IVerifiedERC20 {
     using ExcessivelySafeCall for address;
 
@@ -41,6 +46,10 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
     /// @inheritdoc IVerifiedERC20
     mapping(address _hook => bool) public isHookActivated;
 
+    /**
+     * @notice Constructor for VerifiedERC20
+     * @dev Only used to disable initializers in the constructor since the factory deploys via Clones
+     */
     constructor() ERC20("", "") Ownable(address(this)) {
         _disableInitializers();
     }
@@ -72,25 +81,34 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
         }
     }
 
+    /// @inheritdoc ERC20
     function name() public view override returns (string memory) {
         return _name;
     }
 
+    /// @inheritdoc ERC20
     function symbol() public view override returns (string memory) {
         return _symbol;
     }
 
+    /// @inheritdoc IVerifiedERC20
     function activateHook(address _hook) external onlyOwner {
         _activateHook({_hook: _hook});
     }
 
+    /**
+     * @dev Internal function to activate a hook
+     * @param _hook The address of the hook to activate
+     * @notice Reverts if the hook is not registered or already activated
+     */
     function _activateHook(address _hook) internal {
-        if (!IHookRegistry(hookRegistry).isHookRegistered({_hook: _hook})) {
+        address _hookRegistry = hookRegistry;
+        if (!IHookRegistry(_hookRegistry).isHookRegistered({_hook: _hook})) {
             revert VerifiedERC20_InvalidHook({hook: _hook});
         }
         if (isHookActivated[_hook]) revert VerifiedERC20_HookAlreadyActivated({hook: _hook});
 
-        IHookRegistry.Entrypoint entrypoint = IHookRegistry(hookRegistry).hookEntrypoints({_hook: _hook});
+        IHookRegistry.Entrypoint entrypoint = IHookRegistry(_hookRegistry).hookEntrypoints({_hook: _hook});
         uint256 index = _hooksByEntrypoint[uint8(entrypoint)].length;
 
         if (index >= MAX_HOOKS_PER_ENTRYPOINT) revert VerifiedERC20_MaxHooksExceeded();
@@ -203,18 +221,12 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
     /// @inheritdoc IVerifiedERC20
     function burn(address _account, uint256 _value) external nonReentrant {
         _checkHooks({_entrypoint: IHookRegistry.Entrypoint.BEFORE_BURN, _params: abi.encode(_account, _value)});
+        /// @dev If burn is called from a different address, we need to check allowance
+        if (msg.sender != _account) {
+            _spendAllowance({owner: _account, spender: msg.sender, value: _value});
+        }
         _burn({account: _account, value: _value});
         _checkHooks({_entrypoint: IHookRegistry.Entrypoint.AFTER_BURN, _params: abi.encode(_account, _value)});
-    }
-
-    /// @inheritdoc IERC20
-    function transfer(address to, uint256 value) public override(ERC20, IERC20) returns (bool) {
-        return super.transfer({to: to, value: value});
-    }
-
-    /// @inheritdoc IERC20
-    function transferFrom(address from, address to, uint256 value) public override(ERC20, IERC20) returns (bool) {
-        return super.transferFrom({from: from, to: to, value: value});
     }
 
     /**
@@ -225,16 +237,12 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
      *
      */
     function _update(address from, address to, uint256 value) internal override {
-        /// @dev If burn is called from different address, we need to check allowance
-        if (to == address(0) && msg.sender != from) {
-            _spendAllowance({owner: from, spender: msg.sender, value: value});
-        }
-
-        if (from != address(0) && to != address(0)) {
+        bool isTransfer = from != address(0) && to != address(0);
+        if (isTransfer) {
             _checkHooks({_entrypoint: IHookRegistry.Entrypoint.BEFORE_TRANSFER, _params: abi.encode(from, to, value)});
         }
         super._update({from: from, to: to, value: value});
-        if (from != address(0) && to != address(0)) {
+        if (isTransfer) {
             _checkHooks({_entrypoint: IHookRegistry.Entrypoint.AFTER_TRANSFER, _params: abi.encode(from, to, value)});
         }
     }

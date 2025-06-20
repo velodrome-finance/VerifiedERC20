@@ -1,0 +1,8 @@
+CheckConcreteTest
+├── When the from address is not an incentive contract
+│   └── It should do nothing and not revert
+└── When the from address is an incentive contract
+    ├── When the to passed hasnt approved the hook
+    │   └── It should revert with {ERC20InsufficientAllowance}
+    └── When the to passed approved the hook
+        └──It should unwrap the verifiedERC20 to its base ERC20

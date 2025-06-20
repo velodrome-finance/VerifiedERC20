@@ -15,7 +15,6 @@ contract ActivateHookConcreteTest is VerifiedERC20Test {
     modifier whenTheCallerIsTheOwner() {
         vm.startPrank({msgSender: users.owner});
         _;
-        vm.stopPrank();
     }
 
     function test_WhenTheHookIsNotRegisteredInTheHookRegistry() external whenTheCallerIsTheOwner {
