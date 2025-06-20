@@ -14,6 +14,8 @@ contract IncentiveFlowTest is BaseSelfForkFixture {
     uint256 incentiveAmount = 1000 * TOKEN_1;
     uint256 aliceTokenId = 1;
     uint256 bobTokenId = 2;
+    uint256 unverifiedUserTokenId = 3;
+    address unverifiedUser = createUser("unverifiedUser");
 
     function setUp() public override {
         super.setUp();
@@ -64,14 +66,22 @@ contract IncentiveFlowTest is BaseSelfForkFixture {
         vm.startPrank(users.alice);
         verifiedERC20.approve({spender: ivr, value: incentiveAmount});
         IReward(ivr).notifyRewardAmount({token: address(verifiedERC20), amount: incentiveAmount});
+        vm.stopPrank();
 
         // ALICE AND BOB VOTE FOR GAUGE
         uint256 aliceVotingPower = 1000 * TOKEN_1;
         uint256 bobVotingPower = 2000 * TOKEN_1;
+        uint256 unverifiedUserVotingPower = 1000 * TOKEN_1;
 
         vm.startPrank(leafHLMessageModule);
         IReward(ivr)._deposit({amount: aliceVotingPower, tokenId: aliceTokenId, timestamp: block.timestamp});
         IReward(ivr)._deposit({amount: bobVotingPower, tokenId: bobTokenId, timestamp: block.timestamp});
+        IReward(ivr)._deposit({
+            amount: unverifiedUserVotingPower,
+            tokenId: unverifiedUserTokenId,
+            timestamp: block.timestamp
+        });
+        vm.stopPrank();
 
         // ALICE AND BOB CLAIM INCENTIVE
         skipToNextEpoch(3 hours);
@@ -81,35 +91,88 @@ contract IncentiveFlowTest is BaseSelfForkFixture {
 
         assertEq(IERC20(CELO).balanceOf(users.alice), 0);
         assertEq(IERC20(CELO).balanceOf(users.bob), 0);
+        assertEq(IERC20(CELO).balanceOf(unverifiedUser), 0);
         assertEq(IERC20(CELO).balanceOf(address(lockbox)), incentiveAmount);
         assertEq(verifiedERC20.balanceOf(users.alice), 0);
         assertEq(verifiedERC20.balanceOf(users.bob), 0);
+        assertEq(verifiedERC20.balanceOf(unverifiedUser), 0);
         assertEq(verifiedERC20.balanceOf(address(ivr)), incentiveAmount);
 
-        uint256 aliceReward = 1114184095290185644;
-        uint256 bobReward = 2228368190580371289;
+        uint256 aliceReward = 1112944070707655659;
+        uint256 bobReward = 2225888141415311318;
+        uint256 unverifiedUserReward = 1112944070707655659;
 
         vm.expectEmit(address(lockbox));
         emit IERC20Lockbox.Withdraw({_sender: address(autoUnwrapHook), _receiver: users.alice, _amount: aliceReward});
+        vm.prank(leafHLMessageModule);
         IReward(ivr).getReward({_recipient: users.alice, _tokenId: aliceTokenId, _tokens: tokens});
 
         assertEq(IERC20(CELO).balanceOf(users.alice), aliceReward);
         assertEq(IERC20(CELO).balanceOf(users.bob), 0);
+        assertEq(IERC20(CELO).balanceOf(unverifiedUser), 0);
         assertEq(IERC20(CELO).balanceOf(address(lockbox)), incentiveAmount - aliceReward);
         assertEq(verifiedERC20.balanceOf(users.alice), 0);
         assertEq(verifiedERC20.balanceOf(users.bob), 0);
+        assertEq(verifiedERC20.balanceOf(unverifiedUser), 0);
         assertEq(verifiedERC20.balanceOf(address(ivr)), incentiveAmount - aliceReward);
 
         vm.expectEmit(address(lockbox));
         emit IERC20Lockbox.Withdraw({_sender: address(autoUnwrapHook), _receiver: users.bob, _amount: bobReward});
+        vm.prank(leafHLMessageModule);
         IReward(ivr).getReward({_recipient: users.bob, _tokenId: bobTokenId, _tokens: tokens});
 
         assertEq(IERC20(CELO).balanceOf(users.alice), aliceReward);
         assertEq(IERC20(CELO).balanceOf(users.bob), bobReward);
+        assertEq(IERC20(CELO).balanceOf(unverifiedUser), 0);
         assertEq(IERC20(CELO).balanceOf(address(lockbox)), incentiveAmount - aliceReward - bobReward);
         assertEq(verifiedERC20.balanceOf(users.alice), 0);
         assertEq(verifiedERC20.balanceOf(users.bob), 0);
+        assertEq(verifiedERC20.balanceOf(unverifiedUser), 0);
         assertEq(verifiedERC20.balanceOf(address(ivr)), incentiveAmount - aliceReward - bobReward);
+
+        // User is not verified. Get reward will revert
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IVerifiedERC20.VerifiedERC20_HookRevert.selector,
+                abi.encode(
+                    bytes32(
+                        abi.encodeWithSelector(
+                            IHook.Hook_Revert.selector, abi.encode(address(this), unverifiedUser, unverifiedUserReward)
+                        )
+                    )
+                )
+            )
+        );
+        vm.prank(leafHLMessageModule);
+        IReward(ivr).getReward({_recipient: unverifiedUser, _tokenId: unverifiedUserTokenId, _tokens: tokens});
+
+        // unverifiedUser verifies to be able to claim rewards
+        selfPassportSBT.mint({to: unverifiedUser, tokenId: unverifiedUserTokenId});
+
+        vm.prank(unverifiedUser);
+        verifiedERC20.approve({spender: address(autoUnwrapHook), value: unverifiedUserReward});
+
+        vm.expectEmit(address(lockbox));
+        emit IERC20Lockbox.Withdraw({
+            _sender: address(autoUnwrapHook),
+            _receiver: unverifiedUser,
+            _amount: unverifiedUserReward
+        });
+        vm.prank(leafHLMessageModule);
+        IReward(ivr).getReward({_recipient: unverifiedUser, _tokenId: unverifiedUserTokenId, _tokens: tokens});
+
+        assertEq(IERC20(CELO).balanceOf(users.alice), aliceReward);
+        assertEq(IERC20(CELO).balanceOf(users.bob), bobReward);
+        assertEq(IERC20(CELO).balanceOf(unverifiedUser), unverifiedUserReward);
+        assertEq(
+            IERC20(CELO).balanceOf(address(lockbox)), incentiveAmount - aliceReward - bobReward - unverifiedUserReward
+        );
+        assertEq(verifiedERC20.balanceOf(users.alice), 0);
+        assertEq(verifiedERC20.balanceOf(users.bob), 0);
+        assertEq(verifiedERC20.balanceOf(unverifiedUser), 0);
+        assertEq(
+            verifiedERC20.balanceOf(address(ivr)), incentiveAmount - aliceReward - bobReward - unverifiedUserReward
+        );
     }
 
     function skipToNextEpoch(uint256 offset) internal {
