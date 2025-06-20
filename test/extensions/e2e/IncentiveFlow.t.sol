@@ -45,7 +45,7 @@ contract IncentiveFlowTest is BaseSelfForkFixture {
         selfPassportSBT.mint({to: users.alice, tokenId: aliceTokenId});
         selfPassportSBT.mint({to: users.bob, tokenId: bobTokenId});
 
-        // alice and bob need to approve auto unwrap hook beforehand
+        // alice, bob and charlie need to approve auto unwrap hook beforehand
         vm.prank(users.alice);
         verifiedERC20.approve({spender: address(autoUnwrapHook), value: type(uint256).max});
         vm.prank(users.bob);
