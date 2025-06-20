@@ -66,15 +66,11 @@ contract IncentiveFlowTest is BaseSelfForkFixture {
         IReward(ivr).notifyRewardAmount({token: address(verifiedERC20), amount: incentiveAmount});
 
         // ALICE AND BOB VOTE FOR GAUGE
-
         uint256 aliceVotingPower = 1000 * TOKEN_1;
         uint256 bobVotingPower = 2000 * TOKEN_1;
 
         vm.startPrank(leafHLMessageModule);
-        // alice votes for gauge
         IReward(ivr)._deposit({amount: aliceVotingPower, tokenId: aliceTokenId, timestamp: block.timestamp});
-
-        // bob votes for gauge
         IReward(ivr)._deposit({amount: bobVotingPower, tokenId: bobTokenId, timestamp: block.timestamp});
 
         // ALICE AND BOB CLAIM INCENTIVE
