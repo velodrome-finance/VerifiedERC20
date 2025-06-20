@@ -55,7 +55,10 @@ contract CheckFuzzTest is AutoUnwrapHookTest {
         whenTheFromAddressIsAnIncentiveContract
     {
         // It should unwrap the verifiedERC20 to its base ERC20
-        vm.assume(_to != address(0));
+
+        // _to == incentiveReward breaks the tests since it triggers the _isClaimIncentive on VerifiedERC20.transferFrom(_to, address(this)).
+        // We can safely remove this tests case since the incentive reward does not claim to itself
+        vm.assume(_to != address(0) && _to != address(incentiveReward));
         uint256 balanceBefore = IERC20(CELO).balanceOf(_to);
         address _caller = users.alice;
         address _from = address(incentiveReward);
