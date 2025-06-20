@@ -12,8 +12,6 @@ contract IncentiveFlowTest is BaseSelfForkFixture {
     address leafHLMessageModule = 0x2BbA7515F7cF114B45186274981888D8C2fBA15E;
     address leafVoter = 0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123;
     uint256 incentiveAmount = 1000 * TOKEN_1;
-    uint256 aliceVotingPower = 1000 * TOKEN_1;
-    uint256 bobVotingPower = 2000 * TOKEN_1;
     uint256 aliceTokenId = 1;
     uint256 bobTokenId = 2;
 
@@ -68,6 +66,9 @@ contract IncentiveFlowTest is BaseSelfForkFixture {
         IReward(ivr).notifyRewardAmount({token: address(verifiedERC20), amount: incentiveAmount});
 
         // ALICE AND BOB VOTE FOR GAUGE
+
+        uint256 aliceVotingPower = 1000 * TOKEN_1;
+        uint256 bobVotingPower = 2000 * TOKEN_1;
 
         vm.startPrank(leafHLMessageModule);
         // alice votes for gauge
