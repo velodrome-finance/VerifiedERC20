@@ -61,4 +61,19 @@ contract SetLockboxConcreteTest is AutoUnwrapHookTest {
 
         assertEq(autoUnwrapHook.lockbox({_verifiedERC20: _verifiedERC20}), _lockbox);
     }
+
+    function testGas_setLockbox()
+        external
+        whenTheLockboxPassedIsNotTheZeroAddress
+        whenTheVerifiedERC20PassedIsNotTheZeroAddress
+    {
+        // It should set the lockbox mapping
+        // It should emit a {LockboxSet} event
+        address _lockbox = users.alice;
+        address _verifiedERC20 = address(verifiedERC20);
+
+        vm.startPrank(users.owner);
+        autoUnwrapHook.setLockbox({_verifiedERC20: _verifiedERC20, _lockbox: _lockbox});
+        vm.snapshotGasLastCall({name: "AutoUnwrapHook_setLockbox"});
+    }
 }

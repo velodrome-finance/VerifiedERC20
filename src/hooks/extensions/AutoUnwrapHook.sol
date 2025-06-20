@@ -67,6 +67,12 @@ contract AutoUnwrapHook is BaseTransferHook {
         return _entrypoint == IHookRegistry.Entrypoint.AFTER_TRANSFER;
     }
 
+    /**
+     * @notice Sets the lockbox for a verified ERC20
+     * @param _verifiedERC20 The address of the verified ERC20
+     * @param _lockbox The address of the lockbox to set
+     * @dev Only callable by the owner of the verified ERC20 contract
+     */
     function setLockbox(address _verifiedERC20, address _lockbox) external {
         if (_lockbox == address(0) || _verifiedERC20 == address(0)) {
             revert AutoUnwrapHook_ZeroAddress();
@@ -82,6 +88,11 @@ contract AutoUnwrapHook is BaseTransferHook {
         _setLockbox({_verifiedERC20: _verifiedERC20, _lockbox: _lockbox});
     }
 
+    /**
+     * @dev Internal function to set the lockbox for a verified ERC20
+     * @param _verifiedERC20 The address of the verified ERC20
+     * @param _lockbox The address of the lockbox to set
+     */
     function _setLockbox(address _verifiedERC20, address _lockbox) internal {
         lockbox[_verifiedERC20] = _lockbox;
 
