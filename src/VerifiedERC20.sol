@@ -21,6 +21,8 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
     using ExcessivelySafeCall for address;
 
     /// @inheritdoc IVerifiedERC20
+    uint256 public constant MAX_ENTRYPOINTS = 8;
+    /// @inheritdoc IVerifiedERC20
     uint256 public constant MAX_HOOKS_PER_ENTRYPOINT = 8;
     /// @inheritdoc IVerifiedERC20
     uint256 public constant MAX_GAS_PER_HOOK = 200_000;
@@ -75,7 +77,7 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
         /// @dev Hook registry zero address check is made in the factory
         // slither-disable-next-line missing-zero-check
         hookRegistry = _hookRegistry;
-        _hooksByEntrypoint = new address[][](IHookRegistry(_hookRegistry).MAX_ENTRYPOINTS());
+        _hooksByEntrypoint = new address[][](MAX_ENTRYPOINTS);
         for (uint256 i = 0; i < _hooks.length; i++) {
             _activateHook({_hook: _hooks[i]});
         }

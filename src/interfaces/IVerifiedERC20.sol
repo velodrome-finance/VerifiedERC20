@@ -50,6 +50,12 @@ interface IVerifiedERC20 is IERC20 {
     event HookDeactivated(address indexed hook, IHookRegistry.Entrypoint indexed entrypoint);
 
     /**
+     * @dev Returns the maximum number of entrypoints
+     * @return The maximum number of entrypoints
+     */
+    function MAX_ENTRYPOINTS() external pure returns (uint256);
+
+    /**
      * @notice Returns the maximum number of hooks allowed per entrypoint
      * @return The maximum number of hooks per entrypoint
      */

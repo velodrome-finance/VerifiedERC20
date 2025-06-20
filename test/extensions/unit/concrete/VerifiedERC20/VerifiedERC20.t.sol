@@ -9,6 +9,7 @@ contract VerifiedERC20Test is BaseSelfForkFixture {
         assertEq(verifiedERC20.symbol(), _selfParams.verifiedERC20Symbol);
         assertEq(Ownable(verifiedERC20).owner(), _selfParams.verifiedERC20Owner);
         assertEq(verifiedERC20.hookRegistry(), address(hookRegistry));
+        assertEq(verifiedERC20.MAX_ENTRYPOINTS(), uint256(type(IHookRegistry.Entrypoint).max) + 1);
 
         // mapping(address _hook => uint256) public hookToIndex;
         assertEq(verifiedERC20.hookToIndex(address(singlePermissionMintHook)), 0);
