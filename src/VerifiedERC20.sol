@@ -190,7 +190,7 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
 
         for (uint256 i = 0; i < hooksLength;) {
             (bool success, bytes memory data) = hooks[i].excessivelySafeCall({
-                _gas: 200_000,
+                _gas: MAX_GAS_PER_HOOK,
                 _value: 0,
                 _maxCopy: 32,
                 _calldata: abi.encodeWithSelector(IHook.check.selector, msg.sender, _params)
