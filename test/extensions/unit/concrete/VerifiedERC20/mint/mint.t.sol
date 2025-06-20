@@ -8,16 +8,16 @@ contract MintConcreteTest is VerifiedERC20Test {
         // It should revert with {VerifiedERC20_HookRevert}
         uint256 _amount = 100;
         address _account = users.alice;
+        address _caller = users.charlie;
         vm.expectRevert(
             abi.encodeWithSelector(
                 IVerifiedERC20.VerifiedERC20_HookRevert.selector,
                 abi.encode(
-                    bytes32(
-                        abi.encodeWithSelector(IHook.Hook_Revert.selector, abi.encode(address(this), _account, _amount))
-                    )
+                    bytes32(abi.encodeWithSelector(IHook.Hook_Revert.selector, abi.encode(_caller, _account, _amount)))
                 )
             )
         );
+        vm.prank(_caller);
         verifiedERC20.mint({_account: _account, _value: _amount});
     }
 
@@ -51,5 +51,16 @@ contract MintConcreteTest is VerifiedERC20Test {
         verifiedERC20.mint({_account: _account, _value: _amount});
 
         assertEq(verifiedERC20.balanceOf({account: _account}), _amount);
+    }
+
+    function testGas_mint() external whenTheCallerIsLockbox {
+        // It should call the single permission mint hook
+        // It should emit a {Transfer} event
+        // It should mint the amount to the user
+        uint256 _amount = 100;
+        address _account = users.alice;
+
+        verifiedERC20.mint({_account: _account, _value: _amount});
+        vm.snapshotGasLastCall({name: "SelfVerifiedERC20_mint"});
     }
 }

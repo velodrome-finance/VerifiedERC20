@@ -12,6 +12,10 @@ abstract contract BaseTransferHook is IHook {
     /// @inheritdoc IHook
     string public name;
 
+    /**
+     * @notice Constructor for the BaseTransferHook
+     * @param _name Name for the hook
+     */
     constructor(string memory _name) {
         name = _name;
     }

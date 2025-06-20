@@ -21,6 +21,10 @@ contract HookRegistry is IHookRegistry, Ownable {
     /// @inheritdoc IHookRegistry
     mapping(address _hook => Entrypoint _entrypoint) public hookEntrypoints;
 
+    /**
+     * @notice Constructor for the HookRegistry
+     * @param owner_ The address of the owner of the registry
+     */
     constructor(address owner_) Ownable(owner_) {}
 
     /// @inheritdoc IHookRegistry

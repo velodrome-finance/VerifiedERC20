@@ -10,5 +10,8 @@ contract SinglePermissionHookTest is BaseSelfForkFixture {
 
         assertEq(singlePermissionMintHook.authorized(address(verifiedERC20)), address(lockbox));
         assertEq(singlePermissionBurnHook.authorized(address(verifiedERC20)), address(lockbox));
+
+        assertTrue(singlePermissionMintHook.supportsEntrypoint(IHookRegistry.Entrypoint.BEFORE_MINT));
+        assertTrue(singlePermissionBurnHook.supportsEntrypoint(IHookRegistry.Entrypoint.BEFORE_BURN));
     }
 }
