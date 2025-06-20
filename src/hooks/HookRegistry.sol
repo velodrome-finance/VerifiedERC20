@@ -3,7 +3,6 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import {ReentrancyGuardTransient} from "@openzeppelin/contracts/utils/ReentrancyGuardTransient.sol";
 import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
 import {IHookRegistry} from "../interfaces/hooks/IHookRegistry.sol";
@@ -13,7 +12,7 @@ import {IHook} from "../interfaces/hooks/IHook.sol";
  * @title HookRegistry
  * @dev Registry for hooks that can be triggered at different entrypoints
  */
-contract HookRegistry is IHookRegistry, Ownable, ReentrancyGuardTransient {
+contract HookRegistry is IHookRegistry, Ownable {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     // Set of registered hooks
@@ -29,7 +28,7 @@ contract HookRegistry is IHookRegistry, Ownable, ReentrancyGuardTransient {
     constructor(address owner_) Ownable(owner_) {}
 
     /// @inheritdoc IHookRegistry
-    function registerHook(address _hook, Entrypoint _entrypoint) external onlyOwner nonReentrant {
+    function registerHook(address _hook, Entrypoint _entrypoint) external onlyOwner {
         if (_hook == address(0)) revert HookRegistry_ZeroAddress();
         if (!_hooks.add({value: _hook})) revert HookRegistry_HookAlreadyRegistered();
 
@@ -43,7 +42,7 @@ contract HookRegistry is IHookRegistry, Ownable, ReentrancyGuardTransient {
     }
 
     /// @inheritdoc IHookRegistry
-    function deregisterHook(address _hook) external onlyOwner nonReentrant {
+    function deregisterHook(address _hook) external onlyOwner {
         if (!_hooks.remove({value: _hook})) revert HookRegistry_HookNotRegistered();
 
         // Clear the hook's entrypoint mapping

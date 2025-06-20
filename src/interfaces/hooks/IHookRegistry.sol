@@ -66,6 +66,7 @@ interface IHookRegistry {
      * @dev Returns the entrypoint associated with a hook
      * @param _hook The hook address to query
      * @return The entrypoint assigned to the hook
+     * @dev Return entrypoint of 0 can mean either 'BEFORE_APPROVE` or that the hook is not registered. `isHookRegistered` should be checked
      */
     function hookEntrypoints(address _hook) external view returns (Entrypoint);
 
