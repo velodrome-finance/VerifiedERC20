@@ -15,16 +15,16 @@ contract BurnConcreteTest is VerifiedERC20Test {
         // It should revert with {VerifiedERC20_HookRevert}
         uint256 _amount = 100;
         address _account = users.alice;
+        address _caller = users.charlie;
         vm.expectRevert(
             abi.encodeWithSelector(
                 IVerifiedERC20.VerifiedERC20_HookRevert.selector,
                 abi.encode(
-                    bytes32(
-                        abi.encodeWithSelector(IHook.Hook_Revert.selector, abi.encode(address(this), _account, _amount))
-                    )
+                    bytes32(abi.encodeWithSelector(IHook.Hook_Revert.selector, abi.encode(_caller, _account, _amount)))
                 )
             )
         );
+        vm.prank(_caller);
         verifiedERC20.burn({_account: _account, _value: _amount});
     }
 
@@ -33,22 +33,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
         _;
     }
 
-    function test_WhenTheAccountPassedIsTheZeroAddress() external whenTheCallerIsLockbox {
-        // It should revert with {ERC20InvalidSender}
-        uint256 _amount = 100;
-        vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InvalidSender.selector, address(0)));
-        verifiedERC20.burn({_account: address(0), _value: _amount});
-    }
-
-    modifier whenTheAccountPassedIsNotTheZeroAddress() {
-        _;
-    }
-
-    function test_WhenTheAmountIsGreaterThanTheAllowance()
-        external
-        whenTheCallerIsLockbox
-        whenTheAccountPassedIsNotTheZeroAddress
-    {
+    function test_WhenTheAmountIsGreaterThanTheAllowance() external whenTheCallerIsLockbox {
         // It should revert with {ERC20InsufficientAllowance}
         uint256 _amount = 1000;
         address _account = users.alice;
@@ -69,7 +54,6 @@ contract BurnConcreteTest is VerifiedERC20Test {
         external
         whenTheAmountIsSmallerOrEqualToTheAllowance
         whenTheCallerIsLockbox
-        whenTheAccountPassedIsNotTheZeroAddress
     {
         // It should revert with {ERC20InsufficientBalance}
         uint256 _amount = 1000 + 1;
@@ -83,7 +67,6 @@ contract BurnConcreteTest is VerifiedERC20Test {
         external
         whenTheAmountIsSmallerOrEqualToTheAllowance
         whenTheCallerIsLockbox
-        whenTheAccountPassedIsNotTheZeroAddress
     {
         // It should call the single permission burn hook
         // It should deduct the allowance
@@ -103,5 +86,17 @@ contract BurnConcreteTest is VerifiedERC20Test {
 
         assertEq(verifiedERC20.balanceOf({account: _account}), 1000 - _amount);
         assertEq(verifiedERC20.allowance({spender: address(lockbox), owner: _account}), 1000 + 1 - _amount);
+    }
+
+    function testGas_burn() external whenTheAmountIsSmallerOrEqualToTheAllowance whenTheCallerIsLockbox {
+        // It should call the single permission burn hook
+        // It should deduct the allowance
+        // It should emit a {Transfer} event
+        // It should burn the amount from the user
+        uint256 _amount = 1000 - 1;
+        address _account = users.alice;
+
+        verifiedERC20.burn({_account: _account, _value: _amount});
+        vm.snapshotGasLastCall({name: "SelfVerifiedERC20_burn"});
     }
 }

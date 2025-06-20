@@ -26,3 +26,8 @@ The main contract that extends OpenZeppelin's `ERC20` implementation with hook f
 ## Hook Integration
 
 Hooks must implement the `IHook` interface and need to be added first to the registry before these can be enabled for a `VerifiedERC20` by its `VerifiedERC20.owner()`. 
+There are 2 types of hooks:
+- BaseHook: used for mint, burn and approve entrypoints
+- BaseTransferHook: used for transfer and transferFrom entrypoints
+
+When implementing a hook, one of the base hooks must be inherited and the `_check()` and `supportsEntrypoint()` functions overriden.
