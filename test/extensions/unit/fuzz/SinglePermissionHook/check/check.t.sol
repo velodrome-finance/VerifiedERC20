@@ -6,7 +6,7 @@ import "../SinglePermissionHook.t.sol";
 contract CheckFuzzTest is SinglePermissionHookTest {
     function testFuzz_WhenTheCallerIsNotAuthorized(address _caller) external {
         // It should revert with {Hook_Revert}
-        vm.assume(_caller != users.owner);
+        vm.assume(_caller != address(lockbox));
         address _address;
         uint256 _amount;
 

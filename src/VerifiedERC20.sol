@@ -102,12 +102,13 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
      * @notice Reverts if the hook is not registered or already activated
      */
     function _activateHook(address _hook) internal {
-        if (!IHookRegistry(hookRegistry).isHookRegistered({_hook: _hook})) {
+        address _hookRegistry = hookRegistry;
+        if (!IHookRegistry(_hookRegistry).isHookRegistered({_hook: _hook})) {
             revert VerifiedERC20_InvalidHook({hook: _hook});
         }
         if (isHookActivated[_hook]) revert VerifiedERC20_HookAlreadyActivated({hook: _hook});
 
-        IHookRegistry.Entrypoint entrypoint = IHookRegistry(hookRegistry).hookEntrypoints({_hook: _hook});
+        IHookRegistry.Entrypoint entrypoint = IHookRegistry(_hookRegistry).hookEntrypoints({_hook: _hook});
         uint256 index = _hooksByEntrypoint[uint8(entrypoint)].length;
 
         if (index >= MAX_HOOKS_PER_ENTRYPOINT) revert VerifiedERC20_MaxHooksExceeded();
@@ -226,16 +227,6 @@ contract VerifiedERC20 is ERC20, Ownable, Initializable, ReentrancyGuardTransien
         }
         _burn({account: _account, value: _value});
         _checkHooks({_entrypoint: IHookRegistry.Entrypoint.AFTER_BURN, _params: abi.encode(_account, _value)});
-    }
-
-    /// @inheritdoc IERC20
-    function transfer(address to, uint256 value) public override(ERC20, IERC20) returns (bool) {
-        return super.transfer({to: to, value: value});
-    }
-
-    /// @inheritdoc IERC20
-    function transferFrom(address from, address to, uint256 value) public override(ERC20, IERC20) returns (bool) {
-        return super.transferFrom({from: from, to: to, value: value});
     }
 
     /**
