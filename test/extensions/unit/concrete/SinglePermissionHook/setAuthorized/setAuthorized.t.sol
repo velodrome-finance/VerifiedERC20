@@ -14,11 +14,11 @@ contract SetAuthorizedConcreteTest is SinglePermissionHookTest {
         singlePermissionBurnHook.setAuthorized({_verifiedERC20: address(verifiedERC20), _authorized: _authorized});
     }
 
-    modifier whenTheAuthorizedPassedInNotTheZeroAddress() {
+    modifier whenTheAuthorizedPassedIsNotTheZeroAddress() {
         _;
     }
 
-    function test_WhenTheVerifiedERC20PassedIsTheZeroAddress() external whenTheAuthorizedPassedInNotTheZeroAddress {
+    function test_WhenTheVerifiedERC20PassedIsTheZeroAddress() external whenTheAuthorizedPassedIsNotTheZeroAddress {
         // It should revert with {SinglePermissionHook_ZeroAddress}
         address _authorized = users.alice;
         address _verifiedERC20 = address(0);
@@ -35,7 +35,7 @@ contract SetAuthorizedConcreteTest is SinglePermissionHookTest {
 
     function test_WhenTheCallerIsNotTheVerifiedERC20Owner()
         external
-        whenTheAuthorizedPassedInNotTheZeroAddress
+        whenTheAuthorizedPassedIsNotTheZeroAddress
         whenTheVerifiedERC20PassedIsNotTheZeroAddress
     {
         // It should revert with {SinglePermissionHook_NotAuthorized}
@@ -65,10 +65,10 @@ contract SetAuthorizedConcreteTest is SinglePermissionHookTest {
 
     function test_WhenTheCallerIsTheVerifiedERC20Owner()
         external
-        whenTheAuthorizedPassedInNotTheZeroAddress
+        whenTheAuthorizedPassedIsNotTheZeroAddress
         whenTheVerifiedERC20PassedIsNotTheZeroAddress
     {
-        // It should call set the authorized mapping
+        // It should set the authorized mapping
         // It should emit a {AuthorizedSet} event
         address _authorized = users.alice;
         address _verifiedERC20 = address(verifiedERC20);
@@ -84,5 +84,20 @@ contract SetAuthorizedConcreteTest is SinglePermissionHookTest {
 
         assertEq(singlePermissionMintHook.authorized({_verifiedERC20: _verifiedERC20}), users.alice);
         assertEq(singlePermissionBurnHook.authorized({_verifiedERC20: _verifiedERC20}), users.alice);
+    }
+
+    function testGas_setAuthorized()
+        external
+        whenTheAuthorizedPassedIsNotTheZeroAddress
+        whenTheVerifiedERC20PassedIsNotTheZeroAddress
+    {
+        // It should set the authorized mapping
+        // It should emit a {AuthorizedSet} event
+        address _authorized = users.alice;
+        address _verifiedERC20 = address(verifiedERC20);
+
+        vm.startPrank(users.owner);
+        singlePermissionMintHook.setAuthorized({_verifiedERC20: _verifiedERC20, _authorized: _authorized});
+        vm.snapshotGasLastCall({name: "SinglePermissionHook_setAuthorized"});
     }
 }

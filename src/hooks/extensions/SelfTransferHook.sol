@@ -6,6 +6,7 @@ import {ExcessivelySafeCall} from "@nomad-xyz/src/ExcessivelySafeCall.sol";
 import {IReward} from "../../interfaces/external/IReward.sol";
 import {ISelfPassportSBT} from "../../interfaces/external/ISelfPassportSBT.sol";
 import {IHookRegistry} from "../../interfaces/hooks/IHookRegistry.sol";
+import {IHook} from "../../interfaces/hooks/IHook.sol";
 
 import {BaseTransferHook} from "../BaseTransferHook.sol";
 
@@ -33,6 +34,7 @@ contract SelfTransferHook is BaseTransferHook {
         selfPassportSBT = _selfPassportSBT;
     }
 
+    /// @inheritdoc IHook
     function supportsEntrypoint(IHookRegistry.Entrypoint _entrypoint) external pure override returns (bool) {
         return _entrypoint == IHookRegistry.Entrypoint.BEFORE_TRANSFER;
     }
