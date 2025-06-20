@@ -14,13 +14,13 @@ interface IERC20Lockbox {
     /// @notice Emitted when tokens are deposited into the lockbox
     /// @param _sender The address of the user who deposited
     /// @param _amount The amount of tokens deposited
-    event Deposit(address indexed _sender, uint256 indexed _amount);
+    event Deposit(address indexed _sender, uint256 _amount);
 
     /// @notice Emitted when tokens are withdrawn from the lockbox
     /// @param _sender The address of the user who withdrew
     /// @param _receiver The address of the user who receives the withdrawn tokens
     /// @param _amount The amount of tokens withdrawn
-    event Withdraw(address indexed _sender, address indexed _receiver, uint256 indexed _amount);
+    event Withdraw(address indexed _sender, address indexed _receiver, uint256 _amount);
 
     /// @notice The VerifiedERC20 token of this contract
     function verifiedERC20() external view returns (IVerifiedERC20);
