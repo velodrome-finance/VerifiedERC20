@@ -39,6 +39,9 @@ contract AutoUnwrapHook is BaseTransferHook {
     /// @notice Address of the voter contract to check if a transfer is a claim incentive
     address public immutable voter;
 
+    /// @notice The address of the authorized address to check if a transfer is a claim incentive
+    address public immutable authorized;
+
     /// @notice Mapping of verified ERC20 addresses to their corresponding lockbox addresses
     mapping(address _verifiedERC20 => address _lockbox) public lockbox;
 
@@ -46,13 +49,19 @@ contract AutoUnwrapHook is BaseTransferHook {
      * @notice Initializes the SelfTransferHook
      * @param _name Name for the hook
      * @param _voter address of the voter contract
+     * @param _authorized address to check if a claim is a claim incentive
      * @param _verifiedERC20s Array of verified ERC20 addresses
      * @param _lockboxes Array of corresponding lockbox addresses for the verified ERC20s
      */
-    constructor(string memory _name, address _voter, address[] memory _verifiedERC20s, address[] memory _lockboxes)
-        BaseTransferHook(_name)
-    {
+    constructor(
+        string memory _name,
+        address _voter,
+        address _authorized,
+        address[] memory _verifiedERC20s,
+        address[] memory _lockboxes
+    ) BaseTransferHook(_name) {
         voter = _voter;
+        authorized = _authorized;
 
         if (_verifiedERC20s.length != _lockboxes.length) {
             revert AutoUnwrapHook_LengthMismatch();
@@ -139,10 +148,10 @@ contract AutoUnwrapHook is BaseTransferHook {
         (bool success, bytes memory data) = _from.excessivelySafeStaticCall({
             _gas: 5_000,
             _maxCopy: 32,
-            _calldata: abi.encodeWithSelector(IReward.DURATION.selector)
+            _calldata: abi.encodeWithSelector(IReward.authorized.selector)
         });
 
-        if (!success || data.length < 32 || (abi.decode(data, (uint256)) != 7 days)) return false;
+        if (!success || data.length < 32 || authorized != abi.decode(data, (address))) return false;
 
         (success, data) = _from.excessivelySafeStaticCall({
             _gas: 5_000,

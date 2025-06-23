@@ -2,8 +2,8 @@
 pragma solidity ^0.8.0;
 
 interface IReward {
-    /// @notice Epoch duration constant (7 days)
-    function DURATION() external view returns (uint256);
+    /// @dev Address which has permission to externally call _deposit() & _withdraw()
+    function authorized() external view returns (address);
 
     /// @notice Address of LeafVoter.sol
     function voter() external view returns (address);

@@ -20,6 +20,9 @@ contract SelfTransferHook is BaseTransferHook {
     /// @notice Address of the voter contract to check if a transfer is a claim incentive
     address public immutable voter;
 
+    /// @notice The address of the authorized address to check if a transfer is a claim incentive
+    address public immutable authorized;
+
     /// @notice The Self Passport SBT contract address
     address public immutable selfPassportSBT;
 
@@ -29,8 +32,11 @@ contract SelfTransferHook is BaseTransferHook {
      * @param _voter address of the voter contract
      * @param _selfPassportSBT The address of the Self Passport SBT contract
      */
-    constructor(string memory _name, address _voter, address _selfPassportSBT) BaseTransferHook(_name) {
+    constructor(string memory _name, address _voter, address _authorized, address _selfPassportSBT)
+        BaseTransferHook(_name)
+    {
         voter = _voter;
+        authorized = _authorized;
         selfPassportSBT = _selfPassportSBT;
     }
 
@@ -61,10 +67,10 @@ contract SelfTransferHook is BaseTransferHook {
         (bool success, bytes memory data) = _from.excessivelySafeStaticCall({
             _gas: 5_000,
             _maxCopy: 32,
-            _calldata: abi.encodeWithSelector(IReward.DURATION.selector)
+            _calldata: abi.encodeWithSelector(IReward.authorized.selector)
         });
 
-        if (!success || data.length < 32 || (abi.decode(data, (uint256)) != 7 days)) return false;
+        if (!success || data.length < 32 || authorized != abi.decode(data, (address))) return false;
 
         (success, data) = _from.excessivelySafeStaticCall({
             _gas: 5_000,

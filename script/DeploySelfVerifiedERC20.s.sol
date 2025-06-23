@@ -24,6 +24,7 @@ contract DeploySelfVerifiedERC20 is Script {
         string singlePermissionBurnHookName;
         string selfTransferHookName;
         address voter;
+        address leafMessageBridge;
         address selfPassportSBT;
         string autoUnwrapHookName;
         address verifiedERC20Factory;
@@ -83,6 +84,7 @@ contract DeploySelfVerifiedERC20 is Script {
         selfTransferHook = new SelfTransferHook({
             _name: _params.selfTransferHookName,
             _voter: _params.voter,
+            _authorized: _params.leafMessageBridge,
             _selfPassportSBT: _params.selfPassportSBT
         });
 
@@ -92,6 +94,7 @@ contract DeploySelfVerifiedERC20 is Script {
         autoUnwrapHook = new AutoUnwrapHook({
             _name: _params.autoUnwrapHookName,
             _voter: _params.voter,
+            _authorized: _params.leafMessageBridge,
             _verifiedERC20s: verifiedERC20s,
             _lockboxes: lockboxes
         });
