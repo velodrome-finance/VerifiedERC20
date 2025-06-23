@@ -164,4 +164,18 @@ contract BurnConcreteTest is VerifiedERC20Test {
         assertEq(verifiedERC20.balanceOf({account: _account}), 1000 - _amount);
         assertEq(verifiedERC20.allowance({spender: address(lockbox), owner: _account}), 1000 + 1 - _amount);
     }
+
+    function testGas_burn()
+        external
+        whenTheCallerIsNotTheAccount
+        whenTheAmountIsSmallerOrEqualToTheAllowance(address(lockbox))
+        whenTheCallerIsLockbox_
+    {
+        uint256 _amount = 1000 - 1;
+        address _account = users.alice;
+
+        verifiedERC20.burn({_account: _account, _value: _amount});
+
+        vm.snapshotGasLastCall({name: "SelfVerifiedERC20_burn"});
+    }
 }
