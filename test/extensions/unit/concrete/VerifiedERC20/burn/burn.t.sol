@@ -4,7 +4,8 @@ pragma solidity >=0.8.19 <0.9.0;
 import "../VerifiedERC20.t.sol";
 
 contract BurnConcreteTest is VerifiedERC20Test {
-  uint256 userBalance = 1000;
+    uint256 userBalance = 1000;
+
     function setUp() public override {
         super.setUp();
 
@@ -50,7 +51,9 @@ contract BurnConcreteTest is VerifiedERC20Test {
         uint256 _amount = userBalance + 1;
         address _account = address(lockbox);
 
-        vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientBalance.selector, _account, userBalance, _amount));
+        vm.expectRevert(
+            abi.encodeWithSelector(IERC20Errors.ERC20InsufficientBalance.selector, _account, userBalance, _amount)
+        );
         verifiedERC20.burn({_account: _account, _value: _amount});
     }
 
@@ -88,9 +91,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
         address _caller = users.charlie;
 
         vm.startPrank(_caller);
-        vm.expectRevert(
-            abi.encodeWithSelector(IERC20Errors.ERC20InsufficientAllowance.selector, _caller, 0, _amount)
-        );
+        vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientAllowance.selector, _caller, 0, _amount));
         verifiedERC20.burn({_account: _account, _value: _amount});
     }
 
@@ -136,7 +137,9 @@ contract BurnConcreteTest is VerifiedERC20Test {
         uint256 _amount = userBalance + 1;
         address _account = users.alice;
 
-        vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientBalance.selector, _account, userBalance, _amount));
+        vm.expectRevert(
+            abi.encodeWithSelector(IERC20Errors.ERC20InsufficientBalance.selector, _account, userBalance, _amount)
+        );
         verifiedERC20.burn({_account: _account, _value: _amount});
     }
 
