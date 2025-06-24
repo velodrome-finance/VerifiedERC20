@@ -71,7 +71,8 @@ contract BurnConcreteTest is VerifiedERC20Test {
         assertEq(verifiedERC20.balanceOf({account: _account}), _balance - _amount);
     }
 
-    modifier whenTheCallerIsNotTheAccount() {
+    modifier whenTheCallerIsNotTheAccount(address _caller) {
+        vm.assume(_caller != address(0));
         _;
     }
 
@@ -80,7 +81,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
         uint256 _allowance,
         address _account,
         address _caller
-    ) external whenTheCallerIsNotTheAccount {
+    ) external whenTheCallerIsNotTheAccount(_caller) {
         // It should revert with {ERC20InsufficientAllowance}
         vm.assume(_account != address(0) && _caller != _account && _caller != address(0));
         _amount = bound(_amount, 1, MAX_TOKENS);
@@ -104,7 +105,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
 
     function testFuzz_WhenTheCallerIsNotLockbox_(address _caller, address _account, uint256 _amount)
         external
-        whenTheCallerIsNotTheAccount
+        whenTheCallerIsNotTheAccount(_caller)
         whenTheAmountIsSmallerOrEqualToTheAllowance
     {
         // It should revert with {VerifiedERC20_HookRevert}
@@ -134,7 +135,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
 
     function testFuzz_WhenTheAmountIsGreaterThanTheUsersBalance_(uint256 _amount, uint256 _balance)
         external
-        whenTheCallerIsNotTheAccount
+        whenTheCallerIsNotTheAccount(address(lockbox))
         whenTheAmountIsSmallerOrEqualToTheAllowance
         whenTheCallerIsTheLockbox_
     {
@@ -152,7 +153,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
 
     function testFuzz_WhenTheAmountIsSmallerOrEqualToTheUsersBalance_(uint256 _amount, uint256 _balance)
         external
-        whenTheCallerIsNotTheAccount
+        whenTheCallerIsNotTheAccount(address(lockbox))
         whenTheAmountIsSmallerOrEqualToTheAllowance
         whenTheCallerIsTheLockbox_
     {
