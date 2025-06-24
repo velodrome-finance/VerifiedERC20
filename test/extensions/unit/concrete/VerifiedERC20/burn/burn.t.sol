@@ -35,7 +35,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
         verifiedERC20.burn({_account: _account, _value: _amount});
     }
 
-    modifier whenTheCallerIsLockbox() {
+    modifier whenTheCallerIsTheLockbox() {
         vm.startPrank(address(lockbox));
         _;
     }
@@ -43,7 +43,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
     function test_WhenTheAmountIsGreaterThanTheUsersBalance()
         external
         whenTheCallerIsTheAccount
-        whenTheCallerIsLockbox
+        whenTheCallerIsTheLockbox
     {
         // It should revert with {ERC20InsufficientBalance}
         uint256 _amount = 1000 + 1;
@@ -56,7 +56,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
     function test_WhenTheAmountIsSmallerOrEqualToTheUsersBalance()
         external
         whenTheCallerIsTheAccount
-        whenTheCallerIsLockbox
+        whenTheCallerIsTheLockbox
     {
         // It should call the single permission burn hook
         // It should emit a {Transfer} event
@@ -120,7 +120,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
         verifiedERC20.burn({_account: _account, _value: _amount});
     }
 
-    modifier whenTheCallerIsLockbox_() {
+    modifier whenTheCallerIsTheLockbox_() {
         vm.startPrank(address(lockbox));
         _;
     }
@@ -129,7 +129,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
         external
         whenTheCallerIsNotTheAccount
         whenTheAmountIsSmallerOrEqualToTheAllowance(address(lockbox))
-        whenTheCallerIsLockbox_
+        whenTheCallerIsTheLockbox_
     {
         // It should revert with {ERC20InsufficientBalance}
         uint256 _amount = 1000 + 1;
@@ -143,7 +143,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
         external
         whenTheCallerIsNotTheAccount
         whenTheAmountIsSmallerOrEqualToTheAllowance(address(lockbox))
-        whenTheCallerIsLockbox_
+        whenTheCallerIsTheLockbox_
     {
         // It should call the single permission burn hook
         // It should deduct the allowance
@@ -169,7 +169,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
         external
         whenTheCallerIsNotTheAccount
         whenTheAmountIsSmallerOrEqualToTheAllowance(address(lockbox))
-        whenTheCallerIsLockbox_
+        whenTheCallerIsTheLockbox_
     {
         uint256 _amount = 1000 - 1;
         address _account = users.alice;

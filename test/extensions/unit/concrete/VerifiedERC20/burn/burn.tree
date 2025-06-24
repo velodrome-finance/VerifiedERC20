@@ -2,7 +2,7 @@ BurnConcreteTest
 ├── When the caller is the account
 │   ├── When the caller is not lockbox
 │   │   └── It should revert with {VerifiedERC20_HookRevert}
-│   └── When the caller is lockbox
+│   └── When the caller is the lockbox
 │       ├── When the amount is greater than the user's balance
 │       │   └── It should revert with {ERC20InsufficientBalance}
 │       └── When the amount is smaller or equal to the user's balance
@@ -15,7 +15,7 @@ BurnConcreteTest
     └── When the amount is smaller or equal to the allowance
         ├── When the caller is not lockbox_
         │   └── It should revert with {VerifiedERC20_HookRevert}
-        └── When the caller is lockbox_
+        └── When the caller is the lockbox_
             ├── When the amount is greater than the user's balance_
             │   └── It should revert with {ERC20InsufficientBalance}
             └── When the amount is smaller or equal to the user's balance_
