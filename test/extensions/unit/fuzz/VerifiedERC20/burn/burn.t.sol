@@ -75,15 +75,23 @@ contract BurnConcreteTest is VerifiedERC20Test {
         _;
     }
 
-    function testFuzz_WhenTheAmountIsGreaterThanTheAllowance(uint256 _amount, address _account, address _caller)
-        external
-        whenTheCallerIsNotTheAccount
-    {
+    function testFuzz_WhenTheAmountIsGreaterThanTheAllowance(
+        uint256 _amount,
+        uint256 _allowance,
+        address _account,
+        address _caller
+    ) external whenTheCallerIsNotTheAccount {
         // It should revert with {ERC20InsufficientAllowance}
-        vm.assume(_account != address(0) && _caller != _account);
+        vm.assume(_account != address(0) && _caller != _account && _caller != address(0));
         _amount = bound(_amount, 1, MAX_TOKENS);
 
-        vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientAllowance.selector, _caller, 0, _amount));
+        _allowance = bound(_allowance, 0, _amount - 1);
+        vm.prank(_account);
+        verifiedERC20.approve({spender: _caller, value: _allowance});
+
+        vm.expectRevert(
+            abi.encodeWithSelector(IERC20Errors.ERC20InsufficientAllowance.selector, _caller, _allowance, _amount)
+        );
         vm.prank(_caller);
         verifiedERC20.burn({_account: _account, _value: _amount});
     }
