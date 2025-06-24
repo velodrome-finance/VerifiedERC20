@@ -3,6 +3,8 @@ pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
 
+import {ILeafVoter} from "../src/interfaces/external/ILeafVoter.sol";
+
 import {CreateXLibrary} from "../src/libraries/CreateXLibrary.sol";
 
 import {VerifiedERC20Factory} from "../src/VerifiedERC20Factory.sol";
@@ -83,6 +85,7 @@ contract DeploySelfVerifiedERC20 is Script {
         selfTransferHook = new SelfTransferHook({
             _name: _params.selfTransferHookName,
             _voter: _params.voter,
+            _authorized: _getSelfDeploymentRewardsAuthorized(),
             _selfPassportSBT: _params.selfPassportSBT
         });
 
@@ -92,6 +95,7 @@ contract DeploySelfVerifiedERC20 is Script {
         autoUnwrapHook = new AutoUnwrapHook({
             _name: _params.autoUnwrapHookName,
             _voter: _params.voter,
+            _authorized: _getSelfDeploymentRewardsAuthorized(),
             _verifiedERC20s: verifiedERC20s,
             _lockboxes: lockboxes
         });
@@ -118,5 +122,11 @@ contract DeploySelfVerifiedERC20 is Script {
         vm.writeJson(vm.toString(address(singlePermissionBurnHook)), path, ".SinglePermissionBurnHook");
         vm.writeJson(vm.toString(address(selfTransferHook)), path, ".SelfTransferHook");
         vm.writeJson(vm.toString(address(verifiedERC20)), path, ".VerifiedERC20");
+    }
+
+    function _getSelfDeploymentRewardsAuthorized() internal view returns (address) {
+        return block.chainid == 10
+            ? _params.voter //voter
+            : ILeafVoter(_params.voter).bridge(); //leaf message bridge
     }
 }
