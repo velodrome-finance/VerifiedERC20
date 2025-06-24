@@ -30,6 +30,7 @@ contract SelfTransferHook is BaseTransferHook {
      * @notice Initializes the SelfTransferHook
      * @param _name Name for the hook
      * @param _voter address of the voter contract
+     * @param _authorized address to check if a claim is a claim incentive
      * @param _selfPassportSBT The address of the Self Passport SBT contract
      */
     constructor(string memory _name, address _voter, address _authorized, address _selfPassportSBT)

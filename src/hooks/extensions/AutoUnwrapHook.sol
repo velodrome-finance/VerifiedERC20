@@ -49,7 +49,7 @@ contract AutoUnwrapHook is BaseTransferHook {
      * @notice Initializes the SelfTransferHook
      * @param _name Name for the hook
      * @param _voter address of the voter contract
-     * @param _authorized address to check if a claim is a claim incentive
+     * @param _authorized address to check if a transfer is a claim incentive
      * @param _verifiedERC20s Array of verified ERC20 addresses
      * @param _lockboxes Array of corresponding lockbox addresses for the verified ERC20s
      */
