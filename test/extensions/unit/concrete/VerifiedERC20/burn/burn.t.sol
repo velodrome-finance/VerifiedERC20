@@ -89,7 +89,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
 
         vm.startPrank(_caller);
         vm.expectRevert(
-            abi.encodeWithSelector(IERC20Errors.ERC20InsufficientAllowance.selector, users.charlie, 0, _amount)
+            abi.encodeWithSelector(IERC20Errors.ERC20InsufficientAllowance.selector, _caller, 0, _amount)
         );
         verifiedERC20.burn({_account: _account, _value: _amount});
     }
