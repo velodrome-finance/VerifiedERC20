@@ -3,6 +3,8 @@ pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
 
+import {ILeafVoter} from "../src/interfaces/external/ILeafVoter.sol";
+
 import {CreateXLibrary} from "../src/libraries/CreateXLibrary.sol";
 
 import {VerifiedERC20Factory} from "../src/VerifiedERC20Factory.sol";
@@ -124,7 +126,7 @@ contract DeploySelfVerifiedERC20 is Script {
 
     function _getSelfDeploymentRewardsAuthorized() internal view returns (address) {
         return block.chainid == 10
-            ? 0x41C914ee0c7E1A5edCD0295623e6dC557B5aBf3C //voter
-            : 0xF278761576f45472bdD721EACA19317cE159c011; //leaf message bridge
+            ? _params.voter //voter
+            : ILeafVoter(_params.voter).bridge(); //leaf message bridge
     }
 }
