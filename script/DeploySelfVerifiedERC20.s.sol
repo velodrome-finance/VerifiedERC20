@@ -24,7 +24,6 @@ contract DeploySelfVerifiedERC20 is Script {
         string singlePermissionBurnHookName;
         string selfTransferHookName;
         address voter;
-        address leafMessageBridge;
         address selfPassportSBT;
         string autoUnwrapHookName;
         address verifiedERC20Factory;
@@ -84,7 +83,7 @@ contract DeploySelfVerifiedERC20 is Script {
         selfTransferHook = new SelfTransferHook({
             _name: _params.selfTransferHookName,
             _voter: _params.voter,
-            _authorized: _params.leafMessageBridge,
+            _authorized: _getSelfDeploymentRewardsAuthorized(),
             _selfPassportSBT: _params.selfPassportSBT
         });
 
@@ -94,7 +93,7 @@ contract DeploySelfVerifiedERC20 is Script {
         autoUnwrapHook = new AutoUnwrapHook({
             _name: _params.autoUnwrapHookName,
             _voter: _params.voter,
-            _authorized: _params.leafMessageBridge,
+            _authorized: _getSelfDeploymentRewardsAuthorized(),
             _verifiedERC20s: verifiedERC20s,
             _lockboxes: lockboxes
         });
@@ -121,5 +120,11 @@ contract DeploySelfVerifiedERC20 is Script {
         vm.writeJson(vm.toString(address(singlePermissionBurnHook)), path, ".SinglePermissionBurnHook");
         vm.writeJson(vm.toString(address(selfTransferHook)), path, ".SelfTransferHook");
         vm.writeJson(vm.toString(address(verifiedERC20)), path, ".VerifiedERC20");
+    }
+
+    function _getSelfDeploymentRewardsAuthorized() internal view returns (address) {
+        return block.chainid == 10
+            ? 0x41C914ee0c7E1A5edCD0295623e6dC557B5aBf3C //voter
+            : 0xF278761576f45472bdD721EACA19317cE159c011; //leaf message bridge
     }
 }
