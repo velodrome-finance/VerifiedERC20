@@ -20,7 +20,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
         _;
     }
 
-    function test_WhenTheCallerIsNotLockbox() external whenTheCallerIsTheAccount {
+    function test_WhenTheCallerIsNotTheLockbox() external whenTheCallerIsTheAccount {
         // It should revert with {VerifiedERC20_HookRevert}
         uint256 _amount = userBalance;
         address _account = users.alice;
@@ -101,7 +101,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
         _;
     }
 
-    function test_WhenTheCallerIsNotLockbox_()
+    function test_WhenTheCallerIsNotTheLockbox_()
         external
         whenTheCallerIsNotTheAccount
         whenTheAmountIsSmallerOrEqualToTheAllowance(users.charlie)

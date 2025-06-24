@@ -8,7 +8,10 @@ contract BurnConcreteTest is VerifiedERC20Test {
         _;
     }
 
-    function testFuzz_WhenTheCallerIsNotLockbox(address _caller, uint256 _amount) external whenTheCallerIsTheAccount {
+    function testFuzz_WhenTheCallerIsNotTheLockbox(address _caller, uint256 _amount)
+        external
+        whenTheCallerIsTheAccount
+    {
         // It should revert with {VerifiedERC20_HookRevert}
         vm.assume(_caller != address(lockbox));
         address _account = _caller;
@@ -103,7 +106,7 @@ contract BurnConcreteTest is VerifiedERC20Test {
         _;
     }
 
-    function testFuzz_WhenTheCallerIsNotLockbox_(address _caller, address _account, uint256 _amount)
+    function testFuzz_WhenTheCallerIsNotTheLockbox_(address _caller, address _account, uint256 _amount)
         external
         whenTheCallerIsNotTheAccount(_caller)
         whenTheAmountIsSmallerOrEqualToTheAllowance
