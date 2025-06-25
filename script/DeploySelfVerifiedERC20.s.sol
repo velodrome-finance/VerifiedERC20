@@ -43,6 +43,8 @@ contract DeploySelfVerifiedERC20 is Script {
     /// @dev Used by tests to disable logging of output
     bool public isTest;
 
+    function setUp() public virtual {}
+
     function run() external {
         vm.startBroadcast();
 
