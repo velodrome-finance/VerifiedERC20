@@ -112,6 +112,7 @@ contract DeploySelfVerifiedERC20 is Script {
         console.log("SinglePermissionMintHook: ", address(singlePermissionMintHook));
         console.log("SinglePermissionBurnHook: ", address(singlePermissionBurnHook));
         console.log("SelfTransferHook: ", address(selfTransferHook));
+        console.log("AutoUnwrapHook: ", address(autoUnwrapHook));
         console.log("VerifiedERC20: ", address(verifiedERC20));
     }
 
@@ -123,6 +124,7 @@ contract DeploySelfVerifiedERC20 is Script {
         vm.writeJson(vm.toString(address(singlePermissionMintHook)), path, ".SinglePermissionMintHook");
         vm.writeJson(vm.toString(address(singlePermissionBurnHook)), path, ".SinglePermissionBurnHook");
         vm.writeJson(vm.toString(address(selfTransferHook)), path, ".SelfTransferHook");
+        vm.writeJson(vm.toString(address(autoUnwrapHook)), path, ".AutoUnwrapHook");
         vm.writeJson(vm.toString(address(verifiedERC20)), path, ".VerifiedERC20");
     }
 
