@@ -16,7 +16,7 @@ contract DeploySelfVerifiedERC20Celo is DeploySelfVerifiedERC20 {
             voter: 0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123, //leaf voter on celo
             selfPassportSBT: address(0), //TODO:
             autoUnwrapHookName: "Auto Unwrap Hook to automatically unwrap verified erc20 to the base token on claim incentive",
-            verifiedERC20Factory: address(0), //TODO:
+            verifiedERC20Factory: 0x609B89df1E42108eC4Bd17C2FF2487C9A031B0e0, //TODO:
             outputFilename: "celo-self.json"
         });
     }
