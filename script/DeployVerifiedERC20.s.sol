@@ -26,7 +26,7 @@ contract DeployVerifiedERC20 is Script {
 
     ICreateX public cx = ICreateX(0xba5Ed099633D3B313e4D5F7bdc1305d3c28ba5Ed);
 
-    address public deployer = 0xd42C7914cF8dc24a1075E29C283C581bd1b0d3D3;
+    address public deployer = 0xB40E2614122B58EA426F28E37eB66B2AC8511F9e;
 
     VerifiedERC20 public verifiedERC20Implementation;
     VerifiedERC20Factory public verifiedERC20Factory;
