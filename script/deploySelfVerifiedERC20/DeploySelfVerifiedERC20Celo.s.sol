@@ -18,28 +18,10 @@ contract DeploySelfVerifiedERC20Celo is DeploySelfVerifiedERC20 {
             singlePermissionBurnHookName: "Single Permission Hook to restrict burns to the lockbox",
             selfTransferHookName: "Hook to restrict incentive claims only to Self.xyz verified wallets",
             voter: 0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123, //leaf voter on celo
-            selfPassportSBT: address(0), //TODO:
+            selfPassportSBT: 0xb8BEfA3900347057E57825BCEEbca1188209496c, //TODO:
             autoUnwrapHookName: "Hook for incentive claims to automatically unwrap to the base token",
-            verifiedERC20Factory: 0x609B89df1E42108eC4Bd17C2FF2487C9A031B0e0, //TODO:
+            verifiedERC20Factory: 0x8a13CdB872B57091ae2B38b19f58fF9a7627df63, //TODO:
             outputFilename: "celo-self.json"
         });
-    }
-
-    /// @dev Overriding for test purposes. Will revert change later
-    function deploy() internal override {
-        MockSelfPassportSBT mockSelfPassportSBT = new MockSelfPassportSBT();
-        _params.selfPassportSBT = address(mockSelfPassportSBT);
-
-        super.deploy();
-
-        MockIncentiveReward mockIncentiveReward = new MockIncentiveReward();
-
-        console.log("mockInceitveReward: ", address(mockIncentiveReward));
-        console.log("mockSelfPassportSBT: ", address(mockSelfPassportSBT));
-
-        string memory root = vm.projectRoot();
-        string memory path = string(abi.encodePacked(root, "/deployment-addresses/", _params.outputFilename));
-        vm.writeJson(vm.toString(address(mockIncentiveReward)), path, ".MockIncentiveReward");
-        vm.writeJson(vm.toString(address(mockSelfPassportSBT)), path, ".MockSelfPassportSBT");
     }
 }

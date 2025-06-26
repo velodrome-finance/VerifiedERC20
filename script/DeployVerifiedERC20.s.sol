@@ -10,9 +10,9 @@ import {HookRegistry} from "../src/hooks/HookRegistry.sol";
 import {VerifiedERC20Factory} from "../src/VerifiedERC20Factory.sol";
 import {VerifiedERC20} from "../src/VerifiedERC20.sol";
 
-bytes11 constant VERIFIED_ERC20_FACTORY_ENTROPY = 0x0000000000000000000001;
-bytes11 constant VERIFIED_ERC20_ENTROPY = 0x0000000000000000000002;
-bytes11 constant HOOK_REGISTRY_ENTROPY = 0x0000000000000000000003;
+bytes11 constant VERIFIED_ERC20_FACTORY_ENTROPY = 0x0000000000000000000011;
+bytes11 constant VERIFIED_ERC20_ENTROPY = 0x0000000000000000000012;
+bytes11 constant HOOK_REGISTRY_ENTROPY = 0x0000000000000000000013;
 
 contract DeployVerifiedERC20 is Script {
     using CreateXLibrary for bytes11;

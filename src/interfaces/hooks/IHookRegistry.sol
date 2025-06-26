@@ -6,14 +6,14 @@ interface IHookRegistry {
      * @dev Enum defining the entrypoints where hooks can be triggered
      */
     enum Entrypoint {
-        BEFORE_APPROVE,
-        AFTER_APPROVE,
-        BEFORE_TRANSFER,
-        AFTER_TRANSFER,
-        BEFORE_MINT,
-        AFTER_MINT,
-        BEFORE_BURN,
-        AFTER_BURN
+        BEFORE_APPROVE,//0
+        AFTER_APPROVE,//1
+        BEFORE_TRANSFER,//2
+        AFTER_TRANSFER,//3
+        BEFORE_MINT,//4
+        AFTER_MINT,//5
+        BEFORE_BURN,//6
+        AFTER_BURN//7
     }
 
     /**
