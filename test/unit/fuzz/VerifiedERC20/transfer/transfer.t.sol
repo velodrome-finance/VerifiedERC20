@@ -78,7 +78,7 @@ contract TransferFuzzTest is VerifiedERC20Test {
         vm.expectEmit(address(verifiedERC20));
         emit IERC20.Transfer({from: _from, to: _to, value: _amount});
         verifiedERC20.transfer({to: _to, value: _amount});
-        assertEq(verifiedERC20.balanceOf(_from), _balance - _amount);
-        assertEq(verifiedERC20.balanceOf(_to), _amount);
+        assertEq(verifiedERC20.balanceOf(_from), _from == _to ? _balance : _balance - _amount);
+        assertEq(verifiedERC20.balanceOf(_to), _from == _to ? _balance : _amount);
     }
 }
