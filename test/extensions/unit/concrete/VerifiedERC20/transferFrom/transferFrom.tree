@@ -1,0 +1,18 @@
+TransferFromConcreteTest
+├── When the amount is greater than the allowance
+│    └── It should revert with {ERC20InsufficientAllowance}
+└── When the amount is smaller or equal to the allowance
+    ├── When the from address is the zero address
+    │    └── It should revert with {ERC20InvalidSender}
+    └── When the from address is not the zero address
+        ├── When the to address is the zero address
+        │    └── It should revert with {ERC20InvalidReceiver}
+        └── When the to address is not the zero address
+                ├── When amount is greater than from balance
+                │    └── It should revert with {ERC20InsufficientBalance}
+                └── When amount is smaller or equal to from balance
+                    ├── It should call the before hook
+                    ├── It should deduct the allowance
+                    ├── It should transfer the amount
+                    ├── It should call the after hook
+                    └── It should emit a {Transfer} event

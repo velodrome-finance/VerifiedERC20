@@ -1,11 +1,11 @@
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.8.19 <0.9.0;
 
 struct Users {
     // owner / general purpose admin
     address payable owner;
-    // fee manager
-    address payable feeManager;
+    // hook registry manager
+    address payable hookRegistryManager;
     // User, used to initiate calls
     address payable alice;
     // User, used as recipient

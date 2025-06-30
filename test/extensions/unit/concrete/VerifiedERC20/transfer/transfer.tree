@@ -1,0 +1,29 @@
+TransferConcreteTest
+├── When the transfer is an incentive claim
+│    ├── When the user is not verified
+│    │    └── It should revert with {VerifiedERC20_HookRevert}
+│    └── When the user is verified
+│         ├── When the to address passed is the zero address
+│         │    └── It should revert with {ERC20InvalidReceiver}
+│         └── When the to address passed is not the zero address
+│              ├── When amount is greater than balance
+│              │    └── It should revert with {ERC20InsufficientBalance}
+│              └── When amount is smaller or equal to balance
+│                  ├── When amount is greater than auto unwrap hook allowance
+│                  │   └── It should revert with {VerifiedERC20_HookRevert}
+│                  └── When amount is smaller or equal to auto unwrap hook allowance
+│                      ├──It should call the self transfer hook
+│                      ├──It should call the auto unwrap hook
+│                      ├──It should emit a {Transfer} event
+│                      ├──It should unwrap the amount to base token
+│                      └──It should transfer the unwrapped amount
+└── When the transfer is not an incentive claim
+     ├── When the to address passed is the zero address_
+     │    └── It should revert with {ERC20InvalidReceiver}
+     └── When the to address passed is not the zero address_
+         ├── When amount is greater than balance_
+         │    └── It should revert with {ERC20InsufficientBalance}
+         └── When amount is smaller or equal to balance_
+              ├──It should call the self transfer hook
+              ├──It should emit a {Transfer} event
+              └──It should transfer the amount

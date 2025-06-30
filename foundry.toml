@@ -5,16 +5,17 @@ libs = ["lib"]
 
 solc_version = "0.8.27"
 show_progress = true
-
 optimizer = true
 optimizer_runs = 200
 
 [fuzz]
-runs = 10000
+runs = 256
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
 
 [rpc_endpoints]
 optimism = "${OPTIMISM_RPC_URL}"
+celo = "${CELO_RPC_URL}"
 
 [etherscan]
 optimism = { key = "${OPTIMISM_ETHERSCAN_API_KEY}", url = "${OPTIMISM_ETHERSCAN_VERIFIER_URL}"}
+celo = { key = "${CELO_ETHERSCAN_API_KEY}", url = "${CELO_ETHERSCAN_VERIFIER_URL}"}

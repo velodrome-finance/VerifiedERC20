@@ -1,0 +1,8 @@
+MintConcreteTest
+├── When the account passed is the zero address
+│    └── It should revert with {ERC20InvalidReceiver}
+└── When the account passed is not the zero address
+     ├──It should call the before hook
+     ├──It should call the after hook
+     ├──It should emit a {Transfer} event
+     └──It should mint the amount to the user
