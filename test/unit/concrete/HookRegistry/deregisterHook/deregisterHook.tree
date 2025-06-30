@@ -1,0 +1,10 @@
+DeregisterHookConcreteTest
+├── When the caller is not the owner
+│   └── It should revert with {OwnableUnauthorizedAccount}
+└── When the caller is the owner
+    ├── When the hook is not registered
+    │   └── It should revert with {HookRegistry_HookNotRegistered}
+    └── When the hook is registered
+        ├── It should remove the hook from the hook enumerable set
+        ├── It should clear the hook entrypoint mapping
+        └── It should emit a {HookDeregistered} event

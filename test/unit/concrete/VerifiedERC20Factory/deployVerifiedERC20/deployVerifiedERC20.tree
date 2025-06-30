@@ -1,0 +1,8 @@
+DeployVerifiedERC20UnitConcreteTest
+└── Given any parameter
+     ├── It should deploy a new VerifiedERC20
+     ├── It should increase the new VerifiedERC20 count
+     ├── It should add the new VerifiedERC20 at the last index
+     ├── It should return true on isVerifiedERC20
+     ├── It should add the new VerifiedERC20 to the verifiedERC20s
+     └── It should emit a {VerifiedERC20Created} event

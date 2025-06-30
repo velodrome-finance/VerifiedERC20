@@ -1,0 +1,5 @@
+CheckConcreteTest
+├── When the caller is not authorized
+│   └── It should revert with {Hook_Revert}
+└── When the caller is authorized
+    └── It should do nothing

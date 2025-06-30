@@ -1,0 +1,321 @@
+<svg version="1.1" baseProfile="full" width="1292.0" height="368.0" viewBox="0 0 1292 368" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">
+	<desc >
+	# Created using https://nomnoml.com
+
+	#direction: right
+
+	[VerifiedERC20|
+	  [activateHook(SelfTransferHook)] |
+	  ... |
+	  [transfer(...)]-&gt;[_checkHooks;(BEFORE_TRANSFER, SelfTransferHook)]
+	  [transferFrom(...)]-&gt;[_checkHooks;(BEFORE_TRANSFER, SelfTransferHook)]
+	]
+
+	[&lt;table&gt;HookRegistry|
+	    BEFORE_APPROVE | ... ||
+	    AFTER_APPROVE | ... ||
+	    BEFORE_TRANSFER | SelfTransferHook, World... ||
+	    AFTER_TRANSFER | ... ||
+	    BEFORE_MINT | ... ||
+	    AFTER_MINT | ... ||
+	    BEFORE_BURN | ... ||
+	    AFTER_BURN | ...
+
+	]
+	[&lt;actor&gt; User] -- [VerifiedERC20]
+	[VerifiedERC20] -&gt; [HookRegistry]
+
+	[HookRegistry] -o) [&lt;database&gt;Self.xyz]
+	[HookRegistry] --o) [&lt;database&gt;World*]
+	[HookRegistry] --o) [&lt;database&gt;Coinbase*]</desc>
+	<g stroke-width="1.0" text-align="left" font="12pt Helvetica, Arial, sans-serif" font-size="12pt" font-family="Helvetica" font-weight="bold" font-style="normal">
+		<g font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" stroke-width="3.0" stroke-linejoin="round" stroke-linecap="round" stroke="#33322E">
+			<g stroke="transparent" fill="transparent">
+				<rect x="0.0" y="0.0" height="368.0" width="1292.0" stroke="none"></rect>
+			</g>
+			<g transform="translate(8, 8)" fill="#33322E">
+				<g transform="translate(20, 20)" fill="#eee8d5" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal">
+					<g stroke-dasharray="6 6">
+						<path d="M51.0 156.0 L71 156 L91 156 L91.0 156.0 " fill="none"></path>
+					</g>
+					<path d="M656.0 156.0 L676 156 L689.3333333333334 156 L689.3 156.0 " fill="none"></path>
+					<path d="M682.7 161.3 L689.3 156.0 L682.7 150.7 L696.0 156.0 Z"></path>
+					<path d="M1102.0 75.9 L1122 68 L1136.8333333333333 68 L1136.8 68.0 " fill="none"></path>
+					<path d="M1136.8 60.0 L1139.1 60.3 L1141.2 61.3 L1142.9 62.8 L1144.1 64.7 L1144.8 66.9 L1144.8 69.1 L1144.1 71.3 L1142.9 73.2 L1141.2 74.7 L1139.1 75.7 L1136.8 76.0" fill="none"></path>
+					<path d="M1144.8 68.0 L1151.5 68.0" fill="none"></path>
+					<ellipse cx="1136.8" cy="68.0" rx="4.0" ry="4.0"></ellipse>
+					<g stroke-dasharray="6 6">
+						<path d="M1102.0 156.0 L1122 156 L1140.8333333333333 156 L1140.8 156.0 " fill="none"></path>
+					</g>
+					<path d="M1140.8 148.0 L1143.1 148.3 L1145.2 149.3 L1146.9 150.8 L1148.1 152.7 L1148.8 154.9 L1148.8 157.1 L1148.1 159.3 L1146.9 161.2 L1145.2 162.7 L1143.1 163.7 L1140.8 164.0" fill="none"></path>
+					<path d="M1148.8 156.0 L1155.5 156.0" fill="none"></path>
+					<ellipse cx="1140.8" cy="156.0" rx="4.0" ry="4.0"></ellipse>
+					<g stroke-dasharray="6 6">
+						<path d="M1102.0 236.1 L1122 244 L1127.3333333333333 244 L1127.3 244.0 " fill="none"></path>
+					</g>
+					<path d="M1127.3 236.0 L1129.6 236.3 L1131.7 237.3 L1133.4 238.8 L1134.6 240.7 L1135.3 242.9 L1135.3 245.1 L1134.6 247.3 L1133.4 249.2 L1131.7 250.7 L1129.6 251.7 L1127.3 252.0" fill="none"></path>
+					<path d="M1135.3 244.0 L1142.0 244.0" fill="none"></path>
+					<ellipse cx="1127.3" cy="244.0" rx="4.0" ry="4.0"></ellipse>
+					<g data-name="VerifiedERC20">
+						<g fill="#eee8d5" stroke="#33322E" data-name="VerifiedERC20">
+							<rect x="91.0" y="0.0" height="312.0" width="565.0" data-name="VerifiedERC20"></rect>
+							<path d="M91.0 32.0 L656.0 32.0" fill="none" data-name="VerifiedERC20"></path>
+							<path d="M91.0 120.0 L656.0 120.0" fill="none" data-name="VerifiedERC20"></path>
+							<path d="M91.0 152.0 L656.0 152.0" fill="none" data-name="VerifiedERC20"></path>
+						</g>
+						<g transform="translate(91, 0)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="VerifiedERC20" data-compartment="0">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="VerifiedERC20" data-compartment="0">
+								<text x="274.5" y="14.1" stroke="none" text-anchor="middle" data-name="VerifiedERC20" data-compartment="0">VerifiedERC20</text>
+
+							</g>
+						</g>
+						<g transform="translate(91, 32)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="VerifiedERC20" data-compartment="1">
+							<g transform="translate(8, 8)" fill="#33322E" data-name="VerifiedERC20" data-compartment="1">
+								<g transform="translate(20, 20)" data-name="VerifiedERC20" data-compartment="1">
+									<g data-name="activateHook(SelfTransferHook)">
+										<g fill="#fdf6e3" stroke="#33322E" data-name="activateHook(SelfTransferHook)">
+											<rect x="0.0" y="0.0" height="32.0" width="258.0" data-name="activateHook(SelfTransferHook)"></rect>
+										</g>
+										<g transform="translate(0, 0)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="activateHook(SelfTransferHook)" data-compartment="0">
+											<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="activateHook(SelfTransferHook)" data-compartment="0">
+												<text x="121.0" y="14.1" stroke="none" text-anchor="middle" data-name="activateHook(SelfTransferHook)" data-compartment="0">activateHook(SelfTransferHook)</text>
+
+											</g>
+										</g>
+									</g>
+								</g>
+							</g>
+						</g>
+						<g transform="translate(91, 120)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="VerifiedERC20" data-compartment="2">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="VerifiedERC20" data-compartment="2">
+								<text x="0.0" y="14.1" stroke="none" data-name="VerifiedERC20" data-compartment="2">...</text>
+
+							</g>
+						</g>
+						<g transform="translate(91, 152)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="VerifiedERC20" data-compartment="3">
+							<g transform="translate(8, 8)" fill="#33322E" data-name="VerifiedERC20" data-compartment="3">
+								<g transform="translate(20, 20)" fill="#33322E" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="VerifiedERC20" data-compartment="3">
+									<path d="M119.0 16.0 L159 16 L214.12274823232633 26.726588845209445 L214.1 26.7 " fill="none" data-name="VerifiedERC20" data-compartment="3"></path>
+									<path d="M206.6 30.7 L214.1 26.7 L208.6 20.2 L220.7 28.0 Z" data-name="VerifiedERC20" data-compartment="3"></path>
+									<path d="M139.0 88.0 L159 88 L214.12274823232633 77.27341115479055 L214.1 77.3 " fill="none" data-name="VerifiedERC20" data-compartment="3"></path>
+									<path d="M208.6 83.8 L214.1 77.3 L206.6 73.3 L220.7 76.0 Z" data-name="VerifiedERC20" data-compartment="3"></path>
+									<g data-name="transfer(...)">
+										<g fill="#fdf6e3" stroke="#33322E" data-name="transfer(...)">
+											<rect x="20.0" y="0.0" height="32.0" width="99.0" data-name="transfer(...)"></rect>
+										</g>
+										<g transform="translate(20, 0)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="transfer(...)" data-compartment="0">
+											<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="transfer(...)" data-compartment="0">
+												<text x="41.5" y="14.1" stroke="none" text-anchor="middle" data-name="transfer(...)" data-compartment="0">transfer(...)</text>
+
+											</g>
+										</g>
+									</g>
+									<g data-name="_checkHooks">
+										<g fill="#fdf6e3" stroke="#33322E" data-name="_checkHooks">
+											<rect x="179.0" y="28.0" height="48.0" width="330.0" data-name="_checkHooks"></rect>
+										</g>
+										<g transform="translate(179, 28)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="_checkHooks" data-compartment="0">
+											<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="_checkHooks" data-compartment="0">
+												<text x="157.0" y="14.1" stroke="none" text-anchor="middle" data-name="_checkHooks" data-compartment="0">_checkHooks</text>
+												<text x="157.0" y="30.3" stroke="none" text-anchor="middle" data-name="_checkHooks" data-compartment="0">(BEFORE_TRANSFER, SelfTransferHook)</text>
+
+											</g>
+										</g>
+									</g>
+									<g data-name="transferFrom(...)">
+										<g fill="#fdf6e3" stroke="#33322E" data-name="transferFrom(...)">
+											<rect x="0.0" y="72.0" height="32.0" width="139.0" data-name="transferFrom(...)"></rect>
+										</g>
+										<g transform="translate(0, 72)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="transferFrom(...)" data-compartment="0">
+											<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="transferFrom(...)" data-compartment="0">
+												<text x="61.5" y="14.1" stroke="none" text-anchor="middle" data-name="transferFrom(...)" data-compartment="0">transferFrom(...)</text>
+
+											</g>
+										</g>
+									</g>
+								</g>
+							</g>
+						</g>
+					</g>
+					<g data-name="HookRegistry">
+						<g fill="#eee8d5" stroke="#33322E" data-name="HookRegistry">
+							<rect x="696.0" y="12.0" height="288.0" width="406.0" data-name="HookRegistry"></rect>
+							<path d="M696.0 44.0 L696.0 44.0" fill="none" data-name="HookRegistry"></path>
+							<path d="M696.0 44.0 L1102.0 44.0" fill="none" data-name="HookRegistry"></path>
+							<path d="M696.0 76.0 L1102.0 76.0" fill="none" data-name="HookRegistry"></path>
+							<path d="M696.0 108.0 L1102.0 108.0" fill="none" data-name="HookRegistry"></path>
+							<path d="M696.0 140.0 L1102.0 140.0" fill="none" data-name="HookRegistry"></path>
+							<path d="M696.0 172.0 L1102.0 172.0" fill="none" data-name="HookRegistry"></path>
+							<path d="M696.0 204.0 L1102.0 204.0" fill="none" data-name="HookRegistry"></path>
+							<path d="M696.0 236.0 L1102.0 236.0" fill="none" data-name="HookRegistry"></path>
+							<path d="M696.0 268.0 L1102.0 268.0" fill="none" data-name="HookRegistry"></path>
+							<path d="M899.0 44.0 L899.0 300.0" fill="none" data-name="HookRegistry"></path>
+							<path d="M1102.0 44.0 L1102.0 300.0" fill="none" data-name="HookRegistry"></path>
+						</g>
+						<g transform="translate(696, 12)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="HookRegistry" data-compartment="0">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="HookRegistry" data-compartment="0">
+								<text x="195.0" y="14.1" stroke="none" text-anchor="middle" data-name="HookRegistry" data-compartment="0">HookRegistry</text>
+
+							</g>
+						</g>
+						<g transform="translate(696, 44)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="HookRegistry" data-compartment="1">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="HookRegistry" data-compartment="1">
+								<text x="0.0" y="14.1" stroke="none" data-name="HookRegistry" data-compartment="1">BEFORE_APPROVE</text>
+
+							</g>
+						</g>
+						<g transform="translate(899, 44)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="HookRegistry" data-compartment="2">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="HookRegistry" data-compartment="2">
+								<text x="0.0" y="14.1" stroke="none" data-name="HookRegistry" data-compartment="2">...</text>
+
+							</g>
+						</g>
+						<g transform="translate(696, 76)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="HookRegistry" data-compartment="3">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="HookRegistry" data-compartment="3">
+								<text x="0.0" y="14.1" stroke="none" data-name="HookRegistry" data-compartment="3">AFTER_APPROVE</text>
+
+							</g>
+						</g>
+						<g transform="translate(899, 76)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="HookRegistry" data-compartment="4">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="HookRegistry" data-compartment="4">
+								<text x="0.0" y="14.1" stroke="none" data-name="HookRegistry" data-compartment="4">...</text>
+
+							</g>
+						</g>
+						<g transform="translate(696, 108)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="HookRegistry" data-compartment="5">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="HookRegistry" data-compartment="5">
+								<text x="0.0" y="14.1" stroke="none" data-name="HookRegistry" data-compartment="5">BEFORE_TRANSFER</text>
+
+							</g>
+						</g>
+						<g transform="translate(899, 108)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="HookRegistry" data-compartment="6">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="HookRegistry" data-compartment="6">
+								<text x="0.0" y="14.1" stroke="none" data-name="HookRegistry" data-compartment="6">SelfTransferHook, World...</text>
+
+							</g>
+						</g>
+						<g transform="translate(696, 140)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="HookRegistry" data-compartment="7">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="HookRegistry" data-compartment="7">
+								<text x="0.0" y="14.1" stroke="none" data-name="HookRegistry" data-compartment="7">AFTER_TRANSFER</text>
+
+							</g>
+						</g>
+						<g transform="translate(899, 140)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="HookRegistry" data-compartment="8">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="HookRegistry" data-compartment="8">
+								<text x="0.0" y="14.1" stroke="none" data-name="HookRegistry" data-compartment="8">...</text>
+
+							</g>
+						</g>
+						<g transform="translate(696, 172)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="HookRegistry" data-compartment="9">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="HookRegistry" data-compartment="9">
+								<text x="0.0" y="14.1" stroke="none" data-name="HookRegistry" data-compartment="9">BEFORE_MINT</text>
+
+							</g>
+						</g>
+						<g transform="translate(899, 172)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="HookRegistry" data-compartment="10">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="HookRegistry" data-compartment="10">
+								<text x="0.0" y="14.1" stroke="none" data-name="HookRegistry" data-compartment="10">...</text>
+
+							</g>
+						</g>
+						<g transform="translate(696, 204)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="HookRegistry" data-compartment="11">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="HookRegistry" data-compartment="11">
+								<text x="0.0" y="14.1" stroke="none" data-name="HookRegistry" data-compartment="11">AFTER_MINT</text>
+
+							</g>
+						</g>
+						<g transform="translate(899, 204)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="HookRegistry" data-compartment="12">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="HookRegistry" data-compartment="12">
+								<text x="0.0" y="14.1" stroke="none" data-name="HookRegistry" data-compartment="12">...</text>
+
+							</g>
+						</g>
+						<g transform="translate(696, 236)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="HookRegistry" data-compartment="13">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="HookRegistry" data-compartment="13">
+								<text x="0.0" y="14.1" stroke="none" data-name="HookRegistry" data-compartment="13">BEFORE_BURN</text>
+
+							</g>
+						</g>
+						<g transform="translate(899, 236)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="HookRegistry" data-compartment="14">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="HookRegistry" data-compartment="14">
+								<text x="0.0" y="14.1" stroke="none" data-name="HookRegistry" data-compartment="14">...</text>
+
+							</g>
+						</g>
+						<g transform="translate(696, 268)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="HookRegistry" data-compartment="15">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="HookRegistry" data-compartment="15">
+								<text x="0.0" y="14.1" stroke="none" data-name="HookRegistry" data-compartment="15">AFTER_BURN</text>
+
+							</g>
+						</g>
+						<g transform="translate(899, 268)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="HookRegistry" data-compartment="16">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="HookRegistry" data-compartment="16">
+								<text x="0.0" y="14.1" stroke="none" data-name="HookRegistry" data-compartment="16">...</text>
+
+							</g>
+						</g>
+					</g>
+					<g data-name="User">
+						<g fill="#eee8d5" stroke="#33322E" data-name="User">
+							<circle r="4.0" cx="25.5" cy="140.0" data-name="User"></circle>
+							<path d="M25.5 144.0 L25.5 152.0" fill="none" data-name="User"></path>
+							<path d="M21.5 148.0 L29.5 148.0" fill="none" data-name="User"></path>
+							<path d="M21.5 156.0 L25.5 152.0 L29.5 156.0" fill="none" data-name="User"></path>
+						</g>
+						<g transform="translate(0, 152)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="User" data-compartment="0">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="User" data-compartment="0">
+								<text x="17.5" y="14.1" stroke="none" text-anchor="middle" data-name="User" data-compartment="0">User</text>
+
+							</g>
+						</g>
+					</g>
+					<g data-name="Self.xyz">
+						<g fill="#eee8d5" stroke="#33322E" data-name="Self.xyz">
+							<rect x="1151.5" y="52.0" height="32.0" width="75.0" stroke="none" data-name="Self.xyz"></rect>
+							<path d="M1151.5 52.0 L1151.5 84.0" fill="none" data-name="Self.xyz"></path>
+							<path d="M1226.5 52.0 L1226.5 84.0" fill="none" data-name="Self.xyz"></path>
+							<ellipse cx="1189.0" cy="52.0" rx="37.5" ry="6.0" data-name="Self.xyz"></ellipse>
+							<path d="M1226.5 84.0 L1226.5 84.3 L1226.3 84.6 L1226.1 84.9 L1225.8 85.2 L1225.3 85.5 L1224.8 85.8 L1224.2 86.1 L1223.6 86.3 L1222.8 86.6 L1221.9 86.9 L1221.0 87.1 L1220.0 87.4 L1218.9 87.6 L1217.7 87.9 L1216.5 88.1 L1215.2 88.3 L1213.8 88.5 L1212.4 88.7 L1210.9 88.9 L1209.3 89.0 L1207.7 89.2 L1206.1 89.3 L1204.4 89.5 L1202.7 89.6 L1200.9 89.7 L1199.2 89.8 L1197.3 89.8 L1195.5 89.9 L1193.7 90.0 L1191.8 90.0 L1189.9 90.0 L1188.1 90.0 L1186.2 90.0 L1184.3 90.0 L1182.5 89.9 L1180.7 89.8 L1178.8 89.8 L1177.1 89.7 L1175.3 89.6 L1173.6 89.5 L1171.9 89.3 L1170.2 89.2 L1168.7 89.0 L1167.1 88.9 L1165.6 88.7 L1164.2 88.5 L1162.8 88.3 L1161.5 88.1 L1160.3 87.9 L1159.1 87.6 L1158.0 87.4 L1157.0 87.1 L1156.1 86.9 L1155.2 86.6 L1154.4 86.3 L1153.8 86.1 L1153.2 85.8 L1152.7 85.5 L1152.2 85.2 L1151.9 84.9 L1151.7 84.6 L1151.5 84.3 L1151.5 84.0" data-name="Self.xyz"></path>
+						</g>
+						<g transform="translate(1151.5, 56)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Self.xyz" data-compartment="0">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Self.xyz" data-compartment="0">
+								<text x="29.5" y="14.1" stroke="none" text-anchor="middle" data-name="Self.xyz" data-compartment="0">Self.xyz</text>
+
+							</g>
+						</g>
+					</g>
+					<g data-name="World*">
+						<g fill="#eee8d5" stroke="#33322E" data-name="World*">
+							<rect x="1155.5" y="140.0" height="32.0" width="67.0" stroke="none" data-name="World*"></rect>
+							<path d="M1155.5 140.0 L1155.5 172.0" fill="none" data-name="World*"></path>
+							<path d="M1222.5 140.0 L1222.5 172.0" fill="none" data-name="World*"></path>
+							<ellipse cx="1189.0" cy="140.0" rx="33.5" ry="6.0" data-name="World*"></ellipse>
+							<path d="M1222.5 172.0 L1222.5 172.3 L1222.3 172.6 L1222.1 172.9 L1221.8 173.2 L1221.5 173.5 L1221.0 173.8 L1220.5 174.1 L1219.9 174.3 L1219.2 174.6 L1218.4 174.9 L1217.6 175.1 L1216.7 175.4 L1215.7 175.6 L1214.7 175.9 L1213.6 176.1 L1212.4 176.3 L1211.2 176.5 L1209.9 176.7 L1208.6 176.9 L1207.2 177.0 L1205.7 177.2 L1204.3 177.3 L1202.8 177.5 L1201.2 177.6 L1199.7 177.7 L1198.1 177.8 L1196.5 177.8 L1194.8 177.9 L1193.2 178.0 L1191.5 178.0 L1189.8 178.0 L1188.2 178.0 L1186.5 178.0 L1184.8 178.0 L1183.2 177.9 L1181.5 177.8 L1179.9 177.8 L1178.3 177.7 L1176.8 177.6 L1175.2 177.5 L1173.7 177.3 L1172.2 177.2 L1170.8 177.0 L1169.4 176.9 L1168.1 176.7 L1166.8 176.5 L1165.6 176.3 L1164.4 176.1 L1163.3 175.9 L1162.3 175.6 L1161.3 175.4 L1160.4 175.1 L1159.6 174.9 L1158.8 174.6 L1158.1 174.3 L1157.5 174.1 L1157.0 173.8 L1156.5 173.5 L1156.2 173.2 L1155.9 172.9 L1155.7 172.6 L1155.5 172.3 L1155.5 172.0" data-name="World*"></path>
+						</g>
+						<g transform="translate(1155.5, 144)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="World*" data-compartment="0">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="World*" data-compartment="0">
+								<text x="25.5" y="14.1" stroke="none" text-anchor="middle" data-name="World*" data-compartment="0">World*</text>
+
+							</g>
+						</g>
+					</g>
+					<g data-name="Coinbase*">
+						<g fill="#eee8d5" stroke="#33322E" data-name="Coinbase*">
+							<rect x="1142.0" y="228.0" height="32.0" width="94.0" stroke="none" data-name="Coinbase*"></rect>
+							<path d="M1142.0 228.0 L1142.0 260.0" fill="none" data-name="Coinbase*"></path>
+							<path d="M1236.0 228.0 L1236.0 260.0" fill="none" data-name="Coinbase*"></path>
+							<ellipse cx="1189.0" cy="228.0" rx="47.0" ry="6.0" data-name="Coinbase*"></ellipse>
+							<path d="M1236.0 260.0 L1235.9 260.3 L1235.8 260.6 L1235.5 260.9 L1235.1 261.2 L1234.5 261.5 L1233.9 261.8 L1233.2 262.1 L1232.3 262.3 L1231.3 262.6 L1230.3 262.9 L1229.1 263.1 L1227.8 263.4 L1226.5 263.6 L1225.0 263.9 L1223.5 264.1 L1221.8 264.3 L1220.1 264.5 L1218.3 264.7 L1216.4 264.9 L1214.5 265.0 L1212.5 265.2 L1210.4 265.3 L1208.3 265.5 L1206.2 265.6 L1204.0 265.7 L1201.7 265.8 L1199.5 265.8 L1197.2 265.9 L1194.8 266.0 L1192.5 266.0 L1190.2 266.0 L1187.8 266.0 L1185.5 266.0 L1183.2 266.0 L1180.8 265.9 L1178.5 265.8 L1176.3 265.8 L1174.0 265.7 L1171.8 265.6 L1169.7 265.5 L1167.6 265.3 L1165.5 265.2 L1163.5 265.0 L1161.6 264.9 L1159.7 264.7 L1157.9 264.5 L1156.2 264.3 L1154.5 264.1 L1153.0 263.9 L1151.5 263.6 L1150.2 263.4 L1148.9 263.1 L1147.7 262.9 L1146.7 262.6 L1145.7 262.3 L1144.8 262.1 L1144.1 261.8 L1143.5 261.5 L1142.9 261.2 L1142.5 260.9 L1142.2 260.6 L1142.1 260.3 L1142.0 260.0" data-name="Coinbase*"></path>
+						</g>
+						<g transform="translate(1142, 232)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Coinbase*" data-compartment="0">
+							<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Coinbase*" data-compartment="0">
+								<text x="39.0" y="14.1" stroke="none" text-anchor="middle" data-name="Coinbase*" data-compartment="0">Coinbase*</text>
+
+							</g>
+						</g>
+					</g>
+				</g>
+			</g>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,27 @@
+DeactivateHookConcreteTest
+├── When the caller is not the owner
+│   └── It should revert with {OwnableUnauthorizedAccount}
+└── When the caller is the owner 
+    ├── When the hook is not activated
+    │   └── It should revert with {VerifiedERC20_HookNotActivated}
+    └── When the hook is activated
+        ├── When the hook is the only element in the array
+        │   ├── It should remove the hook from the hooks array
+        │   ├── It should delete the hook from hookToIndex mapping
+        │   ├── It should delete the hook from hookToEntrypoint mapping
+        │   ├── It should set isHookActivated to false
+        │   └── It should emit a {HookDeactivated} event
+        ├── When the hook is the last element in the array but not the only element
+        │   ├── It should remove the hook from the hooks array
+        │   ├── It should delete the hook from hookToIndex mapping
+        │   ├── It should delete the hook from hookToEntrypoint mapping
+        │   ├── It should set isHookActivated to false
+        │   └── It should emit a {HookDeactivated} event
+        └── When the hook is not the last element in the array
+            ├── It should swap the hook with the last element
+            ├── It should update the swapped hook's index in hookToIndex mapping
+            ├── It should remove the last element from the hooks array
+            ├── It should delete the hook from hookToIndex mapping
+            ├── It should delete the hook from hookToEntrypoint mapping
+            ├── It should set isHookActivated to false
+            └── It should emit a {HookDeactivated} event 

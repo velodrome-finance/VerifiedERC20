@@ -2,7 +2,7 @@ name: contract tests
 
 on:
   push:
-    branches: 
+    branches:
       - main
       - develop
   pull_request:
@@ -44,5 +44,9 @@ jobs:
 
       - name: Run Forge tests
         run: |
-          forge test -vvv
+          FORGE_SNAPSHOT_CHECK=true forge test -vvv
         id: test
+        env: 
+          OPTIMISM_RPC_URL: ${{ secrets.OPTIMISM_RPC_URL }}
+          CELO_RPC_URL: ${{ secrets.CELO_RPC_URL }}
+
