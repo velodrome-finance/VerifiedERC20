@@ -19,5 +19,6 @@ optimism = "${OPTIMISM_RPC_URL}"
 celo = "${CELO_RPC_URL}"
 
 [etherscan]
-optimism = { key = "${OPTIMISM_ETHERSCAN_API_KEY}", url = "${OPTIMISM_ETHERSCAN_VERIFIER_URL}"}
-celo = { key = "${CELO_ETHERSCAN_API_KEY}", url = "${CELO_ETHERSCAN_VERIFIER_URL}"}
+optimism = { key = "${ETHERSCAN_API_KEY}"}
+celo = { key = "${ETHERSCAN_API_KEY}"}
+
