@@ -156,7 +156,7 @@ contract TransferFromFuzzTest is VerifiedERC20Test {
         emit IERC20.Transfer(_from, _to, _amount);
         verifiedERC20.transferFrom({from: _from, to: _to, value: _amount});
         assertEq(verifiedERC20.allowance({owner: _from, spender: _caller}), _allowance - _amount);
-        assertEq(verifiedERC20.balanceOf({account: _from}), _balance - _amount);
-        assertEq(verifiedERC20.balanceOf({account: _to}), _amount);
+        assertEq(verifiedERC20.balanceOf({account: _from}), _from == _to ? _balance : _balance - _amount);
+        assertEq(verifiedERC20.balanceOf({account: _to}), _from == _to ? _balance : _amount);
     }
 }
