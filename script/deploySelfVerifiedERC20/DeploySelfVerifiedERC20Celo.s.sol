@@ -6,7 +6,7 @@ import {DeploySelfVerifiedERC20} from "../DeploySelfVerifiedERC20.s.sol";
 contract DeploySelfVerifiedERC20Celo is DeploySelfVerifiedERC20 {
     function setUp() public override {
         _params = DeploySelfVerifiedERC20.SelfDeploymentParams({
-            verifiedERC20Name: "Self.xyz Verified ERC20 Celo",
+            verifiedERC20Name: "Self.xyz Verified Celo",
             verifiedERC20Symbol: "vCELO",
             verifiedERC20Owner: 0xbf4d9C534c1a8B58a9AdC4a015c4432c744551D2,
             celo: 0x471EcE3750Da237f93B8E339c536989b8978a438,
