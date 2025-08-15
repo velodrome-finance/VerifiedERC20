@@ -8,6 +8,8 @@ show_progress = true
 optimizer = true
 optimizer_runs = 200
 
+fs_permissions = [{ access = "read-write", path = "./"}]
+
 [fuzz]
 runs = 256
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
@@ -17,5 +19,6 @@ optimism = "${OPTIMISM_RPC_URL}"
 celo = "${CELO_RPC_URL}"
 
 [etherscan]
-optimism = { key = "${OPTIMISM_ETHERSCAN_API_KEY}", url = "${OPTIMISM_ETHERSCAN_VERIFIER_URL}"}
-celo = { key = "${CELO_ETHERSCAN_API_KEY}", url = "${CELO_ETHERSCAN_VERIFIER_URL}"}
+optimism = { key = "${ETHERSCAN_API_KEY}"}
+celo = { key = "${ETHERSCAN_API_KEY}"}
+
